@@ -1,7 +1,7 @@
 ---
 layout: post
 title: First post!
-tags: [random, exciting-stuff]
+image: /img/hello_world.jpeg
 ---
 
 This is my first post, how exciting!
