@@ -5,7 +5,7 @@
 
 # If you are building a simple GitHub user page (http://username.github.io) then use these settings:
 url: "https://anoff.io/blog"
-baseurl: ""
+baseurl: "/blog"
 
 # If you are building a GitHub project page then use these settings:
 #url: "http://username.github.io/projectname"
@@ -23,7 +23,7 @@ title: anoff's blog
 
 # List of links in the navigation bar
 navbar-links:
-  View by Tags: "/tags"
+  View by Tags: "https://anoff.io/blog/tags"
   About me: "https://anoff.io"
   Github: "https://github.com/anoff"
 
