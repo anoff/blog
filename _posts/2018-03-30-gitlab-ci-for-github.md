@@ -1,9 +1,10 @@
 ---
 layout: post
-title: GitLab CI/CD for GitHub — How and Why?
-image: {{ site.baseurl }}/img/assets/gitlab-ci/logo.png
+title: GitLab CI/CD for GitHub
 gh-repo: anoff/node-ci-dummy
 gh-badge: [star, fork]
+subtitle: Combine a great ecosystem with the best CI solution available
+tags: [CI/CD, gitlab, github]
 ---
 
 <!-- TOC -->
