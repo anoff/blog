@@ -25,7 +25,7 @@ tags: [datascience, terraform, azure]
 
 In my [previous blog post](./2018-01-23-dsvm-terraform.md) I explained how to do [Terraform](https://www.terraform.io/intro/index.html) deployment of an [Azure Data Science Virtual Machine](https://docs.microsoft.com/en-us/azure/machine-learning/data-science-virtual-machine/overview).
 
-![Overview of available commands]({{ site.baseUrl }}/img/assets/datascience-dev/logo.png)
+![Overview of available commands]({{ site.baseurl }}/img/assets/datascience-dev/logo.png)
 
 # Motivation 😓
 
@@ -81,7 +81,7 @@ network subnet: _the subnet that your VPN will use*_
 
 `*` sorry if I did not explain those correctly tbh I am not 💯% sure I understand correctly what they do either 😊
 
-![Screenshot of Azure Portal]({{ site.baseUrl }}/img/assets/datascience-dev/rg.png)
+![Screenshot of Azure Portal]({{ site.baseurl }}/img/assets/datascience-dev/rg.png)
 
 > These are the created resources
 
@@ -153,7 +153,7 @@ admin_user = "andreas"
 
 You might see the following error when trying to run the Terraform script without having read this far.
 
-![Error during applying plan]({{ site.baseUrl }}/img/assets/datascience-dev/terms.png)
+![Error during applying plan]({{ site.baseurl }}/img/assets/datascience-dev/terms.png)
 
 > Terraform error due to missing license agreement
 
@@ -171,7 +171,7 @@ $ Get-AzureRmMarketplaceTerms -Publisher "microsoft-ads" -Product "linux-data-sc
 
 After successfully signing the license terms you should see the following output in your shell
 
-![Accepted Terms of service in Powershell]({{ site.baseUrl }}/img/assets/datascience-dev/powershell_out.png)
+![Accepted Terms of service in Powershell]({{ site.baseurl }}/img/assets/datascience-dev/powershell_out.png)
 
 # Run Terraform 🏃‍♂️
 
@@ -187,7 +187,7 @@ Place the [Makefile](https://github.com/anoff/vm-automation/blob/master/Makefile
 
 Use make syncup in your working directory (where you placed the Makefile) to sync your local directory content onto the remote machine. You can see the command that is being executed and what the remote directory will be named. In my case it is `~/work/AIND-RNN` which is one of my Nanodegree projects. You can also see that the command automatically ignores all files that are defined in your .gitignore which means anything you do not want to version will also not be copied around. This is especially useful for artifacts created during neural net training processes.
 
-![Running make syncup]({{ site.baseUrl }}/img/assets/datascience-dev/syncup.png)
+![Running make syncup]({{ site.baseurl }}/img/assets/datascience-dev/syncup.png)
 
 > Output of make syncup
 
@@ -197,7 +197,7 @@ Let’s assume that your project also holds a Jupyter notebook you want to execu
 
 First you need to SSH into the machine using make ssh which will also do port forwarding for the Jupyter Port **8888** onto your local machine so you can open http://localhost:8888 in your local browser (my MacBook) and connect to the webserver that listens on this port on the virtual machine (Jupyter Notebook). Now that you have a shell running on the DSVM manipulate the file system, install missing packages via pip/conda or just start a process.
 
-![Jupyter logs]({{ site.baseUrl }}/img/assets/datascience-dev/jupyter.png)
+![Jupyter logs]({{ site.baseurl }}/img/assets/datascience-dev/jupyter.png)
 
 >Starting jupyter notebook on the VM
 
@@ -209,7 +209,7 @@ After you did some changes and you want to git commit like a good developer you 
 
 > **🚨Make sure you exit the SSH connection first**
 
-![Running make syncdow]({{ site.baseUrl }}/img/assets/datascience-dev/syncdown.png)
+![Running make syncdow]({{ site.baseurl }}/img/assets/datascience-dev/syncdown.png)
 
 > Copy remote changes to local filesystem
 
@@ -219,7 +219,7 @@ The remote file `LOOK_MOMMY_I_CHANGED_A_FILE` has now been copied to my local wo
 
 If you have not checked already, you should look up how much the Virtual Machine that you provisioned actually costs you. The **Standard_NC6** (which is the cheapest GPU instance) will cost you a small holiday if you keep it running for a month. That is the reason why I wanted an easy way to stop it when I don’t need it and get it back up quickly if I want to continue working.
 
-![Azure prices for GPU VMs]({{ site.baseUrl }}/img/assets/datascience-dev/vm_prices.png)
+![Azure prices for GPU VMs]({{ site.baseurl }}/img/assets/datascience-dev/vm_prices.png)
 
 The Makefile comes with three commands for managing the state of the virtual machine itself. They all require the unique Azure Resource ID located in the `.vm-id` to select the correct VM in your Azure subscription:
 
@@ -229,7 +229,7 @@ make start tells Azure to allocate new resources and spawn up the virtual machin
 
 make status will tell you if the virtual machine is up or not
 
-![Running make start/stop]({{ site.baseUrl }}/img/assets/datascience-dev/start.png)
+![Running make start/stop]({{ site.baseurl }}/img/assets/datascience-dev/start.png)
 
 > Virtual Machine start/status/stop
 
@@ -239,9 +239,9 @@ The screenshot shows you how long stopping and starting the VM might take. Howev
 
 If you are afraid of the bill that might come flying in if you miss stopping the virtual machine you should take a closer look at the **auto shutdown** features that Azure offers you. It lets you specify a time at which the VM will automatically shut down every day.
 
-![]({{ site.baseUrl }}/img/assets/datascience-dev/auto_shutdown_menu.png)
+![]({{ site.baseurl }}/img/assets/datascience-dev/auto_shutdown_menu.png)
 
-![Activate auto shutdown]({{ site.baseUrl }}/img/assets/datascience-dev/auto_shutdown.png)
+![Activate auto shutdown]({{ site.baseurl }}/img/assets/datascience-dev/auto_shutdown.png)
 
 > But let me tell you from experience — if you accidentally keep it up for a weekend and see the bill the next week you will *always* shutdown from then on. That was actually one of the reasons why I wanted to make this workflow as easy as possible.
 
@@ -253,7 +253,7 @@ I would love to hear feedback via [Issues](https://github.com/anoff/vm-automatio
 
 Here is another look at all the commands you can use🧙‍♀️
 
-![Overview]({{ site.baseUrl }}/img/assets/datascience-dev/logo.png)
+![Overview]({{ site.baseurl }}/img/assets/datascience-dev/logo.png)
 
 
 /andreas
