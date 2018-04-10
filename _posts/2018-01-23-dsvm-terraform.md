@@ -21,11 +21,11 @@ In this article I will talk about my experience building my first infrastructure
 
 Lately I’ve been looking at a lot of Microsoft Azure services in the big data area. I am looking for something to replace a Hadoop based 🐘 data analytics environment consisting mainly of HDFS, Spark & Jupyter.
 
-![How to Datascience on Azure?](/img/assets/terraform-dsvm/logo.png)
+![How to Datascience on Azure?]({{ site.baseurl }}/img/assets/terraform-dsvm/logo.png)
 
 The most obvious solution is to use a [HDInsight cluster](https://azure.microsoft.com/en-us/services/hdinsight/) which is basically a managed Hadoop that you can pick in different flavours. However with the elasticity of the cloud at my hands I wanted to go for a more diverse setup that also allows a pure #python 🐍 based data science stack without the need to use Spark. One reason for this is that many use cases do not require a calculation on all of the data but just use spark to mask the data. For the actual analysis/training the amount of data often fits in RAM — if I get a bit more than my MacBook Pro has to offer 🙄. The solution described in this article consists of a [Data Science Virtual Machine](https://docs.microsoft.com/en-us/azure/machine-learning/data-science-virtual-machine/overview) 🖥 and [Azure Files](https://docs.microsoft.com/en-us/azure/storage/files/storage-files-introduction) 📄 for common data store. As the file storage account has a cap on 5TB you might need something different if you really have a lot of data — or use multiple fileshares.
 
-![Multiple VMs accessing a shared storage](/img/assets/terraform-dsvm/shared_storage.png)
+![Multiple VMs accessing a shared storage]({{ site.baseurl }}/img/assets/terraform-dsvm/shared_storage.png)
 
 > Target setup with multiple data scientist VM accessing a common data pool
 
@@ -39,9 +39,9 @@ The most obvious solution is to use a [HDInsight cluster](https://azure.microsof
 
 When deploying any higher level components the first thing to do is figure out what underlying infrastructure is used. The easiest way to do this is click yourself through the Portal to create the resource — in this case the Data Scientist VM — and look at the ARM template that drops out of this process. You could use it to deploy this VM automatically using either the ARM tooling or the [azurerm_template_deployment](https://www.terraform.io/docs/providers/azurerm/r/template_deployment.html) in Terraform. However the ARM templates are way too complex to maintain to my liking.
 
-![Access ARM template from portal](/img/assets/terraform-dsvm/portal_deploy.png)
+![Access ARM template from portal]({{ site.baseurl }}/img/assets/terraform-dsvm/portal_deploy.png)
 
-![Overview of ARM resources](/img/assets/terraform-dsvm/arm_view.png)
+![Overview of ARM resources]({{ site.baseurl }}/img/assets/terraform-dsvm/arm_view.png)
 
 > Resource view of the ARM template in Azure Portal
 
@@ -113,13 +113,13 @@ Once you understand that the File service on Azure is part of the Storage suite 
 
 _Note: Before writing this article I didn’t realize there is an option to create a Fileshare using Terraform. So I initially built a [custom Azure CLI script](https://github.com/anoff/tf-azure-datascience/blob/8eff92fd4c8e609f6f938fe4230fcc940a1783d0/provision_fileshare) and hooked that into the storage recipe. Take a look at the [code history](https://github.com/anoff/tf-azure-datascience/blob/8eff92fd4c8e609f6f938fe4230fcc940a1783d0/storage.tf#L15) if you want to learn more about fusing Terraform with the Azure CLI._
 
-![Terraform resources for storage](/img/assets/terraform-dsvm/tf_storage.png)
+![Terraform resources for storage]({{ site.baseurl }}/img/assets/terraform-dsvm/tf_storage.png)
 
 > Storage resources in the Azure Provider for Terraform
 
 Creating a recipe for the Fileshare is literally just copying the [example](https://www.terraform.io/docs/providers/azurerm/r/storage_share.html#example-usage) as it does not have any customised properties. Make sure you give the whole setup pretty names and the correct quote and you’re done.
 
-![Terraform output during creation](/img/assets/terraform-dsvm/terraform_out.png)
+![Terraform output during creation]({{ site.baseurl }}/img/assets/terraform-dsvm/terraform_out.png)
 
 Run `terraform apply -auto-approve` to execute the recipe. In my latest run it took 2min 42sto spin up all the required resources.
 
@@ -127,7 +127,7 @@ Killing the components took twice as long 🙄
 
 The full recipe will provision the following 6 resources for you. You might notice that Terraform mentions 7 added resources, the difference of 1 comes from the resource group that is not listed below. If you want to clean up just run `terraform destroy`.
 
-![Azure resource group overview](/img/assets/terraform-dsvm/azure_rg.png)
+![Azure resource group overview]({{ site.baseurl }}/img/assets/terraform-dsvm/azure_rg.png)
 
 > Fully provisioned Datascience Setup
 
