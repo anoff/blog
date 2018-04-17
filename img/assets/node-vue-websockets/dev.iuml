@@ -1,0 +1,20 @@
+@startuml
+node "webpack dev server" as client
+node "server.js host" as server
+node "browser"
+
+interface html
+interface wss
+
+wss -down- server
+html -down- client
+
+browser --( wss: port 3000
+browser --( html: port 8080
+skinparam {
+  nodeBackgroundColor yellow
+  arrowColor black
+  interfaceBackgroundColor lime
+  interfaceBorderColor black
+}
+@enduml
