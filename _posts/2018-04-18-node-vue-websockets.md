@@ -328,3 +328,4 @@ What to do next:
 - possibly add authentication
 - improve UI (e.g. register enter button on message bar)
 
+Feel free to leave a comment or reach out on twitter 🐦
