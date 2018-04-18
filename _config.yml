@@ -101,7 +101,7 @@ url-pretty: "anoff.io/blog"  # eg. "deanattali.com/beautiful-jekyll"
 # --- Web Statistics Section --- #
 
 # Fill in your Google Analytics ID to track your website using GA
-#google_analytics: ""
+google_analytics: "UA-93890295-4"
 
 # Google Tag Manager ID
 #gtm: ""
@@ -117,7 +117,7 @@ url-pretty: "anoff.io/blog"  # eg. "deanattali.com/beautiful-jekyll"
 
 # --- Misc --- #
 # Fill in your Disqus shortname (NOT the userid) if you want to support Disqus comments
-#disqus: ""
+disqus: "anoff-io"
 
 # Facebook App ID
 # fb_app_id: ""
