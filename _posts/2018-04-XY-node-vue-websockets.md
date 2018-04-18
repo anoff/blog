@@ -12,7 +12,8 @@ tags: [development, web, node]
 - [Adding Material Design library](#adding-material-design-library)
 - [Bring in websockets](#bring-in-websockets)
   - [frontend: vue-socket.io](#frontend-vue-socketio)
-  - [backend: socket-io](#backend-socket-io)
+  - [backend: socket-io / server.js](#backend-socket-io--serverjs)
+- [Showtime 🍿](#showtime-)
 
 <!-- /TOC -->
 
@@ -228,4 +229,94 @@ import VueSocketIO from 'vue-socket.io'
 Vue.use(VueSocketIO, 'http://localhost:3000')
 ```
 
-### backend: socket-io
+To bring some very basic functionality into the app we will show messages that were send from other instances in a list and add the ability to send messages.
+For sending messages we need to give the `Submit` button an action once it is triggered by adding a `v-on:click` method
+
+```html
+<md-button class="md-primary md-raised" v-on:click="sendMessage()">Submit</md-button>
+```
+
+The `sendMessage()` function and the socket interactions are specified in the `<script>` tag
+
+```javascript
+<script>
+export default {
+  name: 'Chat',
+  data () {
+    return {
+      textarea: '',
+      message: '',
+      count: 0
+    }
+  }, sockets:{
+    connect () {
+      console.log('connected to chat server')
+    },
+    count (val) {
+      this.count = val.count
+    },
+    message (data) { // this function gets triggered once a socket event of `message` is received
+      this.textarea += data + '\n' // append each new message to the textarea and add a line break
+    }
+  }, methods: {
+    sendMessage () {
+      // this will emit a socket event of type `function`
+      this.$socket.emit('message', this.message) // send the content of the message bar to the server
+      this.message = '' // empty the message bar
+    }
+  }
+}
+</script>
+```
+### backend: socket-io / server.js
+
+Server.js already comems with socket-io bundled into it. The only thing to do in the backend to enable a basic chat operation is to react to a `message` event sent from the UI and propagate this to all connected sockets.
+
+```javascript
+// modify server.js to include the socket methods
+const { get, socket } = require('server/router')
+
+...
+
+server({ port }, [
+  get('/', ctx => '<h1>Hello you!</h1>'),
+  socket('message', ctx => {
+    // Send the message to every socket
+    ctx.io.emit('message', ctx.data)
+  }),
+  socket('connect', ctx => {
+    console.log('client connected', Object.keys(ctx.io.sockets.sockets))
+    ctx.io.emit('count', {msg: 'HI U', count: Object.keys(ctx.io.sockets.sockets).length})
+  })
+])
+  .then(() => console.log(`Server running at http://localhost:${port}`))
+```
+
+After running `npm start` in the server directory the server will now create logs for every web page that gets opened. It logs the list of currently open sockets.
+
+> Note there is no disconnect event registered yet in this tutorial so the `count` event will only be emitted when a new website connects.
+
+![Server logs for connecting clients]({{ site.baseurl }}/img/assets/node-vue-websockets/clients.png)
+
+## Showtime 🍿
+
+Running the demo in two browsers/separate devices in the same network will look like this. It is a very, very, very basic but totally anonymous chat system.
+
+![Very basic chat system]({{ site.baseurl }}/img/assets/node-vue-websockets/2chats.gif)
+
+You can find a [repository on github](https://github.com/anoff/node-vue-websockets/commits/master) containing this demo code.
+
+I hope this blog helped you:
+
+1. set up an easy node server
+1. bootstrap a Vue project with `vue-cli`
+1. get fancy UI elements in Vue using material design
+1. integrate websockets to provide realtime communication
+
+What to do next:
+
+- add tests to backend/frontend
+- store state/sessions in frontend
+- possibly add authentication
+- improve UI (e.g. register enter button on message bar)
+
