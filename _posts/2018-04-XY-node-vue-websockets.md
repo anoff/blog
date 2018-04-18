@@ -70,6 +70,9 @@ For easier development install `npm install nodemon` in the project and change t
   "start": "nodemon -i myapp/ server.js"
 },
 ```
+
+💡 If you're struggling take a look at this [code](https://github.com/anoff/node-vue-websockets/tree/4dc36fc8fac8ee3d179379c0286ee2dfe58f4261) for reference
+
 ## Initialize Vue.js project
 
 The easiest way to set up a vue project is to use the `vue`-CLI which is available via `npm install -g vue-cli`. To initialize a project using `webpack` as a bundler run
@@ -113,6 +116,8 @@ By simply saving the file the development server will propagate the changes to a
 ![modified Vue.js template project]({{ site.baseurl }}/img/assets/node-vue-websockets/vue-template2.png)
 
 > Modified template with custom message
+
+💡 If you're struggling take a look at this [code](https://github.com/anoff/node-vue-websockets/tree/3e19ae3fd902d719251cf42721ccc83fa27fb394) for reference
 
 ## Adding Material Design library
 
@@ -207,9 +212,11 @@ export default new Router({
 
 ![Basic chat app]({{ site.baseurl }}/img/assets/node-vue-websockets/chat.png)
 
+💡 If you're struggling take a look at this [code](https://github.com/anoff/node-vue-websockets/tree/99fa39d4761ddaa779192a7f9751820ab7952356) for reference
+
 ## Bring in websockets
 
-For the following devlopment the web application will consume from two different endpoints during development. The `webpack-dev-server` sends the web app sources (HTML, CSS, Javascript) and the node server will supply the `socket-io` endpoint.
+For the following development the web application will consume from two different endpoints. The `webpack-dev-server` sends the web app sources (HTML, CSS, Javascript) and the node server will supply the `socket-io` endpoint. This is typically not something you want to do in production but since we want both the node server and Vue frontend to be hot reloaded we need two systems - webpack and nodemon.
 
 ![development setup](https://www.plantuml.com/plantuml/png/NP0z3i8m34PtdyBgn58KYGKn8JX9sXWef77b12A4k3ik3RzBfBpdptQoZibAElSU0Zl2AbCpsFQ4ZYuOIIua5Tg8hUyef58pyVanue5ZUle95Ty8PmKLG1SIoSwsX8Ua8pxN72E07bWxpg5-vSUg5oeZeNJ3kfwDiHKEB0aNnfWVDKQBMvgbWNZgmc35zdW3n76nZRvhBtmERikU1Q_aFMULLhJFn1glHOhUc_w7VDVJZsTn9D_XEwmfEFtH1m00)
 
@@ -221,7 +228,7 @@ For the Vue app to communicate with the websocket backend the socket.io library 
 npm install vue-socket.io
 ```
 
-With the node backend running on port `3000` modify `myApp/src/main.js` to include
+With the node backend running on port `3000` modify your vue application in `myApp/src/main.js` to connect to the backend
 
 ```javascript
 import VueSocketIO from 'vue-socket.io'
@@ -268,6 +275,7 @@ export default {
 }
 </script>
 ```
+
 ### backend: socket-io / server.js
 
 Server.js already comems with socket-io bundled into it. The only thing to do in the backend to enable a basic chat operation is to react to a `message` event sent from the UI and propagate this to all connected sockets.
