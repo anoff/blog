@@ -1,0 +1,8 @@
+@startuml icons
+skinparam monochrome true
+card "<&key> key"
+card "<&check> check"
+card "<&clock> clock"
+card "<&tag> tag"
+card "<size:42><&wrench></size>"
+@enduml
