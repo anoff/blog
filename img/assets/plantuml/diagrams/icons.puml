@@ -1,5 +1,7 @@
 @startuml icons
 skinparam monochrome true
+skinparam Nodesep 10
+skinparam Ranksep 10
 card "<&key> key"
 card "<&check> check"
 card "<&clock> clock"

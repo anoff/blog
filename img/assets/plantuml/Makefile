@@ -18,3 +18,6 @@ build: verify-git-clean inject-git-version pdf clean
 
 puml:
 	sh diagrams/convert.sh
+
+puml-language:
+	docker run --rm think/plantuml java -Djava.awt.headless=true -jar plantuml.jar -language > puml-language.txt
