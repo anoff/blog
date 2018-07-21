@@ -16,10 +16,6 @@
 \usetikzlibrary{decorations.pathmorphing}
 \usepackage{xcolor}
 
-\definecolor{white}{RGB}{255,255,255}
-\definecolor{darkgray}{HTML}{333333}
-\definecolor{gray}{HTML}{4D4D4D}
-
 \usepackage{hyperref}
 \hypersetup{
     colorlinks, breaklinks,
@@ -27,11 +23,11 @@
     citecolor={blue!50!black},
     urlcolor={blue!80!black}
 }
-\advance\topmargin-.8in
+\advance\topmargin-60pt
 \advance\textheight3in
 \advance\textwidth3in
-\advance\oddsidemargin-1.5in
-\advance\evensidemargin-1.5in
+\advance\oddsidemargin-110pt
+\advance\evensidemargin-110pt
 \parindent0pt
 \parskip2pt
 
@@ -56,10 +52,7 @@ rectangle, rounded corners, inner sep=10pt, inner ysep=10pt] (box){%
 
 \title{ultimate PlantUML Cheatsheet}
 \begin{document}
-\begin{flushright}
-{\small blupabla}
-\end{flushright}
-\begin{center}{\huge{\textbf{ultimate PlantUML Cheatsheet}}}\\
+\begin{center}{\huge{\textbf{ultimate PlantUML Cheatsheet}}{\hspace*{40pt}\small v.COMMIT-ID}}\\
 {\large by \href{http://anoff.io}{Andreas Offenhaeuser}}
 \end{center}
 \begin{multicols*}{3}
@@ -68,40 +61,6 @@ rectangle, rounded corners, inner sep=10pt, inner ysep=10pt] (box){%
 \block{Components}{
 A list of plantUML components and their names, most can be used in any diagrams. The \textit{sequence} diagram only supports a subset.
   \includegraphics[width=\textwidth]{diagrams/dist/components.pdf} 
-}
-
-%%% ARROWS %%%
-\block{Arrows}{
-PlantUML supports almost all \href{http://loufranco.com/wp-content/uploads/2012/11/cheatsheet.pdf}{UML arrow types}.
-All combinations of two arrow heads and line type can be set.
-\begin{center}
-  \includegraphics[height=40pt, width=0.9\textwidth, keepaspectratio]{diagrams/dist/arrows.pdf}
-
-  \includegraphics[height=40pt, width=0.9\textwidth, keepaspectratio]{diagrams/dist/arrows-2.pdf}
-\end{center}
-}
-
-%%% ICONS %%%
-\block{Icons}{
-PlantUML supports \href{https://useiconic.com/open/}{Open Iconic} set out of the box. Any icon can be rendered when embedding it in \textbf{<\&..>}.
-\code{
-card "<\&key> key"
-
-card "<size:42><\&wrench></size>"
-}
-\begin{center}
-  \includegraphics[width=0.5\textwidth]{diagrams/dist/icons.pdf}
-  \includegraphics[width=0.3\textwidth]{diagrams/dist/icons-transparent.pdf}
-\end{center}
-
-Icons can be shown as icon only by disabling the border and background styles.
-
-\code{
-  rectangle "<size:150><\&sun></size>" as sun \\
-  skinparam rectangleBorderColor none \\
-  skinparam rectangleBackgroundColor none \\
-  skinparam rectangleShadowing false
-}
 }
 
 %%% SPRITE ICONS %%%
@@ -119,14 +78,36 @@ Additional icons can be added via sprites. There is a collection of \href{https:
   GOV\_SUBMARINE(sub1, Submarine1) \#lightblue \\
   GOV\_SUBMARINE(sub2, , frame, red) \{
   \begin{addmargin}[1em]{0em}
-    FA5\_COGS(c2, more work, card, white) \#limegreen \\
+    FA5\_COGS(c2, more work, card, white) \#limegreen
   \end{addmargin}
   \}
 }
 \begin{center}
-  \includegraphics[height=80pt, width=0.9\textwidth, keepaspectratio]{diagrams/dist/icons-sprite.pdf}
+  \includegraphics[height=70pt, width=0.9\textwidth, keepaspectratio]{diagrams/dist/icons-sprite.pdf}
+\end{center}
+}
+
+%%% ICONS %%%
+\block{Icons}{
+PlantUML supports \href{https://useiconic.com/open/}{Open Iconic} set out of the box. Any icon can be rendered when embedding it in \textbf{<\&..>}.
+\code{
+card "<\&key> key"
+
+card "<size:42><\&wrench></size>"
+}
+\begin{center}
+  \includegraphics[height=70pt, width=0.45\textwidth, keepaspectratio]{diagrams/dist/icons.pdf}
+  \includegraphics[height=70pt, width=0.45\textwidth, keepaspectratio]{diagrams/dist/icons-transparent.pdf}
 \end{center}
 
+Icons can be shown as icon only by disabling the border and background styles.
+
+\code{
+  rectangle "<size:150><\&sun></size>" as sun \\
+  skinparam rectangleBorderColor none \\
+  skinparam rectangleBackgroundColor none \\
+  skinparam rectangleShadowing false
+}
 }
 
 %%% MULTILINE %%%
@@ -145,6 +126,17 @@ node mynode [
 ]
 }
   \includegraphics[width=0.7\textwidth]{diagrams/dist/multiline.pdf} 
+}
+
+%%% ARROWS %%%
+\block{Arrows}{
+PlantUML supports almost all \href{http://loufranco.com/wp-content/uploads/2012/11/cheatsheet.pdf}{UML arrow types}.
+All combinations of two arrow heads and line type can be set.
+\begin{center}
+  \includegraphics[height=80pt, width=0.9\textwidth, keepaspectratio]{diagrams/dist/arrows.pdf}
+
+  \includegraphics[height=80pt, width=0.9\textwidth, keepaspectratio]{diagrams/dist/arrows-2.pdf}
+\end{center}
 }
 
 %%% SKINPARAM %%%
@@ -194,7 +186,7 @@ Generic properties:
   RoundCorner, 
   Shadowing
 }
-\newline
+\newline\newline
 The full list of \href{http://plantuml.com/skinparam}{skinparam settings} and \href{http://plantuml.com/color}{available colors} can be found on the \href{http://plantuml.com/}{plantUML website}.
 }
 

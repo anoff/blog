@@ -3,7 +3,7 @@
 COMMIT_SHA := $(shell git rev-parse --short=8 HEAD)
 
 inject-git-version:
-	sed -i.bak 's/\({git:\)[[:alnum:]]*\(}\)/\1${COMMIT_SHA}\2/' puml-cheatsheet.tex
+	sed -i.bak 's/\({v\.\)[[:alnum:]]*\(}\)/\1${COMMIT_SHA}\2/' puml-cheatsheet.tex
 
 verify-git-clean:
 	git diff-index --quiet HEAD
