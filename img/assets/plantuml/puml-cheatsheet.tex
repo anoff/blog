@@ -50,36 +50,88 @@ rectangle, rounded corners, inner sep=10pt, inner ysep=10pt] (box){%
 \newcommand{\code}[1]{%
   \begin{tcolorbox}[frame hidden, interior hidden, grow to left by=-5pt,
   boxrule=0pt, boxsep=0pt, arc=0pt, breakable, before skip=4pt, after skip=5pt,]%
-  #1%
+  \parbox{\textwidth}{\ttfamily\small #1}%
   \end{tcolorbox}
 }
 
-\title{ultimate plantUML Cheatsheet}
+\title{ultimate PlantUML Cheatsheet}
 \begin{document}
-
-\begin{center}{\huge{\textbf{ultimate plantUML Cheatsheet}}}\\
+\begin{flushright}
+{\small blupabla}
+\end{flushright}
+\begin{center}{\huge{\textbf{ultimate PlantUML Cheatsheet}}}\\
 {\large by \href{http://anoff.io}{Andreas Offenhaeuser}}
 \end{center}
 \begin{multicols*}{3}
 
-
+%%% COMPONENTS %%%
 \block{Components}{
 A list of plantUML components and their names, most can be used in any diagrams. The \textit{sequence} diagram only supports a subset.
   \includegraphics[width=\textwidth]{diagrams/dist/components.pdf} 
 }
 
+%%% ARROWS %%%
+\block{Arrows}{
+PlantUML supports almost all \href{http://loufranco.com/wp-content/uploads/2012/11/cheatsheet.pdf}{UML arrow types}.
+All combinations of two arrow heads and line type can be set.
+\begin{center}
+  \includegraphics[height=40pt, width=0.9\textwidth, keepaspectratio]{diagrams/dist/arrows.pdf}
+
+  \includegraphics[height=40pt, width=0.9\textwidth, keepaspectratio]{diagrams/dist/arrows-2.pdf}
+\end{center}
+}
+
+%%% ICONS %%%
 \block{Icons}{
-PlantUML supports \href{https://useiconic.com/open/}{Open Iconic} iconset out of the box. Any icon can be rendered when embedding it in \textbf{<\&..>}
+PlantUML supports \href{https://useiconic.com/open/}{Open Iconic} set out of the box. Any icon can be rendered when embedding it in \textbf{<\&..>}.
 \code{
 card "<\&key> key"
 
 card "<size:42><\&wrench></size>"
 }
-  \includegraphics[width=0.7\textwidth]{diagrams/dist/icons.pdf} 
+\begin{center}
+  \includegraphics[width=0.5\textwidth]{diagrams/dist/icons.pdf}
+  \includegraphics[width=0.3\textwidth]{diagrams/dist/icons-transparent.pdf}
+\end{center}
+
+Icons can be shown as icon only by disabling the border and background styles.
+
+\code{
+  rectangle "<size:150><\&sun></size>" as sun \\
+  skinparam rectangleBorderColor none \\
+  skinparam rectangleBackgroundColor none \\
+  skinparam rectangleShadowing false
+}
 }
 
+%%% SPRITE ICONS %%%
+\block{Sprite icons}{
+Additional icons can be added via sprites. There is a collection of \href{https://github.com/tupadr3/plantuml-icon-font-sprites}{Font Awesome, Developer, Government,.. icons} available via GitHub. Sprites can be included from any location that is reachable by the PlantUML server.
+
+\code{
+  !define ICONURL {\scriptsize https://raw.githubusercontent.com/\\
+    tupadr3/plantuml-icon-font-sprites/v2.0.0} \\
+  !includeurl ICONURL/common.puml \\
+  !includeurl ICONURL/font-awesome-5/cogs.puml \\
+  !includeurl ICONURL/govicons/submarine.puml \\
+
+  FA5\_COGS(c1, work) \#white \\
+  GOV\_SUBMARINE(sub1, Submarine1) \#lightblue \\
+  GOV\_SUBMARINE(sub2, , frame, red) \{
+  \begin{addmargin}[1em]{0em}
+    FA5\_COGS(c2, more work, card, white) \#limegreen \\
+  \end{addmargin}
+  \}
+}
+\begin{center}
+  \includegraphics[height=80pt, width=0.9\textwidth, keepaspectratio]{diagrams/dist/icons-sprite.pdf}
+\end{center}
+
+}
+
+%%% MULTILINE %%%
 \block{Multiline components}{
-Text can be spread across multiple lines in components by declaring the text in \textbf{[ ]}
+Text can be spread across multiple lines in components by declaring the text in \textbf{[ ]}.
 \code{
 node mynode [
 \begin{addmargin}[1em]{0em}
@@ -95,11 +147,66 @@ node mynode [
   \includegraphics[width=0.7\textwidth]{diagrams/dist/multiline.pdf} 
 }
 
+%%% SKINPARAM %%%
+\block{Skinparam properties}{
+For any \textit{component} style properties can be set via
+\code{
+skinparam <Component><Property> <value>
+}
+
+Multiple properties for the same component can be grouped
+\code{
+skinparam node \{
+  \begin{addmargin}[1em]{0em}
+  BackgroundColor transparent \\
+  BorderColor black
+  \end{addmargin}
+\}
+}
+
+Component properties:
+
+\textit{
+  BackgroundColor, 
+  BorderColor, 
+  BorderThickness, 
+  FontColor, 
+  FontName, 
+  FontSize, 
+  FontStyle
+}
+\newline\newline
+Generic properties:
+
+\textit{
+  ArrowColor, 
+  ArrowLollipopColor, 
+  ArrowThickness, 
+  BackgroundColor, 
+  DefaultTextAlignment {\small ([left], center, right)}, 
+  Handwritten {\small [false]}, 
+  HyperlinkColor, 
+  HyperlinkUnderline, 
+  Monochrome {\small [false]}, 
+  Nodesep {\small (horizontal margin [0])}, 
+  Padding {\small (text padding within node [0])}, 
+  Ranksep {\small (vertical margin [0])}, 
+  RoundCorner, 
+  Shadowing
+}
+\newline
+The full list of \href{http://plantuml.com/skinparam}{skinparam settings} and \href{http://plantuml.com/color}{available colors} can be found on the \href{http://plantuml.com/}{plantUML website}.
+}
+
+\block{Component diagrams}{
+  Enforcing layout..
+}
 \block{Useful links}{
   \begin{itemize}
   \item \href{http://plantuml.com/color}{Available colors}
   \item \href{http://plantuml.com/skinparam}{Stylable properties}
 \end{itemize}
 }
+
 \end{multicols*}
 \end{document}
