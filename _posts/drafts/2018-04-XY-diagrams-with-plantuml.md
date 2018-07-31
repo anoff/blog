@@ -11,10 +11,11 @@ tags: [development, gitlab, github]
 
 - [PlantUML Basics 👨‍🎨](#plantuml-basics-‍)
   - [Reasons to love PlantUML 🤗](#reasons-to-love-plantuml-)
-    - [Versioning](#versioning)
-    - [Syntax](#syntax)
-    - [Layouting](#layouting)
-- [Local development](#local-development)
+    - [Versioning 📦](#versioning-)
+    - [Syntax 🐟](#syntax-)
+    - [Layouting 🏗](#layouting-🏗)
+    - [Share anywhere 📱](#share-anywhere-)
+- [Local development 💻](#local-development-)
   - [Visual Studio Code](#visual-studio-code)
   - [Render to SVG/PDF](#render-to-svgpdf)
 - [GitLab integration](#gitlab-integration)
@@ -45,7 +46,7 @@ app -> client
 
 ## Reasons to love PlantUML 🤗
 
-### Versioning
+### Versioning 📦
 
 A very important aspect for developing software and writing documentation is to keep it in sync. One aspect is that you have to update your documentation if you update the code itself. Another important aspect is versioning - typically software is versioned using `git` or similar systems. By putting your documentation into the same repository as the code you also make sure you always look at the correct state of documentation for a respective point in time.
 
@@ -53,22 +54,80 @@ For that reason I love putting all my documentation either within the sourcecode
 
 One other benefit PlantUML has over the mentioned tools is that by defining your diagrams in plain text you make them diff-able in pull requests. Reviewers can always see what changes have been made and easily compare changes to the diagram with changes made inside the code.
 
-### Syntax
+### Syntax 🐟
 
 The basic syntax of PlantUML is very concise and builds a good foundation for the different diagram types. It is also well very smart in the way that it allows diagrams to be written with different flavors e.g. it allows you to declare nodes at the top, but if you do not declare them they will be inferred when used. Same goes for [macros and definitions](http://plantuml.com/preprocessing) that allow you to compose larger diagrams or a common library for your team.
 
-### Layouting
+I recently created a [PlantUML Cheatsheet](https://cdn.rawgit.com/anoff/blog/c17550a5/img/assets/plantuml/puml-cheatsheet.pdf) for a lot of useful tricks - it does however not cover the very basics of PlantUML syntax. You can browse the [latest version](https://github.com/anoff/blog/raw/master/img/assets/plantuml/puml-cheatsheet.pdf) or the [LaTeX sourcecode](https://github.com/anoff/blog/blob/master/img/assets/plantuml/puml-cheatsheet.tex) on GitHub.
+
+### Layouting 🏗
 
 Compared with WYSIWYG editors PlantUML diagrams only define components and their relationship but not the actual layout of the diagram. Instead the diagram is inferred by a deterministic algorithm in the rendering process. This has the advantage that when specifying the diagram you only focus on the content - comparable to when you write down a LaTeX document.
 Sadly the layouting engine is not as good as you sometimes wish it to be and especially in component diagrams with 5 nodes and more you might end up spending a lot of time enforcing specific layouts manually.
 
 For sequence and activity diagrams the automatic layouting works great even for very large diagrams. If you built a few diagrams and notice how easy it is to just move lines of code up and down and end up to reflect changes in the code you will love the automatic layouting.
 
-# Local development
+### Share anywhere 📱
+
+If you want to _freeze_ a diagram version and send it to someone outside your organization you can simply send them an insanely long url (e.g. [http://www.plantuml.com/plantuml/png/5Son3G8n34RXtbFyb1GiG9MM6H25XGsnH9p8SGgslrpxzFILcHovse-yYw8QdlJl2v--N93rJ2Bg4EDlSBlG0pn6wDiu5NiDcAU6piJzTgKN5NNPu040](http://www.plantuml.com/plantuml/png/5Son3G8n34RXtbFyb1GiG9MM6H25XGsnH9p8SGgslrpxzFILcHovse-yYw8QdlJl2v--N93rJ2Bg4EDlSBlG0pn6wDiu5NiDcAU6piJzTgKN5NNPu040)) that encodes the entire diagram definition. You can also just embed this URL inside an HTML `<img>` tag. If anyone ever needs to work with the image all you have to do is swap `/plantuml/png` to `/plantuml/uml` and you will see the [definition](http://www.plantuml.com/plantuml/uml/5Son3G8n34RXtbFyb1GiG9MM6H25XGsnH9p8SGgslrpxzFILcHovse-yYw8QdlJl2v--N93rJ2Bg4EDlSBlG0pn6wDiu5NiDcAU6piJzTgKN5NNPu040) of the diagram.
+
+This gives the entire PlantUML toolstack an extremely versatile way of passing information as well as viewable images.
+
+# Local development 💻
+
+The fastest, platform agnostic and easiest way to start creating PlantUML diagrams is using their [online editor](http://www.plantuml.com/plantuml/uml/SoWkIImgAStDuShBJqbLA4ajBk5oICrB0Oe00000) (btw. you can also easily host it on prem using the [plantuml-server Docker image](https://hub.docker.com/r/plantuml/plantuml-server/)). This is fine for creating simple diagrams with a few nodes but larger diagrams require a lot of _previewing_ which is annoying in the online editor.
+
+_If you have any other local setups please let me know via [Twitter](https://twitter.com/an0xff)_
 
 ## Visual Studio Code
 
+> In case you already use VS Code this is a no brainer to set up. Otherwise you might seriously want to consider using it for the purpose of editing PlantUML diagrams (in Markdown) only because it is a super smooth experience.
+
+All you need to do is to get the [PlantUML extension](https://marketplace.visualstudio.com/items?itemName=jebbs.plantuml) to enable codes native [Markdown preview feature](https://code.visualstudio.com/docs/languages/markdown) to also parse inline diagrams.
+
+![Screenshot of Visual Studio Code showing rendered PlantUML diagram in Markdown preview]({{ site.baseurl }}/img/assets/plantuml/code-rendering.png)
+
+By default the plugin requires a local PlantUML process to be running and accepting the rendering requests. I recommend switching it to use a server for rendering; this could be the official plantuml.com server, an on premise instance or a locally running [container](https://hub.docker.com/r/plantuml/plantuml-server/). After installing the plugin go to the VS Code options (`ctrl/⌘ + ,`) and change the `plantuml.render` property.
+
+```javascript
+// PlantUMLServer: Render diagrams by server which is specified with "plantuml.server". It's much faster, but requires a server.
+// Local is the default configuration.
+"plantuml.render": "PlantUMLServer",
+
+// Plantuml server to generate UML diagrams on-the-fly.
+"plantuml.server": "http://www.plantuml.com/plantuml",
+```
+
+If you ever go off the grid and still want to work remember to `docker run -d -p 8080:8080 plantuml/plantuml-server:jetty` while you still have an internet connection. The image is `~250MB` to download. Afterwards set `plantuml.server` to `http://localhost:8080/` and you're set for an offline adventure.
+
+_On my MacBook I sometimes experience a lot of CPU consumption from the running container - even when not actively rendering. Restarting the container helps 🤷‍_
+
 ## Render to SVG/PDF
+
+> This method only works if diagrams are defined explicitly in files and not inlined into Markdown.
+
+To write this blog post and build the [Cheatsheet]() I played around with non-realtime ways of rendering PlantUML diagrams into images. You can use the [Makefile](https://github.com/anoff/blog/blob/master/img/assets/plantuml/Makefile) and [Shell script](https://github.com/anoff/blog/blob/master/img/assets/plantuml/diagrams/convert.sh) to convert an entire [folder](https://github.com/anoff/blog/tree/master/img/assets/plantuml/diagrams) of PlantUML diagrams with `.puml` extension into `.svg` and `.pdf` [files](https://github.com/anoff/blog/tree/master/img/assets/plantuml/diagrams/dist).
+
+The script essentially runs the diagram definition through a dockerized PlantUML process which outputs an `.svg` and then uses Inkscape to create a `.pdf` file for importing it into LaTeX documents for example.
+
+```sh
+#!/bin/sh
+# converts all puml files to svg
+
+BASEDIR=$(dirname "$0")
+mkdir -p $BASEDIR/dist
+rm $BASEDIR/dist/*
+for FILE in $BASEDIR/*.puml; do
+  echo Converting $FILE..
+  FILE_SVG=${FILE//puml/svg}
+  FILE_PDF=${FILE//puml/pdf}
+  cat $FILE | docker run --rm -i think/plantuml > $FILE_SVG
+  docker run --rm -v $PWD:/diagrams productionwentdown/ubuntu-inkscape inkscape /diagrams/$FILE_SVG --export-area-page --without-gui --export-pdf=/diagrams/$FILE_PDF &> /dev/null
+done
+mv $BASEDIR/*.svg $BASEDIR/dist/
+mv $BASEDIR/*.pdf $BASEDIR/dist/
+echo Done
+```
 
 # GitLab integration
 
