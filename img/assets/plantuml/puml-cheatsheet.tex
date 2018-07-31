@@ -96,20 +96,20 @@ Icons can be shown as icon only by disabling the border and background styles.
 
 %%% SPRITE ICONS %%%
 \block{Sprite Icons}{
-Additional icons can be added via sprites. There is a collection of \href{https://github.com/tupadr3/plantuml-icon-font-sprites}{Font Awesome, Developer, Government,.. icons} available via GitHub. Sprites can be included from any location that is reachable by the PlantUML server.
+Custom icons can be added via sprites. There is a collection of sprites for various icons included in the \href{http://plantuml.com/stdlib}{standard library}. Additional sets can be loaded from any URL reachable by the rendering server using \textbf{!includeurl}.
 
 \code{
+  !include <font-awesome/common> \\
+  !include <font-awesome/cogs> \\
   !define ICONURL {\scriptsize https://raw.githubusercontent.com/\\
     tupadr3/plantuml-icon-font-sprites/v2.0.0} \\
-  !includeurl ICONURL/common.puml \\
-  !includeurl ICONURL/font-awesome-5/cogs.puml \\
   !includeurl ICONURL/govicons/submarine.puml \\
 
-  FA5\_COGS(c1, work) \#white \\
+  FA\_COGS(c1, work) \#white \\
   GOV\_SUBMARINE(sub1, Submarine1) \#lightblue \\
   GOV\_SUBMARINE(sub2, , frame, red) \{
   \begin{addmargin}[1em]{0em}
-    FA5\_COGS(c2, more work, card, white) \#limegreen
+    FA\_COGS(c2, more work, card, white) \#limegreen
   \end{addmargin}
   \}
 }
