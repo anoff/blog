@@ -3,7 +3,6 @@ layout: post
 title: Markdown native diagrams with PlantUML
 subtitle: Create flowcharts, sequence and other diagrams in plain text with full version control support and native markdown rendering
 tags: [development, gitlab, github]
-published: false
 ---
 
 > This post will cover PlantUML basics and how it can be used in GitLab or GitHub projects as well as a seamless local development environment using Visual Studio Code.
@@ -21,18 +20,19 @@ published: false
   - [Render to SVG/PDF](#render-to-svgpdf)
 - [GitLab integration](#gitlab-integration)
 - [GitHub integration](#github-integration)
+- [Summary](#summary)
 
 <!-- /TOC -->
 
-I have been wanting to write this post for months. Lately I have been using PlantUML extensively at work but also in my private projects. You can see it being used in my [plantbuddy](https://github.com/anoff/plantbuddy#main-features) and [techradar](https://github.com/anoff/techradar#design) projects on GitHub. Using it in various places and for changing purposes I came across a bunch of issues that I want to share in this post.
+I have been wanting to write this post for months. Lately I have been using PlantUML extensively at work but also in my private projects. You can see it being used in my [plantbuddy](https://github.com/anoff/plantbuddy#main-features) and [techradar](https://github.com/anoff/techradar#design) projects on GitHub. Using it in different places and for various purposes I came across a bunch of issues that I want to share in this post.
 
 # PlantUML Basics 👨‍🎨
 
-For those that do not know [PlatUML](http://plantuml.com/) it is an open source tool that allows you to define UML diagrams with plain text. There are different [diagram types](http://plantuml.com/sitemap-language-specification) available being described with custom syntax but following a common scheme. This post will not go into the details of each of those diagram types because the PlantUML website does a pretty good job at describing [sequence](http://plantuml.com/sequence-diagram), [component](http://plantuml.com/component-diagram), [activity](http://plantuml.com/activity-diagram-beta) and the other diagram types.
+For those that do not know [PlatUML](http://plantuml.com/): It is an open source tool that allows you to define UML diagrams with plain text. There are different [diagram types](http://plantuml.com/sitemap-language-specification) available being described with custom syntax but following a common scheme. This post will not go into the details of each of those diagram types because the PlantUML website does a pretty good job at describing [sequence](http://plantuml.com/sequence-diagram), [component](http://plantuml.com/component-diagram), [activity](http://plantuml.com/activity-diagram-beta) and the other diagram types.
 
 A basic component diagram showing data flow can be built using the following markup:
 
-```plantuml
+```text
 @startuml component
 actor client
 node app
@@ -49,7 +49,7 @@ app -> client
 
 ### Versioning 📦
 
-A very important aspect for developing software and writing documentation is to keep it in sync. One aspect is that you have to update your documentation if you update the code itself. Another important aspect is versioning - typically software is versioned using `git` or similar systems. By putting your documentation into the same repository as the code you also make sure you always look at the correct state of documentation for a respective point in time.
+A very important aspect for developing software and writing documentation is to keep it in sync. One part is to update documentation if the code itself is updated. Another important part is versioning - usually software is versioned using `git` or similar systems. By putting the documentation into the same repository as the code you make sure to always look at the correct state of documentation for a respective point in time.
 
 For that reason I love putting all my documentation either within the sourcecode as comments or as Markdown files next to the sourcecode. One thing I was always lacking with this approach is visualizing things. Putting PowerPoint/Keynote/Visio/Enterprise Architect.. files into a repository does make sure your diagrams are always versioned with the code - but they are not browsable in Web UIs. Come PlantUML and GitLab rendering to the rescue: GitLab allows you to [inline PlantUML diagrams](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/administration/integration/plantuml.md) directly into your Markdown files and they will be rendered on the fly when viewing the files in the browser.
 
@@ -57,16 +57,16 @@ One other benefit PlantUML has over the mentioned tools is that by defining your
 
 ### Syntax 🐟
 
-The basic syntax of PlantUML is very concise and builds a good foundation for the different diagram types. It is also well very smart in the way that it allows diagrams to be written with different flavors e.g. it allows you to declare nodes at the top, but if you do not declare them they will be inferred when used. Same goes for [macros and definitions](http://plantuml.com/preprocessing) that allow you to compose larger diagrams or a common library for your team.
+The basic syntax of PlantUML is very concise and builds a good foundation for the different diagram types. It is also well very smart in the way that it allows diagrams to be written with different flavors e.g. you can declare/instantiate all nodes at the top, but if you do not declare them they will be inferred automatically. Same goes for [macros and definitions](http://plantuml.com/preprocessing) that allow you to compose larger diagrams or a common library for your team.
 
 I recently created a [PlantUML Cheatsheet](https://rawgit.com/anoff/blog/master/img/assets/plantuml/puml-cheatsheet.pdf) for a lot of useful tricks - it does however not cover the very basics of PlantUML syntax. You can browse the [latest version](https://github.com/anoff/blog/raw/master/img/assets/plantuml/puml-cheatsheet.pdf) or the [LaTeX sourcecode](https://github.com/anoff/blog/blob/master/img/assets/plantuml/puml-cheatsheet.tex) on GitHub.
 
 ### Layouting 🏗
 
-Compared with WYSIWYG editors PlantUML diagrams only define components and their relationship but not the actual layout of the diagram. Instead the diagram is inferred by a deterministic algorithm in the rendering process. This has the advantage that when specifying the diagram you only focus on the content - comparable to when you write down a LaTeX document.
-Sadly the layouting engine is not as good as you sometimes wish it to be and especially in component diagrams with 5 nodes and more you might end up spending a lot of time enforcing specific layouts manually.
+Compared with WYSIWYG editors PlantUML diagrams only define components and their relationship but not the actual layout of the diagram. Instead the diagram is inferred by a deterministic algorithm in the rendering process. This is beneficial when specifying the diagram because you only focus on the content - comparable to writing a LaTeX document.
+Sadly the layouting engine is not as good as you sometimes wish it to be and especially in component diagrams with 10+ nodes you might end up spending a lot of time enforcing specific layouts manually.
 
-For sequence and activity diagrams the automatic layouting works great even for very large diagrams. If you built a few diagrams and notice how easy it is to just move lines of code up and down and end up to reflect changes in the code you will love the automatic layouting.
+For sequence and activity diagrams the automatic layouting works great even for very large diagrams. After you built a few diagrams and notice how easy it is to just move lines of code up and down and have changes in the code immediately reflect in your documentation you will love the automatic layouting.
 
 ### Share anywhere 📱
 
@@ -76,7 +76,7 @@ This gives the entire PlantUML toolstack an extremely versatile way of passing i
 
 # Local development 💻
 
-The fastest, platform agnostic and easiest way to start creating PlantUML diagrams is using their [online editor](http://www.plantuml.com/plantuml/uml/SoWkIImgAStDuShBJqbLA4ajBk5oICrB0Oe00000) (btw. you can also easily host it on prem using the [plantuml-server Docker image](https://hub.docker.com/r/plantuml/plantuml-server/)). This is fine for creating simple diagrams with a few nodes but larger diagrams require a lot of _previewing_ which is annoying in the online editor.
+The fastest, platform agnostic and easiest way to start creating PlantUML diagrams is using their [online editor](http://www.plantuml.com/plantuml/uml/SoWkIImgAStDuShBJqbLA4ajBk5oICrB0Oe00000) (btw. you can easily host it on prem using the [plantuml-server Docker image](https://hub.docker.com/r/plantuml/plantuml-server/)). This is fine for creating simple diagrams with a few nodes but larger diagrams require a lot of _previewing_ which is annoying in the online editor.
 
 _If you have any other local setups please let me know via [Twitter](https://twitter.com/an0xff)_
 
@@ -134,9 +134,9 @@ echo Done
 
 > This feature is currently only available with on-prem installations of GitLab, enabling it on gitlab.com is [an open issue](https://gitlab.com/gitlab-com/infrastructure/issues/2163). See the GitHub integration for a workaround.
 
-Using PlantUML within GitLab is super fun. All you have to do is [set up]([inline PlantUML diagrams](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/administration/integration/plantuml.md)) a render server to use and you can just commit Markdown files with inlined PlantUML diagrams and they will render for everyone visiting the GitLab web UI.
+Using PlantUML within GitLab is super fun. All you have to do is [set up](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/administration/integration/plantuml.md) a render server to use and you can just commit Markdown files with inlined PlantUML diagrams and they will render for everyone visiting the GitLab web UI.
 
-What's great is that this does not only work in Markdown files that you coommit into a git repository but in all other fields within GitLab that render markdown - virtually everything. You can have small diagrams helping illustrate things in issues as well.
+What's great is that this does not only works in Markdown files committed into a git repository but in all other fields within GitLab that render markdown - virtually everything. You can have small diagrams helping illustrate things in issues as well.
 
 ![Screenshot of PlantUML syntax in a GitLab issue]({{ site.baseurl }}/img/assets/plantuml/puml-issue.png)
 
@@ -146,15 +146,15 @@ What's great is that this does not only work in Markdown files that you coommit 
 
 There is no native PlantUML integration for GitHub and gitlab.com available. To maintain the advantages listed above it is obviously not a valid workaround to just render the files locally and commit them into git.
 
-Instead make use of the PlantUML [proxy service](http://plantuml.com/server) as described in [this stackoverflow discussion](https://stackoverflow.com/questions/32203610/how-to-integrate-uml-diagrams-into-gitlab-or-github). The way this works it that instead of passing the PlantUML server the diagram content within the URL we define a _remote URL_ where the content can be fetched from `http://www.plantuml.com/plantuml/proxy?src=https://raw.github.com/plantuml/plantuml-server/master/src/main/webapp/resource/test2diagrams.txt`. This link can be embedded in an HTML `<img>` tag or within Markdown image syntax `![]()`. To leverage this feature when using GitHub, simply point the _remote URL_ to a raw link of the PlantUML diagram in your repository.
+Instead make use of the PlantUML [proxy service](http://plantuml.com/server) as described in [this stackoverflow discussion](https://stackoverflow.com/questions/32203610/how-to-integrate-uml-diagrams-into-gitlab-or-github). The way this works is that instead of passing the PlantUML server the diagram content within the URL we define a _remote URL_ where the content can be fetched from e.g. `http://www.plantuml.com/plantuml/proxy?src=https://raw.github.com/plantuml/plantuml-server/master/src/main/webapp/resource/test2diagrams.txt`. This URL can be embedded in an HTML `<img>` tag or within Markdown image syntax `![]()`. To leverage this feature when using GitHub, simply point the _remote URL_ to a raw link of the PlantUML diagram in your repository.
 
-The following diagram shows what will happen.
+The following diagram shows what will happen when you open a Markdown page hosted on GitHub that contains such a link:
 
 ![sequence diagram showing how PlantUML proxy service works]({{ site.baseurl }}/img/assets/plantuml/diagrams/dist/plantuml-proxy.svg)
 
-[The example](https://github.com/anoff/plantbuddy/blame/master/readme.md#L12) shows that adding a `?cache=no` might be a good idea because of GitHubs Camo [caching strategy](http://forum.plantuml.net/7163/githubs-aggressive-caching-prevent-diagrams-updated-markdown) which will prevent your images from updating if you change the sourcecode.
+[This example](https://github.com/anoff/plantbuddy/blame/master/readme.md#L12) shows that adding a `?cache=no` might be a good idea because of GitHubs Camo [caching strategy](http://forum.plantuml.net/7163/githubs-aggressive-caching-prevent-diagrams-updated-markdown) which will prevent your images from updating if you change the sourcecode.
 
-The downside of this approach is that it will always render the latest commmit in your repository even if you browse old versions. If browsing old versions is a requirement for you when using an integration with GitHub then you might need to build your own plugin/renderer or optimize the local development environment because after all the correct diagram version will always be with the sourcecode you checked out.
+The downside of this approach is that it will always render the latest commmit in your repository even if you browse old versions. If browsing old versions is a _strong_ requirement for you when using an integration with GitHub then you might need to build your own plugin/renderer or optimize the local development environment because after all the correct diagram version will always be with the sourcecode you checked out.
 
 To use the proxy service integration simply use:
 
@@ -164,6 +164,17 @@ To use the proxy service integration simply use:
 ![uncached image](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/plantuml/plantuml-server/master/src/main/webapp/resource/test2diagrams.txt)
 ```
 
-There is a lot more to tell about PlantUML but I hope this article gave you enough infos how to get started on whatever platform you are using. If you haven't already take a look at my [PlantUML Cheatsheet](https://rawgit.com/anoff/blog/master/img/assets/plantuml/puml-cheatsheet.pdf) which will help you to cover an even wider range of use cases.
+# Summary
+
+There are two fundamental ways of keeping PlantUML diagrams
+
+1. inline into Markdown
+1. keep as individual `.puml` files
+
+Depending on your toolstack one of those should be your preferred option to work with diagrams in your repository. It is highly recommend to keep diagrams as close to the code as possible and not create artificial documentation repositories.
+
+This post covered how to write and render files locally in **VS Code**, using **Docker** containers and how to integrate into **GitLab on prem** as well as publich **GitHub** and **GitLab** instances.
+
+There is a lot more to tell about PlantUML but I hope this article gave you enough infos to get started on whatever platform you are using. I recommend this [PlantUML Cheatsheet](https://rawgit.com/anoff/blog/master/img/assets/plantuml/puml-cheatsheet.pdf) which will help you to cover an even wider range of use cases.
 
 Tell me about your experiences with PlantUML or alternative integrations on [Twitter 🐦](https://twitter.com/an0xff)
