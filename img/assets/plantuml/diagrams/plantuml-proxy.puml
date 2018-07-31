@@ -1,0 +1,11 @@
+@startuml
+!includeurl https://gist.githubusercontent.com/anoff/c531251183cf9590b0f86ac85d5bc353/raw/fancy.plantuml
+actor You
+participant "PlantUML Server" as puml
+You --> GitHub: view README.md
+GitHub -> You: HTML rendered Markdown containing <img> link to PlantUML Server
+You --> puml: get image
+puml --> GitHub: Fetch PlantUML at src?=
+GitHub -> puml: Deliver raw PlantUML code
+puml -> You: Send rendered (png) file
+@enduml
