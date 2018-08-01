@@ -13,6 +13,7 @@ pdf:
 
 clean:
 	mv puml-cheatsheet.tex.bak puml-cheatsheet.tex
+	mv puml-cheatsheet.pdf ../../..
 
 build: verify-git-clean inject-git-version pdf clean
 
