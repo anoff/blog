@@ -148,6 +148,8 @@ There is no native PlantUML integration for GitHub and gitlab.com available. To 
 
 Instead make use of the PlantUML [proxy service](http://plantuml.com/server) as described in [this stackoverflow discussion](https://stackoverflow.com/questions/32203610/how-to-integrate-uml-diagrams-into-gitlab-or-github). The way this works is that instead of passing the PlantUML server the diagram content within the URL we define a _remote URL_ where the content can be fetched from e.g. `http://www.plantuml.com/plantuml/proxy?src=https://raw.github.com/plantuml/plantuml-server/master/src/main/webapp/resource/test2diagrams.txt`. This URL can be embedded in an HTML `<img>` tag or within Markdown image syntax `![]()`. To leverage this feature when using GitHub, simply point the _remote URL_ to a raw link of the PlantUML diagram in your repository.
 
+You can see this method in action in the [plantbuddy](https://github.com/anoff/plantbuddy#main-features) and [techradar](https://github.com/anoff/techradar#design) projects of my GitHub account.
+
 The following diagram shows what will happen when you open a Markdown page hosted on GitHub that contains such a link:
 
 ![sequence diagram showing how PlantUML proxy service works]({{ site.baseurl }}/img/assets/plantuml/diagrams/dist/plantuml-proxy.svg)
