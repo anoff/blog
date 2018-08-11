@@ -3,11 +3,11 @@ layout: post
 title: RBAC with Google Firestore
 subtitle: Implementing Role Based Access Control with Google's serverless database
 tags: [rbac, serverless, web]
-image: /img/assets/rbac-firestore/logo.png
-share-img: /img/assets/rbac-firestore/logo.png
+image: {{ site.baseurl }}/img/assets/rbac-firestore/logo.png
+share-img: {{ site.baseurl }}/img/assets/rbac-firestore/logo.png
 ---
 
-![Zombies not allowed](/img/assets/rbac-firestore/logo.png)
+![Zombies not allowed]({{ site.baseurl }}/img/assets/rbac-firestore/logo.png)
 
 This post will explain how to implement role based access control ([RBAC](https://en.wikipedia.org/wiki/Role-based_access_control)) using the Google Firestore serverless database.
 
@@ -38,13 +38,13 @@ Firestore is database that is part of Googles Firebase suite for mobile app deve
 
 For those that never used a Firebase database; it is a NoSQL document oriented database. Firestore allows you to nest documents by creating multiple collections inside a document.
 
-<img src="/img/assets/rbac-firestore/firestore-documents.png" width="640px" alt="Screenshot of a Firestore database with nested collections">
+<img src="{{ site.baseurl }}/img/assets/rbac-firestore/firestore-documents.png" width="640px" alt="Screenshot of a Firestore database with nested collections">
 
 The Firebase suite is built for mobile development and provides SDKs for all major languages. JavaScript/Node.js, Swift, Objective C, Android, Java, Python, Ruby, Go. The SDKs allow add, query or delete data as well as other operations required when interacting with a database as a client. One feature I really like is the possiblity to register your client to receive [updates](https://firebase.google.com/docs/firestore/query-data/listen) automatically. This allows you to build **three way data binding** in realtime applications easily. This is a feature I used in my [first project with Firebase](https://github.com/anoff/microllaborators).
 
 In combination with the Firebase [authentication provider](https://firebase.google.com/docs/auth/) you can limit access the database to people that are logged in. The auth provider also provides an SDK and requires only a few lines of code to implement in a web app.
 
-![Firebase application design](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/anoff/blog/master/img/assets/rbac-firestore/arch.puml)
+![Firebase application design](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/anoff/blog/master/img/assets/rbac-firestore/arch.puml)
 
 ## Firestore Security Rules
 
@@ -98,7 +98,7 @@ We will setup RBAC for a simple content site with _posts_ that can be commented 
 
 On the root level of Firestore we add three different collections. One holds the content, one for user details and one that implements the roles per user. The reason to separate role assignments from the user document is to easily allow users to modify their own details without giving them the possibility to grant themselves new roles.
 
-![Class diagram of the database structure](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/anoff/blog/master/img/assets/rbac-firestore/document-classes.puml)
+![Class diagram of the database structure](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/anoff/blog/master/img/assets/rbac-firestore/document-classes.puml)
 
 ## Required security rules for RBAC
 
