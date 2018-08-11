@@ -3,8 +3,8 @@ layout: post
 title: RBAC with Google Firestore
 subtitle: Implementing Role Based Access Control with Google's serverless database
 tags: [google, serverless, web]
-image: /img/assets/rbac-firestore/logo.png
-share-img: /img/assets/rbac-firestore/logo.png
+image: ./img/assets/rbac-firestore/logo.png
+share-img: ./img/assets/rbac-firestore/logo.png
 ---
 
 ![Zombies not allowed]({{ site.baseurl }}/img/assets/rbac-firestore/logo.png)
