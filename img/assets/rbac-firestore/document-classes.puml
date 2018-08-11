@@ -1,6 +1,6 @@
 @startuml document-classes
 object users
-users : Array<user>
+users : Collection<user>
 
 object "user" as user
 user : _id : Firebase UID
@@ -12,26 +12,27 @@ user : name : String
 users o-- user
 
 object roles
-roles : Array<role>
+roles : Collection<role>
 
 object "role" as role
 role : _id : Firebase UID
 role : writer : Boolean (optional)
 role : editor : Boolean (optional)
 role : user : Boolean (optional)
+role : admin : Bollean (optional)
 
 roles o-- role
 role .left. user
 
 object posts
-posts : Array<post>
+posts : Collection<post>
 
 object post
 post : _id : Auto ID
 post : title : String
 post : text : String
 post : author : Firebase UID
-post : comments : comment
+post : comments : Collection<comment>
 
 posts o-- post
 
