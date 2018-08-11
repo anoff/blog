@@ -44,7 +44,7 @@ The Firebase suite is built for mobile development and provides SDKs for all maj
 
 In combination with the Firebase [authentication provider](https://firebase.google.com/docs/auth/) you can limit access the database to people that are logged in. The auth provider also provides an SDK and requires only a few lines of code to implement in a web app.
 
-![Firebase application design](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/anoff/blog/master/img/assets/rbac-firestore/arch.puml)
+![Firebase application design]({{ site.baseurl }}/img/assets/rbac-firestore/dist/arch.svg)
 
 ## Firestore Security Rules
 
@@ -98,7 +98,7 @@ We will setup RBAC for a simple content site with _posts_ that can be commented 
 
 On the root level of Firestore we add three different collections. One holds the content, one for user details and one that implements the roles per user. The reason to separate role assignments from the user document is to easily allow users to modify their own details without giving them the possibility to grant themselves new roles.
 
-![Class diagram of the database structure](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/anoff/blog/master/img/assets/rbac-firestore/document-classes.puml)
+![Class diagram of the database structure]({{ site.baseurl }}/img/assets/rbac-firestore/dist/document-classes.svg)
 
 ## Required security rules for RBAC
 
