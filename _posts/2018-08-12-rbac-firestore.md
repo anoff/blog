@@ -17,16 +17,12 @@ This post will explain how to implement role based access control ([RBAC](https:
 - [Firestore Security Rules](#firestore-security-rules)
 - [RBAC example scenario](#rbac-example-scenario)
 - [Required security rules for RBAC](#required-security-rules-for-rbac)
-  - [User collection](#user-collection)
-  - [Roles collection](#roles-collection)
-  - [Posts collection](#posts-collection)
-  - [Comments collection](#comments-collection)
 - [Implementing security rules for RBAC](#implementing-security-rules-for-rbac)
   - [RBAC helper functions](#rbac-helper-functions)
   - [Users collection](#users-collection)
-  - [Roles collection](#roles-collection-1)
-  - [Posts collection](#posts-collection-1)
-  - [Comments collection](#comments-collection-1)
+  - [Roles collection](#roles-collection)
+  - [Posts collection](#posts-collection)
+  - [Comments collection](#comments-collection)
 - [Summary](#summary)
 
 <!-- /TOC -->
@@ -104,45 +100,13 @@ On the root level of Firestore we add three different collections. One holds the
 
 Given the collection setup and the above role definition we can define the rules we need to implement for each collection.
 
-### User collection
-
-| method | permissions |
-|--------|---------------|
-| get    | anyone |
-| list | noone |
-| create | noone |
-| update | user (own profile) |
-| delete | user (own profile) |
-
-### Roles collection
-
-| method | permissions |
-|--------|---------------|
-| get    | user itself, admin |
-| list | admin |
-| create | noone |
-| update | admin |
-| delete | noone |
-
-### Posts collection
-
-| method | permissions |
-|--------|---------------|
-| get    | anyone |
-| list | anyone |
-| create | writer |
-| update | editor, writer (their own) |
-| delete | writer (their own) |
-
-### Comments collection
-
-| method | permissions |
-|--------|---------------|
-| get    | anyone |
-| list | anyone |
-| create | user |
-| update | user (their own) |
-| delete | user (own), editor |
+|   | User | Roles | Posts | Comments |
+|--------|------|-------|-------|----------|
+| `get`    | anyone | user (own), admin | anyone | anyone |
+| `list` | noone | admin | anyone | anyone |
+| `create` | noone | noone | writer | user |
+| `update` | user (own profile) | admin | writer (own), editor | user (own) |
+| `delete` | user (own profile) | noone | writer (own) | user (own), editor |
 
 ## Implementing security rules for RBAC
 
@@ -204,7 +168,7 @@ With these functions in the security rules you can now easily implement security
 
 ### Users collection
 
-First we make sure only the user itself can modify its data:
+First we make sure only the _user_ itself can modify its data and _anyone_ can view a specific user profile to enable them to see who posted comments.
 
 ```javascript
 match /users/{user} {
@@ -219,7 +183,7 @@ match /users/{user} {
 
 ### Roles collection
 
-Next we enforce the rules for the role collection
+Next we enforce the rules for the role collection which should only allow _admins_ to set roles. Of course a _user_ should be able to retrieve its own designated roles in order to switch frontend features accordingly.
 
 ```javascript
 match /roles/{user} {
@@ -232,7 +196,7 @@ match /roles/{user} {
 
 ### Posts collection
 
-This one is a little trickier because we first need to figure out who actually created the post if we want to enforce the _update_ rule.
+This one is a little trickier because we first need to figure out who actually created the post if we want to enforce the _update_ rule. Any _writer_ should be able to create a new post but only update their own. An _editor_ on the other hand should be able to update anyones post but not create one.
 
 ```javascript
 match /posts/{post} {
@@ -240,13 +204,13 @@ match /posts/{post} {
   allow create: if hasRole('writer');
   // check if the post author is identical to requesting user
   allow update: if (hasRole('writer') && resource.data.author == request.auth.uid) || hasRole('editor');
-  allow delete: if hasRole('writer');
+  allow delete: if hasRole('writer') && resource.data.author == request.auth.uid;
 }
 ```
 
 ### Comments collection
 
-Make sure that users can modify or delete their comments and editors can moderate anyones comments.
+Make sure that _users_ can modify or delete their comments and editors can _moderate_ (delete) anyones comments. _Anyone_ should be able to see read the available comments.
 
 ```javascript
 match /posts/{post}/comments/{comment} {
