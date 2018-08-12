@@ -100,11 +100,11 @@ On the root level of Firestore we add three different collections. One holds the
 
 Given the collection setup and the above role definition we can define the rules we need to implement for each collection.
 
-|   | User | Roles | Posts | Comments |
+|   | User | Roles | Posts | Comments |
 |--------|------|-------|-------|----------|
 | `get`    | anyone | user (own), admin | anyone | anyone |
 | `list` | noone | admin | anyone | anyone |
-| `create` | noone | noone | writer | user |
+| `create` | noone | noone | writer | user |
 | `update` | user (own profile) | admin | writer (own), editor | user (own) |
 | `delete` | user (own profile) | noone | writer (own) | user (own), editor |
 
