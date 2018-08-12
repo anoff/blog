@@ -224,12 +224,13 @@ match /posts/{post}/comments/{comment} {
 
 ## Summary
 
-You created a Firestore ruleset that enforces **data privacy and integrity** by limiting access to resources based according to a role design. To see a similar design implemented you can check out my [techradar](https://github.com/anoff/techradar) project which also showcases how to implement RBAC on the frontend too. There are other interesting ways to secure Firestore data for example checking which parts of a resource are being changed in an update process to allow users to update only specific properties. Also check out my previous post on creating [PlantUML diagrams](https://anoff.io/blog/2018-07-31-diagrams-with-plantuml/).
-
+You created a Firestore ruleset that enforces **data privacy and integrity** by limiting access to resources based according to a role design. 
 To bring RBAC to your application you need to consider a few things:
 
 1. [Deploy](https://firebase.google.com/docs/firestore/security/get-started#use_the_firebase_cli) the security rules into your Firebase project, highly recommend using the CLI or Travis
 1. Implement a Firebase function that creates an entry in the `users` and `roles` collection for each new user using the [authentication trigger](https://firebase.google.com/docs/functions/auth-events)
 1. Log in to your app and then manually grant yourself _admin_ rights via the Firebase console
 
-Drop me a message on [Twitter](https://twitter.com/an0xff) if you have any feedback about this post.
+To see a similar design implemented you can check out my [techradar](https://github.com/anoff/techradar) project which also showcases how to implement RBAC on the frontend and setting up Travis CI to deploy Firebase rules. There are additional features available to secure Firestore data for example checking which parts of a resource are being changed in an update process to allow users to update only specific properties. 
+
+Drop me a message on [Twitter](https://twitter.com/an0xff) if you have any feedback about this post. Also check out my previous post on creating [PlantUML diagrams](https://anoff.io/blog/2018-07-31-diagrams-with-plantuml/).
