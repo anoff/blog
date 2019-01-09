@@ -1,8 +1,8 @@
 ---
 layout: post
-title: My year in (audio)books
-subtitle: First in a series of many articles with main takeaways from various books
-tags: [development, recruiting, books]
+title: My year 2018 in (audio)books
+subtitle: First in a series of lessons from books I read
+tags: [development, books]
 ---
 <!-- TOC -->
 
@@ -12,6 +12,8 @@ tags: [development, recruiting, books]
   - [Elon Musk: How the Billionaire CEO of SpaceX and Tesla is Shaping our Future](#elon-musk-how-the-billionaire-ceo-of-spacex-and-tesla-is-shaping-our-future)
   - [Alibaba: The house that Jack Ma built](#alibaba-the-house-that-jack-ma-built)
   - [Rework](#rework)
+    - [1. Simple products lead to happy customers](#1-simple-products-lead-to-happy-customers)
+    - [2. Diversity kills product focus](#2-diversity-kills-product-focus)
 - [Previous highlights](#previous-highlights)
   - [Hit Refresh](#hit-refresh)
   - [Weapons of Math Destruction](#weapons-of-math-destruction)
@@ -51,7 +53,7 @@ Since I did not keep notes on all the books some might only have very short opin
 
 After the hype around SpaceX Falcon launch I wanted to learn more about [Elon Musk](https://twitter.com/elonmusk) - especially his past and how he got to the point where he runs several big firms with an incredible impact on humanity. This **biography** does a good job at this and also claims to be the only one that actually got Musk to give info/feedback about his biography.
 
-The book starts off with Musks youth in South Africa and eventually tells the story of his first enterpreneurial steps with zip 🚨 something that could have been google maps and his online payment startup that - by selling it - allowed him to start Tesla Inc.
+The book starts off with Musks youth in South Africa and eventually tells the story of his first entrepreneurial steps with zip 🚨 something that could have been google maps and his online payment startup that - by selling it - allowed him to start Tesla Inc.
 
 There is a great blog post out there 🚨 waitbutwhy/neurallink trying to give an explanation on Elon Musks overall strategy when it comes to his various companies. It gives far better food for thought than the biography I read - altough the bio is great to get more insights on his early years.
 
@@ -67,42 +69,57 @@ It is exciting to hear how the different branches of his empire strategically fi
 
 > 🚨 by ... DHH
 
-- enterpreneurial tips for small business with quick time to market e.g. online services
-- keep your producut simple -> allows easy onboarding with a streamlined experience, keeps diversity of opinions low -> focus on growth instead of upselling more complex featuers that would drive diversity into the customer group
-- keep track of feature requests and only consider the top n% recurring requests - depending on how much you are able to innovate
-- having a product with well known limitations keeps customers from being disappointed by realizing later on that things are not supported
+This book is packed with tips for **entrepreneurs**. In my opinion the advice given in this book is very thorough but only fits for a specific kind of enterprise - those that are similar to Davids own Basecamp.
 
+My main take away from this book is the **benefit of having a simple product**. Besides the product and its codebase being _easier to maintain_ a simple product also means _onboarding new customers_ is easy because they do not have to jump through many hoops to get the product into use.
 
-# Previous highlights
+### 1. Simple products lead to happy customers
+
+The more complex your product the harder it is to describe what it does. This may lead to miscommunication with (new) customers that get a product that does not fully meet their expectations. The simpler your product the easier to understand is it for its users.
+This already shows one limitation of the range of products these tips can be applied to; the aspect of clarity of product specification is relevant if you are in a B2C environment and people need to learn about your product in a self guided manner. If you work in B2B scenarios this aspect might not be as relevant because you have less customers to provide information to and can therefore use marketing and sales people to help with targeted customer communication.
+
+### 2. Diversity kills product focus
+
+Keep your product simple and do not add features that might blend into another product. Similar to the onboarding benefit of having a simple product, having a confined set of features and use cases makes sure you have a homogenous customer base. This makes it easier to keep those customers happy as they all expect your product to do the same thing. If you change something it is likely that all users take the change equally positive/negative.
+
+One example for failing this rule is Microsoft's Excel. From high schoolers to soccer moms to professional accountants to data scientists - everyone uses Excel for many different purposes expecting the product to be able to do different things. Excel does a pretty good job at it but managing changes to such a product must be an incredibly complex job. You definitely do not want this complexity in your startup.
+
+### 3. Ignore 80% of the feature requests
+
+Of course it is important to listen to your users. But to keep your product simple you should put a lot of thought into which features you bring out. A simple rule is **prioritize feedback by frequency not by volume**. Add features that most of your customers want - not the ones that few people scream for very loudly. This is a tough principle to follow as it might lead to losing customers.
+
+If you have a customer that makes up a significant amount of revenue you need to carefully consider if you can afford losing them for the sake of simplicity. If your startup is still in its growth phase it might be acceptable to lose larger customers.
+
+# Highlights from 2017
 
 ## Hit Refresh
 
 > 🚨 by Satya Nadella
 
-
+A great book to learn about the **cultural transformation at Microsoft** that happened over the last ~10 years. Satya elaborates about how he pushes for diversity in various fields to come to the best possible decisions and products. This includes Microsofts push towards becoming more involved in Open Source as the amount of creativity and pure manpower in the Open Source world is huge - even when compared with a company like Microsoft.
 
 ## Weapons of Math Destruction
 
 > 🚨
 
-- machine learning is not discriminatory
-- trust facts over data
-- beware of bias in data
-- never take AI results out of context (score function, training data)
-- do not believe that AI results are objective because they always include the man-made biases within the training sets
+This book takes a look at the **risks of AI**. Not in the Terminator Doomsday kind but the very real risks we already have to consider - but often ignore - today. The main point made in the book is that people too often think _results given by machines are objective_ and do not realize they too are subject to prejudice and bias. It is very important to clearly **differentiate** at this point. The machine itself is objective in what it does, but the person operating the machine is not. Therefore it is important to pay close attention to how AI results were achieved.
+
+1. What was the training set?
+1. Was the validation set large and independent enough?
+1. Are we aware of existing biases in the training data that might influence the result, e.g. demographic of a region
+1. Is the score function vulnerable to biases?
+
+The book does not ask to ablish AI but to be more aware of the results and to trust **facts over data**. 
 
 ## The Phoenix Project
 
 > 🚨
 
-- must read for devops
-- amazing storytelling, packing management lessons into a novel
-- how to relate IT to classic hardware business
-- fairytale of digital transformation
+A **must read** for everyone involved in IT and uses buzzwords like **DevOps** - especially managers. This novel is easy to read and follows the journey of a _classic_ IT manager into the world of DevOps. Many chapters explain how changes in manufactoring (e.g. the 🚨link Toyota principles) are comparable to the DevOps movement in IT. I do not want to write another post about the impact of DevOps but if you are interested in **digital transformation** I can highly recommend this great book.
 
 # Upcoming
 
-I will publish two books I already heard in this series before continuing on with new ones:
+I will publish posts on the following books next:
 
 - **Powerful** talking about things I take from Netflix' culture that are easy to apply
 - **How Google works** focusing on how to hire and build a great team
