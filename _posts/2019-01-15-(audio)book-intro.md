@@ -1,8 +1,9 @@
 ---
 layout: post
-title: 📚 My year 2018 in (audio)books
+title: 📚 My year 2018 in books
 subtitle: First in a series of lessons from books I read
 tags: [development, books]
+share-img: ./img/assets/books-intro/title.png
 ---
 
 <head>
