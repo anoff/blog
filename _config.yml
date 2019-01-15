@@ -62,6 +62,7 @@ footer-link-col: "#404040"
 # Important: you must keep the "name" parameter, everything else you can remove
 author:
   name: Andreas Offenhaeuser
+  twitter: an0xff
 
 # Select your active Social Network Links.
 # Uncomment the links you want to show in the footer and add your information to each link.
@@ -117,7 +118,7 @@ google_analytics: "UA-93890295-4"
 
 # --- Misc --- #
 # Fill in your Disqus shortname (NOT the userid) if you want to support Disqus comments
-# disqus: "anoff-io"
+disqus: "anoff-io"
 
 # Facebook App ID
 # fb_app_id: ""
