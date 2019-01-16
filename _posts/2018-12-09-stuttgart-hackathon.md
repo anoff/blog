@@ -15,7 +15,7 @@ End of October I joined the [Stuttgart Hackathon](https://www.hackathon-stuttgar
 
 # How I used to approach Hackathons
 
-The first Hackathon I ever participated in was hosted by Zeiss April 2017. Together with a [Tim Großmann](github.com/timgrossmann) I formed a team to compete in Munich for ideas and projects around Digitalization. We did not join to win but mostly to have fun and write a bit of code - so on our way to Munich we were discussing what would be fun to do. Not knowing the exact scope of the Hackathon we thought doing something with augmented reality on web apps would be fun. We also did not manage to get our hands any of the gadgets we wanted to include in our solution therefore we had to go with a pure code solution.
+The first Hackathon I ever participated in was hosted by Zeiss April 2017. Together with a [Tim Großmann](https://github.com/timgrossmann) I formed a team to compete in Munich for ideas and projects around Digitalization. We did not join to win but mostly to have fun and write a bit of code - so on our way to Munich we were discussing what would be fun to do. Not knowing the exact scope of the Hackathon we thought doing something with augmented reality on web apps would be fun. We also did not manage to get our hands any of the gadgets we wanted to include in our solution therefore we had to go with a pure code solution.
 
 So we built [microllaborators](https://github.com/anoff/microllaborators) - an awful play of words with microscope and collaborators. We discussed the idea with the coaches and also came up with a pretty solid pitch with a working live demo including the audience. I still like the solution we built but sadly we only made 5th place 😢
 
