@@ -2,26 +2,11 @@
 layout: post
 title: Automated dev workflow for using Data Science VM on Azure
 subtitle: A bunch of scripts to deploy/start/stop/sync a VM via command line
+share-img: ./img/assets/datascience-dev/logo.png
 tags: [datascience, terraform, azure]
 ---
 
 > tl;dr; I put together a bunch of scripts on Github that let you deploy a VM from your command line as well as sync code from your local directory to the VM easily to be able to use local IDE and git but execute on the powerful remote machine. Perfect for Data Science applications based around jupyter notebook.
-
-<!-- TOC -->
-
-- [Motivation 😓](#motivation-)
-- [The Goal 🏁](#the-goal-)
-- [Deploy infrastructure 📦](#deploy-infrastructure-)
-- [Signing the license terms for Data Science VM ⚖️](#signing-the-license-terms-for-data-science-vm-)
-- [Run Terraform 🏃‍♂️](#run-terraform-‍)
-- [Bring code onto the VM 💁‍](#bring-code-onto-the-vm-‍)
-- [Run Jupyter Notebook 📒](#run-jupyter-notebook-)
-- [Commit your changes 💾](#commit-your-changes-)
-- [Start and Stop the Virtual Machine 🎬 🛑](#start-and-stop-the-virtual-machine--)
-- [Reduce risk of bankruptcy 💸](#reduce-risk-of-bankruptcy-)
-- [Summary 📚](#summary-)
-
-<!-- /TOC -->
 
 In my [previous blog post](./2018-01-23-dsvm-terraform.md) I explained how to do [Terraform](https://www.terraform.io/intro/index.html) deployment of an [Azure Data Science Virtual Machine](https://docs.microsoft.com/en-us/azure/machine-learning/data-science-virtual-machine/overview).
 
