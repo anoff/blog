@@ -4,8 +4,8 @@
 # baseurl is the website's URL without the hostname
 
 # If you are building a simple GitHub user page (http://username.github.io) then use these settings:
-url: "https://anoff.io/blog"
-baseurl: "/blog"
+url: "https://blog.anoff.io"
+baseurl: ""
 
 # If you are building a GitHub project page then use these settings:
 #url: "http://username.github.io/projectname"
@@ -23,7 +23,7 @@ title: anoff's blog
 
 # List of links in the navigation bar
 navbar-links:
-  View by Tags: "https://anoff.io/blog/tags"
+  View by Tags: "https://blog.anoff.io/tags"
   About me: "https://anoff.io"
   Github: "https://github.com/anoff"
 
@@ -97,7 +97,7 @@ share-links-active:
 
 # How to display the link to the website in the footer
 # Remove this if you don't want a link in the footer
-url-pretty: "anoff.io/blog"  # eg. "deanattali.com/beautiful-jekyll"
+url-pretty: "blog.anoff.io"  # eg. "deanattali.com/beautiful-jekyll"
 
 # --- Web Statistics Section --- #
 
@@ -138,7 +138,7 @@ timezone: "America/Vancouver"
 markdown: kramdown
 highlighter: rouge
 permalink: /:year-:month-:day-:title/
-paginate: 5
+paginate: 50
 
 kramdown:
   input: GFM
@@ -173,7 +173,7 @@ exclude:
   - LICENSE
   - README.md
   - Vagrantfile
-
+  - vendor # see travis build info https://jekyllrb.com/docs/continuous-integration/travis-ci/
 
 plugins:
   - jekyll-paginate
