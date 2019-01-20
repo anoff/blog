@@ -7,14 +7,6 @@ subtitle: Combine a great ecosystem with the best CI solution available
 tags: [CI/CD, gitlab, github]
 ---
 
-<!-- TOC -->
-
-- [How to enable a GitLab CI/CD pipeline for a GitHub project](#how-to-enable-a-gitlab-cicd-pipeline-for-a-github-project)
-- [How to configure a CI pipeline](#how-to-configure-a-ci-pipeline)
-- [Final thoughts](#final-thoughts)
-
-<!-- /TOC -->
-
 When creating a git project that you want to share with others you traditionally had the choice between GitHub with its huge community and tons of integrations, GitLab with a great overall dev experience from issues to one of the best CI/CD solutions out there and BitBucket being one of the friends you have since kindergarden. My personal decision was to host all my personal projects on [🦑 GitHub](https://github.com/anoff). For projects that need CI/CD I tinkered around with [👷‍ Travis CI](https://travis-ci.org/) and [🅾️ Circle CI](https://circleci.com/) on top of GitHub.
 
 ![Gitlab loves Github]({{ site.baseurl }}/img/assets/gitlab-ci/logo.png)

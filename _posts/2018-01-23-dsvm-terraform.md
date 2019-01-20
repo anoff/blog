@@ -5,16 +5,6 @@ subtitle: How to fight your way through docs to create a Terraform recipe
 tags: [terraform, azure, datascience]
 ---
 
-<!-- TOC -->
-
-- [The stack we will deploy 📦](#the-stack-we-will-deploy-)
-- [Quick intro to Terraform 👀](#quick-intro-to-terraform-)
-- [Building the Terraform recipe 📜](#building-the-terraform-recipe-)
-- [That‘s it for the Data Scientist VM, now on to the File share 📄](#thats-it-for-the-data-scientist-vm-now-on-to-the-file-share-)
-- [Next steps 👟](#next-steps-)
-
-<!-- /TOC -->
-
 In this article I will talk about my experience building my first infrastructure deployment using Terraform that does (a little) more than combining off-the-shelf resources.
 
 # The stack we will deploy 📦
