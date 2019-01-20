@@ -2,7 +2,6 @@ language: ruby
 rvm:
   - 2.4.1
 
-before_install: bundle update --bundler
 # install: bundle install # default command for ruby
 script: bundle exec jekyll build
 
