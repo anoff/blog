@@ -1,0 +1,8 @@
+img.right {
+  float: right;
+  margin: 0px 0px 15px 20px;
+}
+img.left {
+  float: left;
+  margin: 0px 20px 15px 0px;
+}

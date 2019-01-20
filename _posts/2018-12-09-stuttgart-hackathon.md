@@ -5,13 +5,11 @@ subtitle: a (late) summary of the Stuttgart Hackathon 2018
 tags: [development]
 ---
 
-> TL;DR; **Network** and play with expensive toys
-
-# Intro
-
 End of October I joined the [Stuttgart Hackathon](https://www.hackathon-stuttgart.de/) for the second time. It was my overall 4th public Hackathon. In this blog post I want to tell you why I enjoy doing Hackathons and why you should join one too if you have the chance!
 
 ![Stuttgart Hackathon 2018]({{ site.baseurl }}/img/assets/hackathons/stuttgart2018.jpg)
+
+> TL;DR; **Network** and play with expensive toys
 
 # How I used to approach Hackathons
 

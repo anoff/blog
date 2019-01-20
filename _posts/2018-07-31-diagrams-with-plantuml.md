@@ -5,25 +5,7 @@ subtitle: Create flowcharts, sequence and other diagrams in plain text with full
 tags: [development, gitlab, github]
 ---
 
-> This post will cover PlantUML basics and how it can be used in GitLab or GitHub projects as well as a seamless local development environment using Visual Studio Code.
-
-<!-- TOC -->
-
-- [PlantUML Basics 👨‍🎨](#plantuml-basics-‍)
-  - [Reasons to love PlantUML 🤗](#reasons-to-love-plantuml-)
-    - [Versioning 📦](#versioning-)
-    - [Syntax 🐟](#syntax-)
-    - [Layouting 🏗](#layouting-🏗)
-    - [Share anywhere 📱](#share-anywhere-)
-- [Local development 💻](#local-development-)
-  - [Visual Studio Code](#visual-studio-code)
-  - [Render to SVG/PDF](#render-to-svgpdf)
-- [GitLab integration](#gitlab-integration)
-- [GitHub integration](#github-integration)
-- [Summary](#summary)
-
-<!-- /TOC -->
-
+This post covers PlantUML basics and how it can be used in GitLab or GitHub projects as well as a seamless local evelopment environment using Visual Studio Code.
 I have been wanting to write this post for months. Lately I have been using PlantUML extensively at work but also in my private projects. You can see it being used in my [plantbuddy](https://github.com/anoff/plantbuddy#main-features) and [techradar](https://github.com/anoff/techradar#design) projects on GitHub. Using it in different places and for various purposes I came across a bunch of issues that I want to share in this post.
 
 # PlantUML Basics 👨‍🎨

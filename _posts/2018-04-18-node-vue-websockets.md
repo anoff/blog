@@ -5,18 +5,6 @@ subtitle: Getting started with a custom node server and material design styles o
 tags: [development, web, node]
 ---
 
-<!-- TOC -->
-
-- [Set up a basic Node.js server](#set-up-a-basic-nodejs-server)
-- [Initialize Vue.js project](#initialize-vuejs-project)
-- [Adding Material Design library](#adding-material-design-library)
-- [Bring in websockets](#bring-in-websockets)
-  - [frontend: vue-socket.io](#frontend-vue-socketio)
-  - [backend: socket-io / server.js](#backend-socket-io--serverjs)
-- [Showtime 🍿](#showtime-)
-
-<!-- /TOC -->
-
 Wanting to build a simple [SPA](https://en.wikipedia.org/wiki/Single-page_application) as a side project I struggled with things that might annoy a lot of newcomers that do not want to go full vanilla. Which _web framework_, which _style library_, which _server framework_ - and more importantly how does it all work together?
 
 In this post we will put together a bunch of great tools out there to build a realtime web app with a few single lines of code. A quick introduction into the tools that will be used:

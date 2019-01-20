@@ -7,9 +7,10 @@ image: ./img/assets/rbac-firestore/logo.png
 share-img: ./img/assets/rbac-firestore/logo.png
 ---
 
-![Zombies not allowed]({{ site.baseurl }}/img/assets/rbac-firestore/logo.png)
 
 This post will explain how to implement role based access control ([RBAC](https://en.wikipedia.org/wiki/Role-based_access_control)) using the Google Firestore serverless database. Firebase and Firestore in particular with the concept presented in this post offers the most seamless integration of serverless infrastructure with a mobile client at this point. It has become my go to backend for all minor web apps I build.
+
+![Zombies not allowed]({{ site.baseurl }}/img/assets/rbac-firestore/logo.png)
 
 <!-- TOC depthFrom:2 -->
 

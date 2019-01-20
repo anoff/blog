@@ -8,4 +8,4 @@ _site
 Thumbs.db
 ehthumbs.db
 
-Gemlock.file
+Gemfile.lock
