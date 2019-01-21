@@ -5,6 +5,7 @@ gh-repo: anoff/node-ci-dummy
 gh-badge: [star, fork]
 subtitle: Combine a great ecosystem with the best CI solution available
 share-img: ./img/assets/gitlab-ci/logo.png
+image: ./img/assets/gitlab-ci/logo.png
 tags: [CI/CD, gitlab, github]
 ---
 
