@@ -13,7 +13,7 @@ image: ./img/assets/book-google/cover.jpg
 
 ![How Google Works, Cover](../../img/assets/book-google/cover.jpg)`TODO: FIX LINK`
 
-As [promised](../2019-01-15-book-2018-in-books.md) (`TODO: FIX LINK`) my book series will start with two books out of the [FANG](https://en.wikipedia.org/wiki/Facebook,_Apple,_Amazon,_Netflix_and_Google) league. The book _How Google works_ covers many aspects of the companies culture. The book has lots of management insights - that at the time of reading - were of little interest to me. Therefore I want to briefly highlight a few points about [innovation](#innovation) that I find fascinating and then move to the human factors like [recruiting](#recruiting) and [competence management](#competence-management) that are also covered extensively in the book.
+As [promised](../2019-01-15-book-2018-in-books.md) (`TODO: FIX LINK`) my book series will start with two books out of the [FAANG](https://en.wikipedia.org/wiki/Facebook,_Apple,_Amazon,_Netflix_and_Google) league. The book _How Google works_ covers many aspects of the companies culture. The book has lots of management insights that - at the time of reading - were of little interest to me. Therefore I want to briefly highlight a few points about [innovation](#innovation) that I find fascinating and then move to the human factors like [recruiting](#recruiting) and [competence management](#competence-management) that are also covered extensively in the book.
 
 
 ## Innovation
@@ -23,7 +23,7 @@ As [promised](../2019-01-15-book-2018-in-books.md) (`TODO: FIX LINK`) my book se
 `TODO: FIX LINK`
 > Photo by Sharon Pittaway on Unsplash
 
-The book makes some clear statements about innovation really means for Google and might help you differentiate between bullshit bingo and real innovation:
+The book makes some clear statements about what innovation really means for Google and might help you differentiate between bullshit bingo and real innovation:
 
 1. Giving customers what they want is **not innovative**
     - Relates to the Henry Ford ([or not](https://hbr.org/2011/08/henry-ford-never-said-the-fast)) quote `“If I had asked people what they wanted, they would have said faster horses.”`
@@ -48,14 +48,14 @@ The book makes some clear statements about innovation really means for Google an
 As mentioned before there are a lot of management aspects covered in this book that did not make it into my personal notes. I might have to read those up again at some point. One deduction that stuck with me is about processes in an innovative environment:
 
 1. `"If everything seems under control, you're just not going fast enough."` ([Mario Andretti](https://en.wikipedia.org/wiki/Mario_Andretti), Race car driver)
-    - In this context: If you do not experience any problems you are not innovation as fast as you could
+    - In this context: If you do not experience any problems you are not innovating as much as you could
 1. **Processes are slower than reality**
     - YES, YES, YES
 1. Chaos is the normal not an exception
     - In an innovative environment what you consider realistic might change any day
 1. Order and processes can not be enforced
     - Even in innovative environments you need to establish some _rules_
-    - These rules need to be decided and implemented by everyone involved from top management to worker
+    - These rules need to be decided and implemented by everyone involved from top management to junior employee
     - To have this open discussion and decision making you need to have a culture of **openness, transparency, meritocracy and honesty**
 
 ## Recruiting
@@ -65,7 +65,7 @@ As mentioned before there are a lot of management aspects covered in this book t
 `TODO: FIX LINK`
 > Photo by Ryoji Iwata on Unsplash
 
-A term that keeps reappearing in the book is **the smart creative** that is describes a person that belongs to the
+A term that keeps reappearing in the book is **the smart creative** that is described a person that belongs to
 
 > "[..] the ambitious ones **of all ages** who are eager (and able) to use the tools of technology to do a lot more. Their common characteristic is that they work hard and are **willing to question the status quo** and attack things differently. This is why they can have such an impact.
 It is also why they are uniquely difficult to manage, especially under old school models, because no matter how hard you try, you **can’t tell people like that how to think**. If you can’t tell someone how to think, then you have to learn to manage the environment where they think and to make it a place where they want to come every day."
@@ -98,11 +98,34 @@ The main points that the book makes about hiring such smart creatives is to:
 - bad point: creative people want open office spaces? WTF
 - very exaggerated view on _classic_ companies
 
-## competence management
+## Competence Management
 
-- dynamic self, get feedback and evolve
-- always keep learning, enable your employees to learn, select those that want to learn
-- someone willing to learn is more valuable than a specialist
-  - generalist > specialist, specialist may always be biased in decision making
-  - IT changes fast -> no one is a specialist for long -> keep learning
-- snippets: weekly _diaries_ max 1 page by every person published into the intranet w/o further presentation
+<img src="../../img/assets/book-google/hello-i-m-nik-687249-unsplash.jpg" width="50%" class="right" />
+
+`TODO: FIX LINK`
+> Photo by Hello I'm Nik on Unsplash
+
+One point from the recruiting category also has a big impact on the competence management of employees. **Life long learning** is something that needs to be enabled, supported and fostered by the organization. If you hire _smart creatives_ they will leave as soon as they realize there is nothing new to learn or - even worse - that learning new things might be frowned upon as _wasting time_.
+
+Another point made in the book that I find extremely tempting to implement in my own environment is the concept of **snippets**:
+
+1. **Every** employee writes a short weekly summary of what they were working on
+    - Project managers might write about customers they talked about
+    - Developers write about tools they learned or bugs they found
+1. 0.5 - 1 page per week, bullet points
+1. Share it openly with everyone in your company
+    - The organization needs to provide a central infrastructure where people can store their snippets
+    - Do not mail it to your manager
+    - Snippets need to be searchable by fulltext and person
+1. If you are interested in a persons work, just look up their past snippets to see what they are working on exactly
+1. If you are looking for someone that might help you with _XY_ just search the snippets for it
+
+I think the act of writing these snippets is very little overhead to ones daily work if you get used to it but it can be such a powerful tool to boost network opportunities and knowledge exchange.
+
+----
+
+Let me know if you liked this article or which parts you find especially fascinating by leaving a comment below, on [Twitter](https://twitter.com/an0xff) or message me on [LinkedIn](https://linkedin.com/in/offenhaeuser)
+
+Stay tuned for the best parts of `Powerful`
+
+👋  Andreas
