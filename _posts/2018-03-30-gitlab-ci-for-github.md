@@ -9,7 +9,7 @@ image: ./img/assets/gitlab-ci/logo.png
 tags: [CI/CD, gitlab, github]
 ---
 
-When creating a git project that you want to share with others you traditionally had the choice between GitHub with its huge community and tons of integrations, GitLab with a great overall dev experience from issues to one of the best CI/CD solutions out there and BitBucket being one of the friends you have since kindergarden. My personal decision was to host all my personal projects on [🦑 GitHub](https://github.com/anoff). For projects that need CI/CD I tinkered around with [👷‍ Travis CI](https://travis-ci.org/) and [🅾️ Circle CI](https://circleci.com/) on top of GitHub.
+When creating a git project that you want to share with others you traditionally had the choice between GitHub with its huge community and tons of integrations, GitLab with a great overall dev experience from issues to one of the best CI/CD solutions out there and BitBucket being one of the friends you have since kindergarten. My personal decision was to host all my personal projects on [🦑 GitHub](https://github.com/anoff). For projects that need CI/CD I tinkered around with [👷‍ Travis CI](https://travis-ci.org/) and [🅾️ Circle CI](https://circleci.com/) on top of GitHub.
 
 ![Gitlab loves Github]({{ site.baseurl }}/img/assets/gitlab-ci/logo.png)
 > It is no longer GitHub OR GitLab
