@@ -41,7 +41,7 @@ One other benefit PlantUML has over the mentioned tools is that by defining your
 
 The basic syntax of PlantUML is very concise and builds a good foundation for the different diagram types. It is also well very smart in the way that it allows diagrams to be written with different flavors e.g. you can declare/instantiate all nodes at the top, but if you do not declare them they will be inferred automatically. Same goes for [macros and definitions](http://plantuml.com/preprocessing) that allow you to compose larger diagrams or a common library for your team.
 
-I recently created a [PlantUML Cheatsheet](http://anoff.io/blog/img/puml-cheatsheet.pdf) for a lot of useful tricks - it does however not cover the very basics of PlantUML syntax. You can browse the [latest version](https://github.com/anoff/blog/raw/master/img/assets/plantuml/puml-cheatsheet.pdf) or the [LaTeX sourcecode](https://github.com/anoff/blog/blob/master/img/assets/plantuml/puml-cheatsheet.tex) on GitHub.
+I recently created a [PlantUML Cheatsheet](https://github.com/anoff/blog/raw/master/img/puml-cheatsheet.pdf) for a lot of useful tricks - it does however not cover the very basics of PlantUML syntax. You can browse the [latest version](https://github.com/anoff/blog/raw/master/img/assets/plantuml/puml-cheatsheet.pdf) or the [LaTeX sourcecode](https://github.com/anoff/blog/blob/master/img/assets/plantuml/puml-cheatsheet.tex) on GitHub.
 
 ### Layouting 🏗
 
@@ -159,6 +159,6 @@ Depending on your toolstack one of those should be your preferred option to work
 
 This post covered how to write and render files locally in **VS Code**, using **Docker** containers and how to integrate into **GitLab on prem** as well as publich **GitHub** and **GitLab** instances.
 
-There is a lot more to tell about PlantUML but I hope this article gave you enough infos to get started on whatever platform you are using. I recommend this [PlantUML Cheatsheet](http://anoff.io/blog/img/puml-cheatsheet.pdf) which will help you to cover an even wider range of use cases.
+There is a lot more to tell about PlantUML but I hope this article gave you enough infos to get started on whatever platform you are using. I recommend this [PlantUML Cheatsheet](https://github.com/anoff/blog/raw/master/img/puml-cheatsheet.pdf) which will help you to cover an even wider range of use cases.
 
 Tell me about your experiences with PlantUML or alternative integrations on [Twitter 🐦](https://twitter.com/an0xff)
