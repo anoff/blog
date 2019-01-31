@@ -7,20 +7,15 @@ share-img: ./img/assets/book-google/cover.jpg
 image: ./img/assets/book-google/cover.jpg
 ---
 
-<head>
-<link rel="stylesheet" href="../../css/mine.css" />
-</head>
+![How Google Works, Cover]({{ site.baseurl }}/assets/book-google/cover.jpg)
 
-![How Google Works, Cover](../../img/assets/book-google/cover.jpg)`TODO: FIX LINK`
-
-As [promised](../2019-01-15-book-2018-in-books.md) (`TODO: FIX LINK`) my book series will start with two books out of the [FAANG](https://en.wikipedia.org/wiki/Facebook,_Apple,_Amazon,_Netflix_and_Google) league. The book _How Google works_ covers many aspects of the companies culture. The book has lots of management insights that - at the time of reading - were of little interest to me. Therefore I want to briefly highlight a few points about [innovation](#innovation) that I find fascinating and then move to the human factors like [recruiting](#recruiting) and [competence management](#competence-management) that are also covered extensively in the book.
+As [promised](./2019-01-15-book-2018-in-books.md) my book series will start with two books out of the [FAANG](https://en.wikipedia.org/wiki/Facebook,_Apple,_Amazon,_Netflix_and_Google) league. The book _How Google works_ covers many aspects of the companies culture. The book has lots of management insights that - at the time of reading - were of little interest to me. Therefore I want to briefly highlight a few points about [innovation](#innovation) that I find fascinating and then move to the human factors like [recruiting](#recruiting) and [competence management](#competence-management) that are also covered extensively in the book.
 
 
 ## Innovation
 
-<img src="../../img/assets/book-google/sharon-pittaway-117630-unsplash.jpg" width="50%" class="left" />
+<img src="{{ site.baseurl }}/assets/book-google/sharon-pittaway-117630-unsplash.jpg" width="50%" class="left" />
 
-`TODO: FIX LINK`
 > Photo by Sharon Pittaway on Unsplash
 
 The book makes some clear statements about what innovation really means for Google and might help you differentiate between bullshit bingo and real innovation:
@@ -39,9 +34,7 @@ The book makes some clear statements about what innovation really means for Goog
 
 ## Management
 
-<img src="../../img/assets/book-google/rawpixel-743066-unsplash.jpg" width="50%" class="right" />
-
-`TODO: FIX LINK`
+<img src="{{ site.baseurl }}/assets/book-google/rawpixel-743066-unsplash.jpg" width="50%" class="right" />
 
 > Photo by rawpixel on Unsplash
 
@@ -60,9 +53,8 @@ As mentioned before there are a lot of management aspects covered in this book t
 
 ## Recruiting
 
-<img src="../../img/assets/book-google/ryoji-iwata-697773-unsplash.jpg" width="50%" class="left" />
+<img src="{{ site.baseurl }}/assets/book-google/ryoji-iwata-697773-unsplash.jpg" width="50%" class="left" />
 
-`TODO: FIX LINK`
 > Photo by Ryoji Iwata on Unsplash
 
 A term that keeps reappearing in the book is **the smart creative** that is described a person that belongs to
@@ -72,7 +64,7 @@ It is also why they are uniquely difficult to manage, especially under old schoo
 
 This definition resonates so well with me because after reading it I realized that all the people I look up to within my personal network are not willing to accept the status quo and keep asking _Why do we need to do it this way?_. I fought many battles myself, often I was close to giving up but in the end being persistent in your will to change something you will most likely succeed. Too often things are done in ways that are based on assumptions that are no longer valid or might not be applicable for you. Keep in mind to **stay constructive** when going up against established rules though - try to understand their reasoning and explain why you think it may not apply to your cause. Playing naive also helps 😉
 
-The main points that the book makes about hiring such smart creatives is to:
+The main points that the book makes about hiring such smart creatives are:
 
 1. Hire people that are life long learners
     - People you do not have to train for the new upcoming technology but those that want to bring it in and learn it out of curiosity
@@ -100,9 +92,8 @@ The main points that the book makes about hiring such smart creatives is to:
 
 ## Competence Management
 
-<img src="../../img/assets/book-google/hello-i-m-nik-687249-unsplash.jpg" width="50%" class="right" />
+<img src="{{ site.baseurl }}/assets/book-google/hello-i-m-nik-687249-unsplash.jpg" width="50%" class="right" />
 
-`TODO: FIX LINK`
 > Photo by Hello I'm Nik on Unsplash
 
 One point from the recruiting category also has a big impact on the competence management of employees. **Life long learning** is something that needs to be enabled, supported and fostered by the organization. If you hire _smart creatives_ they will leave as soon as they realize there is nothing new to learn or - even worse - that learning new things might be frowned upon as _wasting time_.
