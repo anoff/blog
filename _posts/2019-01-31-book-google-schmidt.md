@@ -7,14 +7,13 @@ share-img: ./img/assets/book-google/cover.jpg
 image: ./img/assets/book-google/cover.jpg
 ---
 
-![How Google Works, Cover]({{ site.baseurl }}/assets/book-google/cover.jpg)
-
 As [promised](./2019-01-15-book-2018-in-books.md) my book series will start with two books out of the [FAANG](https://en.wikipedia.org/wiki/Facebook,_Apple,_Amazon,_Netflix_and_Google) league. The book _How Google works_ covers many aspects of the companies culture. The book has lots of management insights that - at the time of reading - were of little interest to me. Therefore I want to briefly highlight a few points about [innovation](#innovation) that I find fascinating and then move to the human factors like [recruiting](#recruiting) and [competence management](#competence-management) that are also covered extensively in the book.
 
+![How Google Works, Cover]({{ site.baseurl }}/img/assets/book-google/cover.jpg)
 
 ## Innovation
 
-<img src="{{ site.baseurl }}/assets/book-google/sharon-pittaway-117630-unsplash.jpg" width="50%" class="left" />
+<img src="{{ site.baseurl }}/img/assets/book-google/sharon-pittaway-117630-unsplash.jpg" width="50%" class="left" />
 
 > Photo by Sharon Pittaway on Unsplash
 
@@ -34,7 +33,7 @@ The book makes some clear statements about what innovation really means for Goog
 
 ## Management
 
-<img src="{{ site.baseurl }}/assets/book-google/rawpixel-743066-unsplash.jpg" width="50%" class="right" />
+<img src="{{ site.baseurl }}/img/assets/book-google/rawpixel-743066-unsplash.jpg" width="50%" class="right" />
 
 > Photo by rawpixel on Unsplash
 
@@ -53,7 +52,7 @@ As mentioned before there are a lot of management aspects covered in this book t
 
 ## Recruiting
 
-<img src="{{ site.baseurl }}/assets/book-google/ryoji-iwata-697773-unsplash.jpg" width="50%" class="left" />
+<img src="{{ site.baseurl }}/img/assets/book-google/ryoji-iwata-697773-unsplash.jpg" width="50%" class="left" />
 
 > Photo by Ryoji Iwata on Unsplash
 
@@ -92,7 +91,7 @@ The main points that the book makes about hiring such smart creatives are:
 
 ## Competence Management
 
-<img src="{{ site.baseurl }}/assets/book-google/hello-i-m-nik-687249-unsplash.jpg" width="50%" class="right" />
+<img src="{{ site.baseurl }}/img/assets/book-google/hello-i-m-nik-687249-unsplash.jpg" width="50%" class="right" />
 
 > Photo by Hello I'm Nik on Unsplash
 
