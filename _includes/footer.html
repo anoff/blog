@@ -33,6 +33,11 @@
       <a href="{{ site.url }}">{{ site.url-pretty }}</a>
       {% endif %}
 
+      {% if site.legal.url %}
+      &nbsp;&bull;&nbsp;
+      <a href="{{ site.legal.url }}" target="_blank">{{ site.legal.text }}</a>
+      {% endif %}
+
       {% if site.matomo %}
         {% if site.matomo.opt-out %}
           &nbsp;&bull;&nbsp;

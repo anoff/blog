@@ -58,6 +58,10 @@ footer-link-col: "#404040"
 
 # --- Footer options --- #
 
+legal:
+  url: https://anoff.io/legal/ # link to a legal page
+  text: Legal Notice
+
 # Change all these values or delete the ones you don't want.
 # Important: you must keep the "name" parameter, everything else you can remove
 author:
