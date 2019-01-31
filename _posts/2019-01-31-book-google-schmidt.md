@@ -86,9 +86,6 @@ The main points that the book makes about hiring such smart creatives are:
     - Once you start hiring someone you consider _only good_ and they themselves start hiring the collective skill will spiral downwards
     - **Never** settle for good
 
-- bad point: creative people want open office spaces? WTF
-- very exaggerated view on _classic_ companies
-
 ## Competence Management
 
 <img src="{{ site.baseurl }}/img/assets/book-google/hello-i-m-nik-687249-unsplash.jpg" width="50%" class="right" />
