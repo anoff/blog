@@ -5,7 +5,7 @@ subtitle: Create flowcharts, sequence and other diagrams in plain text with full
 tags: [development, gitlab, github]
 ---
 
-This post covers PlantUML basics and how it can be used in GitLab or GitHub projects as well as a seamless local evelopment environment using Visual Studio Code.
+This post covers PlantUML basics and how it can be used in GitLab or GitHub projects as well as a seamless local development environment using Visual Studio Code.
 I have been wanting to write this post for months. Lately I have been using PlantUML extensively at work but also in my private projects. You can see it being used in my [plantbuddy](https://github.com/anoff/plantbuddy#main-features) and [techradar](https://github.com/anoff/techradar#design) projects on GitHub. Using it in different places and for various purposes I came across a bunch of issues that I want to share in this post.
 
 # PlantUML Basics 👨‍🎨
@@ -157,7 +157,7 @@ There are two fundamental ways of keeping PlantUML diagrams
 
 Depending on your toolstack one of those should be your preferred option to work with diagrams in your repository. It is highly recommend to keep diagrams as close to the code as possible and not create artificial documentation repositories.
 
-This post covered how to write and render files locally in **VS Code**, using **Docker** containers and how to integrate into **GitLab on prem** as well as publich **GitHub** and **GitLab** instances.
+This post covered how to write and render files locally in **VS Code**, using **Docker** containers and how to integrate into **GitLab on prem** as well as public **GitHub** and **GitLab** instances.
 
 There is a lot more to tell about PlantUML but I hope this article gave you enough infos to get started on whatever platform you are using. I recommend this [PlantUML Cheatsheet](https://github.com/anoff/blog/raw/master/img/puml-cheatsheet.pdf) which will help you to cover an even wider range of use cases.
 
