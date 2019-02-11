@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Book: Powerful - Building a culture of freedom and responsibility
-subtitle:
+subtitle: What I learned about feedback
 tags: [recruiting, books]
 ---
 <!-- TOC -->
@@ -23,3 +23,6 @@ tags: [recruiting, books]
 - also identify people that can no longer contribute to your companies success (e.g. their technological expertise is not required because of a cancelled product)
     - let them go
     - might be tough in germany
+- good feedback addresses behavior not character
+    - giving: learn to criticize actions not people
+    - receiving: see feedback as a free lesson in how to become a better you
