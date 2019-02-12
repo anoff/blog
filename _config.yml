@@ -78,19 +78,7 @@ social-network-links:
   #facebook: daattali
   github: anoff
   twitter: an0xff
-#  reddit: yourname
-#  google-plus: +DeanAttali
   linkedin: offenhaeuser
-#  xing: yourname
-#  stackoverflow: "3943160/daattali"
-#  snapchat: deanat78
-#  instagram: deanat78
-#  youtube: user/deanat78
-#  spotify: yourname
-#  telephone: +14159998888
-#  steam: deanat78
-#  twitch: yourname
-#  yelp: yourname
 
 # Select which share links to show in posts
 share-links-active:
@@ -108,24 +96,9 @@ url-pretty: "blog.anoff.io"  # eg. "deanattali.com/beautiful-jekyll"
 # Fill in your Google Analytics ID to track your website using GA
 google_analytics: "UA-93890295-4"
 
-# Google Tag Manager ID
-#gtm: ""
-
-# Matomo (aka Piwik) Web statistics
-# Uncomment the following section to enable Matomo. The opt-out parameter controls
-# whether or not you want to allow users to opt out of tracking.
-
-#matomo:
-#  site_id: "9"
-#  uri: "demo.wiki.pro"
-#  opt-out: true
-
 # --- Misc --- #
 # Fill in your Disqus shortname (NOT the userid) if you want to support Disqus comments
 disqus: "anoff-io"
-
-# Facebook App ID
-# fb_app_id: ""
 
 # Excerpt Word Length
 # Truncates the excerpt to the specified number of words on the index page
@@ -138,7 +111,7 @@ title-separator: "-"
 # --- Don't need to touch anything below here (but you can if you want) --- #
 
 # Output options (more information on Jekyll's site)
-timezone: "America/Vancouver"
+timezone: "Europe/Berlin"
 markdown: kramdown
 highlighter: rouge
 permalink: /:year-:month-:day-:title/
@@ -182,6 +155,22 @@ exclude:
 plugins:
   - jekyll-paginate
   - jekyll-sitemap
+  - jekyll-asciidoc
 
-# Beautiful Jekyll / Dean Attali
+# Asciidoc stuff
+asciidoc:
+  processor: asciidoctor
+  ext: asciidoc,adoc,ad
+
+asciidoctor:
+  safe: unsafe
+  attributes:
+    imagesdir: /img/assets/
+    idseparator: _
+    source-highlighter: coderay
+keep_files:
+  - images
+  - /img/assets
+
+# Beautiful Jekyll / Dean Attali (modified)
 # 2fc73a3a967e97599c9763d05e564189

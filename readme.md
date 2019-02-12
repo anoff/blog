@@ -1,17 +1,19 @@
 # anoff's blog
 
-A dump of [my medium blog posts](https://medium.com/@an0xff) into Jekyll and hopefully some more stuff as well.
+A dump of [my medium blog posts](https://medium.com/@an0xff) into Jekyll and 
+some more stuff as well.
 
-## build
+## local preview
+
+The best way to preview the blog locally is to build it using a docker container.
 
 ```sh
-gem install bundle
-bundle install
-bundle exec jekyll build
-npm i -g surge
-```
+# build the image locally
+docker build -t anoff/blog .
 
-or to host locally `bundle exec jekyll serve --watch`
+# run jekyll on the local directory
+docker run -it -v $PWD:/app -p 4000:4000 anoff/blog
+```
 
 to deploy run `surge _site/ blog.anoff.io`
 

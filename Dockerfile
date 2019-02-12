@@ -1,8 +1,11 @@
 FROM jekyll/jekyll
 
+WORKDIR /app
 COPY Gemfile .
 COPY Gemfile.lock .
 
-RUN bundle install --quiet --clean
+RUN apk add ttf-dejavu graphviz
+RUN bundle install
 
-CMD ["jekyll", "serve"]
+EXPOSE 4000
+CMD ["bundle", "exec", "jekyll", "serve", "--watch", "--host", "0.0.0.0"]
