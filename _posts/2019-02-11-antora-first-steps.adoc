@@ -4,6 +4,7 @@ title: First steps with Antora
 subtitle: an Antora arc42 playbook
 tags: [development]
 ---
+:plantuml-server-url: http://www.plantuml.com/plantuml
 :link-antora: https://antora.org/
 :link-antora-docs: https://docs.antora.org/
 :link-arc42: https://arc42.org/
@@ -35,7 +36,6 @@ There are two types of _abstraction_ that Antora makes for distributed documenta
 
 [plantuml, antora-abstractions, png]
 ....
-@startuml Antora abstractions
 caption Figure1: Antora components & modules
 skinparam monochrome true
 artifact repo1 {
@@ -57,7 +57,6 @@ artifact repo3 {
     folder "ROOT-module" as rm3
   }
 }
-@enduml
 ....
 
 A **component** can have multiple modules that are all located in a fixed directory structure adjacent to each other, there can be one component within a git repository. Each component must have at least one module, the _ROOT_ module.
