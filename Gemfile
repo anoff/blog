@@ -7,3 +7,8 @@ gem "jekyll"
 # gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw]
 gem 'jekyll-paginate'
 gem 'jekyll-sitemap'
+
+group :jekyll_plugins do
+  gem 'jekyll-asciidoc'
+  gem 'asciidoctor-diagram'
+end
