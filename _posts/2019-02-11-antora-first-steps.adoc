@@ -9,19 +9,19 @@ tags: [development]
 :link-antora-docs: https://docs.antora.org/
 :link-arc42: https://arc42.org/
 
-After 2 years of working with the arc42 template in markdown I spent the last few weeks learning about an asciidoc based site generator named link:{link-antora}[Antora]. The main reason for the interest in asciidoc was the fact that the limited feature set in markdown often impairs you while writing down complex things. But I had one problem; most of your documentation is scattered across multiple repositories as we try to keep the docs as close to the code as possible. That is why this series will cover how to get a multi repository (software) architecture template up and running using link:{link-antora}[Antora].
+After 2 years of working with the arc42 template in markdown I spent the last few weeks learning about an asciidoc based site generator named link:{link-antora}[Antora]. The main reason for the interest in asciidoc was the fact that the limited feature set in markdown often impairs you while writing down complex things. But I had one problem; most of our documentation is scattered across multiple repositories as we try to keep the docs as close to the code as possible. That is why this series will cover how to get a multi repository (software) architecture template up and running using link:{link-antora}[Antora].
 
 image::antora-arc42/antora-arc42-s.png[Antora arc42 mashup]
 
 == The starting point
 
-There are a few things that you should at least heard of until you continue reading so here is the quick intro:
+There are a few things that you should at least heard of before you continue reading, so here is the quick intro:
 
-. link:https://asciidoctor.org/docs/what-is-asciidoc/[AsciiDoc] is a markup language kind of like Markdown but more powerful. Think of it as a hybrid between the extremely powerful LaTeX and the simple and easy to read Markdown.
+. link:https://asciidoctor.org/docs/what-is-asciidoc/[AsciiDoc] is a markup language kind of like Markdown but more powerful. Think of it as a hybrid between the extremely powerful LaTeX and the simple but easy to read Markdown.
   ** Compared to Markdown it focuses more on providing large documents like books or entire documentations
   ** You might also stumble upon link:https://asciidoctor.org/[AsciiDoctor] which - to my current understanding - is the de-facto standard for converting `asciidoc` files into readable formats like `pdf`, `html`, `epub` etc. whereas AsciiDoc itself is the markup syntax itself
 . link:{link-arc42}[Arc42] is a software architecture template under MIT license that can be used in almost any scenario because it proves to be highly flexible and inherently agnostic of technology and domains
-. link:{link-antora}[Antora] solves the problem of writing `asciidoc` distributed over multiple repositories by introducing 
+. link:{link-antora}[Antora] solves the problem of writing `asciidoc` distributed over multiple repositories by introducing a component concept and providing a generator that merges the multiple sources automatically
 
 The official link:https://github.com/arc42/arc42-template/tree/master/EN/asciidoc[arc42 asciidoc template] is structured into the twelve arc42 chapters and one main file `arc42-template.adoc` that includes all the chapters into a kind of _book_.
 The main conflict I had with this concept in reality was that I want my lower level software architecture to be close to the implementation and - in my multi-repository environment - that means a different repository than the overall concepts that arc42 focuses on in the first chapters.
@@ -32,27 +32,27 @@ The fist step to introducing Antora is to make your `asciidoc` files actually co
 
 NOTE: Because link:https://gitlab.com/graphitefriction[Sara White] and link:https://gitlab.com/mojavelinux[Dan Allen] did an amazing job with link:{link-antora-docs}[the Antora docs] detailing all the concepts behind Antora I will only mention the essentials here.
 
-There are two types of _abstraction_ that Antora makes for distributed documentation that I needed quite some time to fully grasp; `Component` and `Module`
+There are two types of _abstraction_ that Antora makes for distributed documentation; `Component` and `Module`
 
 [plantuml, antora-abstractions, png]
 ....
 caption Figure1: Antora components & modules
 skinparam monochrome true
-artifact repo1 {
+artifact repo1.git {
   package component1 {
     folder "ROOT-module" as rm1
     folder "additional-module" as am1
   }
   rm1 -[hidden]down- am1
 }
-artifact repo2 {
+artifact repo2.git {
   package component2 {
     folder "ROOT-module" as rm2
     folder "another-additional-module" as am2
   }
   rm2 -[hidden]down- am2
 }
-artifact repo3 {
+artifact repo3.git {
   package component3 {
     folder "ROOT-module" as rm3
   }
@@ -63,6 +63,7 @@ A **component** can have multiple modules that are all located in a fixed direct
 The **playbook** (overall config of the document) references one or more git repositories that each contains a component with 1+ modules.
 
 . Antora expects all documentation to come in a _component_
+.. any asciidoc file can reference or include files from other components within the same Antora project
 . the playbook can define multiple content sources
 .. each content source needs to point to a root directory of a git repo (local or remote)
 .. you can use `start_path` in a link:https://docs.antora.org/antora/2.0/playbook/playbook-schema/#content-category[playfile source] to make the docs start relative to the git root
@@ -124,7 +125,7 @@ nav:
 . rewrite all template files to be adoc documents
 .. turn the `== Level 1 Heading` into `= Document title`
 .. adjust subsequent headings to preserve heading hierarchy
-.. add the `:page-partial:` attribute to each 
+.. add the `:page-partial:` attribute to each document
 . I got rid of all the help popups and instead made it fully visible _sidebar_ content
 . create a link:https://github.com/anoff/antora-arc42/blob/0e46f1c8b700e594b5b2e22718264a23b5f6cf42/docs/modules/ROOT/nav.adoc[nav.adoc] navigation entry for the ROOT component
 .. this is used to create the navbar entry on the right
