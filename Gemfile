@@ -9,6 +9,6 @@ gem 'jekyll-paginate'
 gem 'jekyll-sitemap'
 
 group :jekyll_plugins do
+  gem 'asciidoctor-diagram', '~> 1.5.4'
   gem 'jekyll-asciidoc'
-  gem 'asciidoctor-diagram'
 end

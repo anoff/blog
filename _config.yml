@@ -165,9 +165,10 @@ asciidoc:
 asciidoctor:
   safe: unsafe
   attributes:
-    imagesdir: /img/assets/
-    idseparator: _
-    source-highlighter: coderay
+    - imagesdir=/img/assets/
+    - idseparator=_
+    - source-highlighter=coderay
+    - icons=font
 keep_files:
   - images
   - /img/assets
