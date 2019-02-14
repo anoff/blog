@@ -34,30 +34,7 @@ NOTE: Because link:https://gitlab.com/graphitefriction[Sara White] and link:http
 
 There are two types of _abstraction_ that Antora makes for distributed documentation; `Component` and `Module`
 
-[plantuml, antora-abstractions, png]
-....
-caption Figure1: Antora components & modules
-skinparam monochrome true
-artifact repo1.git {
-  package component1 {
-    folder "ROOT-module" as rm1
-    folder "additional-module" as am1
-  }
-  rm1 -[hidden]down- am1
-}
-artifact repo2.git {
-  package component2 {
-    folder "ROOT-module" as rm2
-    folder "another-additional-module" as am2
-  }
-  rm2 -[hidden]down- am2
-}
-artifact repo3.git {
-  package component3 {
-    folder "ROOT-module" as rm3
-  }
-}
-....
+image::plantuml/diagrams/dist/antora-artifacts.svg[Antora artifacts]
 
 A **component** can have multiple modules that are all located in a fixed directory structure adjacent to each other, there can be one component within a git repository. Each component must have at least one module, the _ROOT_ module.
 The **playbook** (overall config of the document) references one or more git repositories that each contains a component with 1+ modules.
@@ -68,7 +45,7 @@ The **playbook** (overall config of the document) references one or more git rep
 .. each content source needs to point to a root directory of a git repo (local or remote)
 .. you can use `start_path` in a link:https://docs.antora.org/antora/2.0/playbook/playbook-schema/#content-category[playfile source] to make the docs start relative to the git root
 .. the repo must have at least one commit
-. within this start path link:https://docs.antora.org/antora/2.0/modules/#module-overview[a module structure] is expected
+. within this start path link:https://docs.antora.org/antora/2.0/modules/#module-overview[a component structure] is expected
 .. the link:https://docs.antora.org/antora/2.0/component-descriptor/#component-descriptor-requirements[antora.yml] file defines to position of a component
 .. there must be a `modules/ROOT` (uppercase) module present
 .. all `.adoc` files must reside in the `modules/XYZ/pages` directory
