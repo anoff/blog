@@ -1,7 +1,7 @@
 ---
 layout: post
 title: First steps with Antora
-subtitle: an multi repository arc42 software architecture
+subtitle: a multi repository arc42 software architecture
 tags: [development, architecture]
 image: /img/assets/antora-arc42/share.png
 share-img: /img/assets/antora-arc42/share.png
