@@ -14,7 +14,7 @@
   <!--- Share on Twitter -->
     <a href="https://twitter.com/intent/tweet?text={{ page.title | url_encode }}+{{ site.url }}{{ page.url }}"
       class="btn btn-social-icon btn-twitter" title="Share on Twitter">
-      <span class="fa fa-fw fa-twitter" aria-hidden="true"></span>
+      <span class="fab fa-fw fa-twitter" aria-hidden="true"></span>
       <span class="sr-only">Twitter</span>
     </a>
   {% endif %}
@@ -23,17 +23,8 @@
   <!--- Share on Facebook -->
     <a href="https://www.facebook.com/sharer/sharer.php?u={{ site.url }}{{ page.url }}"
       class="btn btn-social-icon btn-facebook" title="Share on Facebook">
-      <span class="fa fa-fw fa-facebook" aria-hidden="true"></span>
+      <span class="fab fa-fw fa-facebook" aria-hidden="true"></span>
       <span class="sr-only">Facebook</span>
-    </a>
-  {% endif %}
-
-  {% if site.share-links-active.google %}
-  <!--- Share on Google Plus -->
-    <a href="https://plus.google.com/share?url={{ site.url }}{{ page.url }}"
-      class="btn btn-social-icon btn-google" title="Share on Google+">
-      <span class="fa fa-fw fa-google-plus" aria-hidden="true"></span>
-      <span class="sr-only">Google+</span>
     </a>
   {% endif %}
 
@@ -41,9 +32,15 @@
   <!--- Share on LinkedIn -->
     <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ site.url }}{{ page.url }}"
       class="btn btn-social-icon btn-linkedin" title="Share on LinkedIn">
-      <span class="fa fa-fw fa-linkedin" aria-hidden="true"></span>
+      <span class="fab fa-fw fa-linkedin" aria-hidden="true"></span>
       <span class="sr-only">LinkedIn</span>
     </a>
+  {% endif %}
+
+  {% if site.share-links-active.pocket %}
+  <!--- Save to Pocket -->
+  <a data-pocket-label="pocket" data-pocket-count="horizontal" class="pocket-btn" data-lang="en"></a>
+  <script type="text/javascript">!function(d,i){if(!d.getElementById(i)){var j=d.createElement("script");j.id=i;j.src="https://widgets.getpocket.com/v1/j/btn.js?v=1";var w=d.getElementById(i);d.body.appendChild(j);}}(document,"pocket-btn-js");</script>
   {% endif %}
 
 </section>

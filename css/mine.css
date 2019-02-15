@@ -6,3 +6,12 @@ img.left {
   float: left;
   margin: 0px 20px 15px 0px;
 }
+
+div.pocket-btn {
+  display: inline;
+  margin-left: 40px;
+}
+
+.btn-social-icon {
+  margin-left: 40px;
+}
