@@ -11,6 +11,8 @@ After 2 years of working with the arc42 template in markdown, I spent the last f
 
 image::antora-arc42/antora-arc42-s.png[Antora arc42 mashup]
 
+link://antora-arc42-1.surge.sh[This is] what we are going to build in this post.
+
 == The starting point
 
 There are a few things that you should at least have heard of before you continue reading:
@@ -145,6 +147,8 @@ This is achieved by the `supplemental_files: ./supplemental-ui` section in the `
 ----
 
 In addition to this I added the **Find on GitHub** entry in the header, but I am sure you can figure out how that works 😉
+
+You can find the final result of all steps in this first tutorial link://antora-arc42-1.surge.sh[at antora-arc42-1.surge.sh]
 
 == Next steps
 
