@@ -2,7 +2,7 @@
 layout: post
 title: Automated dev workflow for using Data Science VM on Azure
 subtitle: A bunch of scripts to deploy/start/stop/sync a VM via command line
-share-img: ./img/assets/datascience-dev/logo.png
+share-img: /img/assets/datascience-dev/logo.png
 image: ./img/assets/datascience-dev/logo.png
 tags: [datascience, terraform, azure]
 ---

@@ -3,6 +3,8 @@ layout: post
 title: First steps with Antora
 subtitle: an Antora arc42 playbook
 tags: [development, architecture]
+image: /img/assets/antora-arc42/antora-arc42-s.png
+share-img: /img/assets/antora-arc42/share.png
 ---
 
 After 2 years of working with the arc42 template in markdown, I spent the last few weeks learning about an asciidoc based site generator named link://antora.org/[Antora]. The main reason for the interest in AsciiDoc was the fact that the limited feature set in markdown often impairs you while writing down complex things. But I had one problem; most of our documentation is scattered across multiple repositories as we try to keep the docs as close to the code as possible. That is why this series will cover how to get a multi repository (software) architecture template up and running using link://antora.org/[Antora].
@@ -35,7 +37,7 @@ image::plantuml/diagrams/dist/antora-artifacts.svg[Antora artifacts]
 A **component** can have multiple modules that are all located in a fixed directory structure adjacent to each other, there can be only one component within a git repository. Each component must have at least one module, the _ROOT_ module.
 The **playbook** (overall config of the documentation) references one or more git repositories that each contains a component with 1 or more modules.
 
-. Antora expects all documentation to be delivered _component_
+. Antora expects all documentation to be part of a _component_
 .. any asciidoc file can reference or include files from other components within the same Antora project
 . the playbook can define multiple content sources
 .. each content source needs to point to a root directory of a git repo (local or remote)
@@ -155,6 +157,7 @@ Over the next few days/weeks I will keep working on this setup to bring in more 
   ** an antora build that generates a fully integrated arc42 documentation out of those three repos
 . build a custom UI project
   ** modified header colors etc
+. add plantUML support
 
 Stay tuned for follow up posts on these steps.
 

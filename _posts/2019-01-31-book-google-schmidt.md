@@ -3,7 +3,7 @@ layout: post
 title: Book - How Google Works
 subtitle: The main aspects I want to embrace from How Google Works
 tags: [recruiting, books]
-share-img: https://blog.anoff.io/img/assets/book-google/cover.jpg
+share-img: /img/assets/book-google/cover.jpg
 image: ./img/assets/book-google/cover.jpg
 ---
 
