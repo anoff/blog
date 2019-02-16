@@ -12,7 +12,7 @@ DefaultContentLanguage = "en"
 googleAnalytics = ""
 
 # Enable / Disable comments on the articles via Disqus.
-disqusShortname = "bilberry-hugo-theme"
+disqusShortname = "anoff-io"
 
 # Enable / Disable open link with a new tab.
 [blackfriday]
@@ -35,7 +35,7 @@ disqusShortname = "bilberry-hugo-theme"
   keywords = "blog,personal,software,architecture,node,markdown,plantuml,developer"
 
   # How many articles should be displayed at once?
-  paginate = 7
+  paginate = 14
 
   # Enable / Disable MathJax
   enable_mathjax    = false
@@ -50,7 +50,7 @@ disqusShortname = "bilberry-hugo-theme"
 
   # Style configuration
     # set the width of your site's content
-    siteWidth = "800px"
+    siteWidth = "960px"
 
     # let hugo automatically resize and crop your images to the correct sizes
     resizeImages = true
@@ -86,7 +86,7 @@ disqusShortname = "bilberry-hugo-theme"
     # customize the date format | only works if momentjs is disabled | only works with English month names
     # you can customize it with the options you find here:
     # https://gohugo.io/functions/format/#hugo-date-and-time-templating-reference
-    dateFormat = "2006-01-02"
+    dateFormat = "2006-10-30"
 
     # display the estimated reading time for an article
     showReadingTime = true
@@ -96,11 +96,11 @@ disqusShortname = "bilberry-hugo-theme"
 
     # How many articles should be displayed at latest posts in the footer?
     # Set to -1 to hide the 'Latest Posts' column
-    amountLatestPostsInFooter = 7
+    amountLatestPostsInFooter = -1
 
     # How many categories should be displayed in the footer section?
     # Set to -1 to hide the 'Categories' column
-    amountCategoriesInFooter = 7
+    amountCategoriesInFooter = -1
 
     # show a language chooser in the header
     showFooterLanguageChooser = false
