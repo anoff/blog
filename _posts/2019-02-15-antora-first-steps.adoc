@@ -9,9 +9,8 @@ share-img: /img/assets/antora-arc42/share.png
 
 After 2 years of working with the arc42 template in markdown, I spent the last few weeks learning about an asciidoc based site generator named link://antora.org/[Antora]. The main reason for the interest in AsciiDoc was the fact that the limited feature set in markdown often impairs you while writing down complex things. But I had one problem; most of our documentation is scattered across multiple repositories as we try to keep the docs as close to the code as possible. That is why this series will cover how to get a multi repository (software) architecture template up and running using link://antora.org/[Antora].
 
-image::antora-arc42/antora-arc42-s.png[Antora arc42 mashup]
-
-link://antora-arc42-1.surge.sh[This is] what we are going to build in this post.
+.This is a screenshot of the final result
+image::website.png[Preview image, link="antora-arc42-1.surge.sh"]
 
 == The starting point
 
@@ -56,6 +55,8 @@ The **playbook** (overall config of the documentation) references one or more gi
 .. my current feeling is that antora `.adoc` files should best be written as their own documents i.e. give each file a document title followed by the partial attribute
 
 == Modifications to the arc42 template
+
+image::antora-arc42/antora-arc42-s.png[Antora arc42 mashup]
 
 WARNING: All links to my GitHub repo point to the HEAD commit at the time of writing; things might have changed on master.
 
