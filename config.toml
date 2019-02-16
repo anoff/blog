@@ -26,8 +26,8 @@ disqusShortname = "anoff-io"
   # Files are relative to the static/ directory or a URL.
   # Files are imported in the order they appear here, after
   # theme.css and theme.js, respectively.
-  css_modules = []
-  js_modules = []
+  css_modules = ["adoc.css"]
+  js_modules = ["fix-adoc.js"]
 
   # Description and meta data for the search engines
   author = "Andreas Offenhaeuser"
@@ -127,15 +127,6 @@ disqusShortname = "anoff-io"
     copyrightUrl = "https://anoff.io"
     creditsText = "Bilberry Hugo Theme"
     creditsUrl = "https://github.com/Lednerb/bilberry-hugo-theme"
-
-
-# customize your available languages for your multi-langual site
-# or delete the [Languages] blog to use the theme with only one supported language
-[Languages]
-  [Languages.en]
-    weight = 1
-  [Languages.de]
-    weight = 2
 
 # don't change anything below
 [taxonomies]
