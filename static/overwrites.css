@@ -1,0 +1,13 @@
+.bilberry-hugo-theme header div.container .logo {
+  width: 120px;
+  height: 120px;
+}
+.bilberry-hugo-theme header {
+  height: 16rem;
+}
+.bilberry-hugo-theme nav div.container ul.topnav li a {
+  padding: 0.5em 1.5em;
+}
+.bilberry-hugo-theme nav.permanentTopNav div.container {
+  min-height: 45px;
+}
