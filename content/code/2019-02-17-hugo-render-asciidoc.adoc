@@ -10,11 +10,8 @@ featuredImage: /assets/hugo-asciidoc/vladimir-kramer-145-unsplash.jpg
 While migrating my blog from Jekyll to Hugo I went down quite a rabbit hole.
 While setup and migration to Hugo was a breeze, I spent a lot of time making my `.adoc` formatted post work with the new blog.
 After working through several GitHub issues I ended up manipulating the DOM with Javascript to get admonitions working.
-It still doesn't feel right - but hey it works!
+It still doesn't feel right - but hey it works! 🤷‍♂️
 This post will cover the steps I took in case I myself or anyone out there ever needs to do this again.
-
-
-WARNING: This post contains a lot of hacks that might be obsolete by now; please check for alternatives before you follow anything on this site.
 
 The following tool versions were used:
 
@@ -22,6 +19,8 @@ The following tool versions were used:
 * Asciidoctor 1.5.8
 * Firefox 65.0
 * Fontawesome 4.7.0
+
+WARNING: This post contains a lot of hacks that might be obsolete by the time you read this; please check for alternatives before you hurt yourself for no reason
 
 == Getting Hugo to parse Asciidoc
 
