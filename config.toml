@@ -1,6 +1,6 @@
 title = "Andreas' Blog"
 # Add an trailing slash to ensure that all fonts render correctly.
-baseURL = "https://example.com/"
+baseURL = "//dapper-attraction.surge.sh/"
 theme = "bilberry-hugo-theme"
 
 enableRobotsTXT = true
@@ -69,7 +69,7 @@ disqusShortname = "anoff-io"
     overlayIcon = "fa-child"
 
     # always display the top navigation (with pages and search) on non-mobile screens
-    permanentTopNav = false
+    permanentTopNav = true
 
     # show a language chooser in the header
     showHeaderLanguageChooser = false
@@ -109,14 +109,14 @@ disqusShortname = "anoff-io"
     showSocialMedia = true
 
     facebook   = ""
-    twitter    = "https://twitter.com/an0xff"
+    twitter    = "//twitter.com/an0xff"
     googleplus = ""
     pinterest  = ""
     instagram  = ""
     tumblr     = ""
     youtube    = ""
     vimeo      = ""
-    github     = "https://github.com/anoff"
+    github     = "//github.com/anoff"
     xing       = ""
     linkedin   = ""
 
@@ -124,9 +124,9 @@ disqusShortname = "anoff-io"
     copyrightBy = "by Andreas Offenhaeuser"
     copyrightUseCurrentYear = true  # set to true to always display the current year in the copyright
     copyrightYearOverride = ""
-    copyrightUrl = "https://anoff.io"
+    copyrightUrl = "//anoff.io"
     creditsText = "Bilberry Hugo Theme"
-    creditsUrl = "https://github.com/Lednerb/bilberry-hugo-theme"
+    creditsUrl = "//github.com/Lednerb/bilberry-hugo-theme"
 
 # don't change anything below
 [taxonomies]

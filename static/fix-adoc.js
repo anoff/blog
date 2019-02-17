@@ -12,7 +12,6 @@ $(document).ready(function () {
     const elm = admonitions[i]
     const type = getAdmonitionType(elm)
     const text = getAdmonitionText(elm)
-    console.log(i)
     const parent = elm.parentNode
     const tempDiv = document.createElement('div')
     tempDiv.innerHTML = `<div class="admonitionblock ${type}">
