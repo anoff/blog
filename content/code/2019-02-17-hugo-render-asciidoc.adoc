@@ -1,0 +1,171 @@
+---
+title: Get Hugo to render (nice) Asciidocs
+date: 2019-02-17
+tags: [development, web]
+author: anoff
+resizeImages: true
+featuredImage: /assets/hugo-asciidoc/vladimir-kramer-145-unsplash.jpg
+---
+
+While migrating my blog from Jekyll to Hugo I went down quite a rabbit hole.
+While setup and migration to Hugo was a breeze, I spent a lot of time making my `.adoc` formatted post work with the new blog.
+After working through several GitHub issues I ended up manipulating the DOM with Javascript to get admonitions working.
+It still doesn't feel right - but hey it works!
+This post will cover the steps I took in case I myself or anyone out there ever needs to do this again.
+
+
+WARNING: This post contains a lot of hacks that might be obsolete by now; please check for alternatives before you follow anything on this site.
+
+The following tool versions were used:
+
+* hugo v0.54.0
+* Asciidoctor 1.5.8
+* Firefox 65.0
+* Fontawesome 4.7.0
+
+== Getting Hugo to parse Asciidoc
+
+Initial support for Asciidoc is already provided by the latest Hugo versions due to the concept of _External Helpers_.
+A really neat trick that allows compatibility with any markup language that ships a binary for compilation.
+
+> Hugo has a new concept called external helpers. It means that you can write your content using Asciidoc, reStructuredText, or pandoc.
+If you have files with associated extensions, Hugo will call external commands to generate the content. (See the Hugo source code for external helpers.)
+For example, for Asciidoc files, Hugo will try to call the Asciidoctor or asciidoc command.
+This means that you will have to install the associated tool on your machine to be able to use these formats. ⸺ link://gohugo.io/content-management/formats/#additional-formats-through-external-helpers[the Hugo docs]
+
+So all there is to do, is to install the link://asciidoctor.org/[Asciidoctor toolchain] on the machine you are running hugo - or CI server respectively.
+But because Hugo calls the Asciidoctor binary using the `--safe` parameter lists get rendered with additional paragraphs resulting in weird layout.
+The line break after each list number is something that really breaks the reading flow.
+
+.Ordered list with unwanted line breaks
+image::/assets/hugo-asciidoc/list-breaks.png[Broken lists in HTML]
+
+I stumbled upon the GitHub issue link://github.com/gohugoio/hugo/issues/1437#issuecomment-462270099[hugo#1437] that led me to the first hack inspired by link://ratfactor.com/hugo-adoc-html5s/[David Gauer].
+
+=== The Asciidoctor binary hack
+
+Since Hugo does not allow you to modify the arguments passed to the Asciidoctor toolchain it also does not support using Asciidoctor with extensions.
+However since Hugo only performs a system call we can use `PATH` trickery to mix in our wishlist before the execution.
+
+The first step is to create a shadow executable that Hugo will use instead of the installed Asciidoctor binary.
+This is an executable bash script calling the _real_ Asciidoctor binary with additional arguments.
+To find the position of your Asciidoctor binary use `which asciidoctor` in your terminal.
+
+../asciidoctor
+[source, bash]
+----
+#!/bin/bash
+/usr/local/bin/asciidoctor -r asciidoctor-html5s -b html5s -r asciidoctor-diagram "$@"
+----
+
+Note that this does not change the arguments specified by Hugo itself it merely adds additional modules.
+It should be possible with more bash code to actually remove the `--safe` flag from the list of arguments that is passed on by `$@`.
+
+To make Hugo use this executable name it `asciidoctor` and place it in the root directory of your Hugo project.
+When calling Hugo just append the current directory to the `PATH` variable with highest priority, this will make Hugo our bash script which in turn calls the real Asciidoctor binary.
+
+[source, bash]
+----
+# make the file an executable (only once)
+chmod +x ./asciidoctor
+# calling hugo in dev mode
+PATH=$PWD:$PATH hugo server -D
+----
+
+Forcing Asciidoctor to generate _semantic HTML5_ fixes the list layout and removes the additional `<p>` tags around the list item content.
+
+.Clean HTML output by using `asciidoctor-html5s`
+[source, html]
+----
+<ol class="arabic">
+  <li>Antora expects all documentation to be part of a <em>component</em>
+    <ol class="loweralpha" type="a">
+      <li>any asciidoc file can reference or include files from other components within the same Antora project</li>
+    </ol>
+  </li>
+  <li>the playbook can define multiple content sources
+    <ol class="loweralpha" type="a">
+      <li>each content source needs to point to a root directory of a git repo (local or remote)</li>
+      <li>the repo must have at least one commit</li>
+    </ol>
+  </li>
+</ol>
+----
+
+== Styling the HTML output
+
+The next issue I had was that AsciiDoc admonitions looked pretty lame.
+This is caused by the use of `asciidoctor-html5s` and link://github.com/jirutka/asciidoctor-html5s/issues/11[expected behavior] by the author.
+
+.Semantic HTML5 Asciidoctor admonitions with HTML source
+image::/assets/hugo-asciidoc/admonitions.png[Unstyled admonitions]
+
+The author of the semantic HTML5 Asciidoctor extension suggests hiding the text label and adding a background color with the admonition icon.
+I tried it and it works fine but I did not want to add icons for the admonitions to my list of assets.
+Instead I applied the DOM layout and CSS style that the link://gitlab.com/antora/antora-ui-default/[Antora UI project] uses for admonitions.
+
+=== Manipulating the DOM for custom CSS
+
+The Hugo theme I am using allows for custom Javascript and CSS to be injected which makes this hack quite easy to implement.
+I wrote a piece of Javascript that looks for `admonition-block` elements and extracts the admonition **type** and admonition **text** from the DOM element.
+By constructing a new DOM element using a `<table>` structure and replacing the original block I can style the table cells using `adoc.css`.
+
+.fix-adoc.js
+[source, javascript]
+----
+// replace the default admonitions block with one that looks like the antora output to apply similar styling via adoc.css
+window.addEventListener('load', function () {
+  const admonitions = document.getElementsByClassName('admonition-block')
+  for (let i = admonitions.length - 1; i >= 0; i--) {
+    const elm = admonitions[i]
+    const type = elm.classList[1]
+    const text = elm.getElementsByTagName('p')[0].innerHTML
+    const parent = elm.parentNode
+    const tempDiv = document.createElement('div')
+    tempDiv.innerHTML = `<div class="admonitionblock ${type}">
+    <table>
+      <tbody>
+        <tr>
+          <td class="icon">
+            <i class="fa icon-${type}" title="${type}"></i>
+          </td>
+          <td class="content">
+            ${text}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>`
+
+    const input = tempDiv.childNodes[0]
+    parent.replaceChild(input, elm)
+  }
+})
+----
+
+In addition to generic table styling with padding, border and background colors the following lines are necessary to get admonitions with icons.
+As the Javascript snippet assigns the `class="icon-${type}"` to each icon cell we can add specify their respective icon using Fontawesome unicodes.
+
+.adoc.css
+[source, css]
+----
+.admonitionblock td.icon .icon-note:before {
+  content: "\f05a";
+  color: #19407c;
+}
+.admonitionblock td.icon .icon-warning:before {
+  content: "\f071";
+  color: #f38200;
+}
+----
+
+This yields wonderful admonitions in the final output, the same you should see on this site.
+
+.Fixed admonitions with HTML source
+image:/assets/hugo-asciidoc/antora-admonitions.png[Final admonitions]
+
+'''
+
+If you have any suggestions contact me via Twitter DM or leave a comment 👋
+
+Title image by Vladimir Kramer on Unsplash
