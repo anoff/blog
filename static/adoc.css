@@ -2,7 +2,10 @@
   --color-admonition-bg: #f5f5f5;
   --color-admonition-text: #404040;
 }
-
+/*
+  Some of these CSS snippets are taken from the Antora UI project: https://gitlab.com/antora/antora-ui-default/
+  Therefore this file is licensed under MPL-2.0 https://tldrlegal.com/license/mozilla-public-license-2.0-(mpl-2)#fulltext
+*/
 span.icon>.fa {
   cursor: default;
 }

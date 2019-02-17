@@ -1,5 +1,5 @@
 // replace the default admonitions block with one that looks like the antora output to apply similar styling via adoc.css
-$(document).ready(function () {
+window.addEventListener('load', function () {
   function getAdmonitionType (elm) {
     return elm.classList[1]
   }
