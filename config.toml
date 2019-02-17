@@ -26,8 +26,8 @@ disqusShortname = "anoff-io"
   # Files are relative to the static/ directory or a URL.
   # Files are imported in the order they appear here, after
   # theme.css and theme.js, respectively.
-  css_modules = ["adoc.css", "overwrites.css"]
-  js_modules = ["fix-adoc.js"]
+  css_modules = ["adoc.css", "overwrites.css", "//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css"]
+  js_modules = ["fix-adoc.js", "//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js", "init-cookieconsent.js"]
 
   # Description and meta data for the search engines
   author = "Andreas Offenhaeuser"
