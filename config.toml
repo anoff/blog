@@ -1,6 +1,6 @@
 title = "Andreas' Blog"
 # Add an trailing slash to ensure that all fonts render correctly.
-baseURL = "//dapper-attraction.surge.sh/"
+baseURL = "//blog.anoff.io/"
 theme = "bilberry-hugo-theme"
 
 enableRobotsTXT = true
@@ -9,7 +9,7 @@ enableRobotsTXT = true
 DefaultContentLanguage = "en"
 
 # Enable / Disable Google Analytics statistics for your site
-googleAnalytics = ""
+googleAnalytics = "UA-93890295-4"
 
 # Enable / Disable comments on the articles via Disqus.
 disqusShortname = "anoff-io"
@@ -108,17 +108,14 @@ disqusShortname = "anoff-io"
     # social media profile urls for the footer links
     showSocialMedia = true
 
-    facebook   = ""
     twitter    = "//twitter.com/an0xff"
-    googleplus = ""
     pinterest  = ""
     instagram  = ""
     tumblr     = ""
     youtube    = ""
     vimeo      = ""
     github     = "//github.com/anoff"
-    xing       = ""
-    linkedin   = ""
+    linkedin   = "//www.linkedin.com/in/offenhaeuser/"
 
     # credits line configuration
     copyrightBy = "by Andreas Offenhaeuser"
@@ -128,6 +125,8 @@ disqusShortname = "anoff-io"
     creditsText = "Bilberry Hugo Theme"
     creditsUrl = "//github.com/Lednerb/bilberry-hugo-theme"
 
+# Rewrite URLs to keep previous Jekyll links alive
+#   https://gohugo.io/content-management/urls/
 [permalinks]
     code = "/:filename"
     article = "/:filename"

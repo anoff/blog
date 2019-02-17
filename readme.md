@@ -1,24 +1,39 @@
-# anoff's blog
+# Andreas' blog
 
-A dump of [my medium blog posts](https://medium.com/@an0xff) into Jekyll and 
+A dump of [my medium blog posts](https://medium.com/@an0xff) into ~~Jekyll~~ Hugo and 
 some more stuff as well.
 
-## local preview
+Ported to Hugo from Jekyll, last commit in Jekyll style: [aa1376c2d116](https://github.com/anoff/blog/tree/aa1376c2d116d8075ce6ae76a75b1920c35eb6e5)
 
-The best way to preview the blog locally is to build it using a docker container.
+## Fixes to theme
 
-```sh
-# build the image locally
-docker build -t anoff/blog .
-
-# run jekyll on the local directory
-docker run -it -v $PWD:/app -p 4000:4000 anoff/blog
+```scss
+// themes/bilberry-hugo-theme/assets/sass/_variables.scss
+// main colors
+$page-background-color: #f1f1f1;
+$base-color: #444;
+$special-color: #cc0033;
+$highlight-color: #cc0033;
+$text-color: #111;
 ```
 
-to deploy run `surge _site/ blog.anoff.io`
+## Local preview
 
-## attribution
+```sh
+PATH=$PWD:$PATH hugo server -D
+```
+
+## Deployment
+
+```sh
+# generate the static site
+PATH=$PWD:$PATH hugo --gc --minify -d _site
+# deploy via surge
+surge _site/ blog.anoff.io
+```
+
+## Attribution
 
 Content is my own unless otherwise stated
 
-The original Jekyll theme is by [Dean Attali](https://github.com/daattali/beautiful-jekyll), some files have been modified.
+I am using the [bilberry-hugo-theme](https://github.com/Lednerb/bilberry-hugo-theme)
