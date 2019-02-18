@@ -3,7 +3,7 @@
 A dump of [my medium blog posts](https://medium.com/@an0xff) into ~~Jekyll~~ Hugo and 
 some more stuff as well.
 
-Ported to Hugo from Jekyll, last commit in Jekyll style: [aa1376c2d116](https://github.com/anoff/blog/tree/aa1376c2d116d8075ce6ae76a75b1920c35eb6e5)
+Ported to Hugo from Jekyll, last commit in Jekyll style: [aa1376c2d116](https://github.com/anoff/blog/tree/aa1376c2d116d8075ce6ae76a75b1920c35eb6e5) hosted for eternity on [anoff-aa1376c.surge.sh](//anoff-aa1376c.surge.sh/)
 
 ## Fixes to theme
 
@@ -31,6 +31,14 @@ PATH=$PWD:$PATH hugo --gc --minify -d _site
 # deploy via surge
 surge _site/ blog.anoff.io
 ```
+
+## Planned deployment
+
+I want to merge this with my personal landing page resulting in the following URL scenarios
+
+- `blog.anoff.io` => overview of all blogposts
+- `blog.anoff.io/filename` => specific post
+- `anoff.io` => show the about page
 
 ## Attribution
 
