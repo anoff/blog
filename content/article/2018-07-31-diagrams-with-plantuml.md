@@ -42,7 +42,7 @@ One other benefit PlantUML has over the mentioned tools is that by defining your
 
 The basic syntax of PlantUML is very concise and builds a good foundation for the different diagram types. It is also well very smart in the way that it allows diagrams to be written with different flavors e.g. you can declare/instantiate all nodes at the top, but if you do not declare them they will be inferred automatically. Same goes for [macros and definitions](http://plantuml.com/preprocessing) that allow you to compose larger diagrams or a common library for your team.
 
-I recently created a [PlantUML Cheatsheet](https://github.com/anoff/blog/raw/master/img/puml-cheatsheet.pdf) for a lot of useful tricks - it does however not cover the very basics of PlantUML syntax. You can browse the [latest version](https://github.com/anoff/blog/raw/master/img/assets/plantuml/puml-cheatsheet.pdf) or the [LaTeX sourcecode](https://github.com/anoff/blog/blob/master/img/assets/plantuml/puml-cheatsheet.tex) on GitHub.
+I recently created a [PlantUML Cheatsheet](https://blog.anoff.io/puml-cheatsheet.pdf) for a lot of useful tricks - it does however not cover the very basics of PlantUML syntax. You can browse the [latest version](https://github.com/anoff/blog/raw/master/img/assets/plantuml/puml-cheatsheet.pdf) or the [LaTeX sourcecode](https://github.com/anoff/blog/blob/master/img/assets/plantuml/puml-cheatsheet.tex) on GitHub.
 
 ### Layouting 🏗
 
@@ -90,7 +90,7 @@ _On my MacBook I sometimes experience a lot of CPU consumption from the running 
 
 > This method only works if diagrams are defined explicitly in files and not inlined into Markdown.
 
-To write this blog post and build the [Cheatsheet]() I played around with non-realtime ways of rendering PlantUML diagrams into images. You can use the [Makefile](https://github.com/anoff/blog/blob/master/img/assets/plantuml/Makefile) and [Shell script](https://github.com/anoff/blog/blob/master/img/assets/plantuml/diagrams/convert.sh) to convert an entire [folder](https://github.com/anoff/blog/tree/master/img/assets/plantuml/diagrams) of PlantUML diagrams with `.puml` extension into `.svg` and `.pdf` [files](https://github.com/anoff/blog/tree/master/img/assets/plantuml/diagrams/dist).
+To write this blog post and build the [Cheatsheet](https://blog.anoff.io/puml-cheatsheet.pdf) I played around with non-realtime ways of rendering PlantUML diagrams into images. You can use the [Makefile](https://github.com/anoff/blog/blob/master/img/assets/plantuml/Makefile) and [Shell script](https://github.com/anoff/blog/blob/master/img/assets/plantuml/diagrams/convert.sh) to convert an entire [folder](https://github.com/anoff/blog/tree/master/img/assets/plantuml/diagrams) of PlantUML diagrams with `.puml` extension into `.svg` and `.pdf` [files](https://github.com/anoff/blog/tree/master/img/assets/plantuml/diagrams/dist).
 
 The script essentially runs the diagram definition through a dockerized PlantUML process which outputs an `.svg` and then uses Inkscape to create a `.pdf` file for importing it into LaTeX documents for example.
 
@@ -160,6 +160,6 @@ Depending on your toolstack one of those should be your preferred option to work
 
 This post covered how to write and render files locally in **VS Code**, using **Docker** containers and how to integrate into **GitLab on prem** as well as public **GitHub** and **GitLab** instances.
 
-There is a lot more to tell about PlantUML but I hope this article gave you enough infos to get started on whatever platform you are using. I recommend this [PlantUML Cheatsheet](https://github.com/anoff/blog/raw/master/img/puml-cheatsheet.pdf) which will help you to cover an even wider range of use cases.
+There is a lot more to tell about PlantUML but I hope this article gave you enough infos to get started on whatever platform you are using. I recommend this [PlantUML Cheatsheet](https://blog.anoff.io/puml-cheatsheet.pdf) which will help you to cover an even wider range of use cases.
 
 Tell me about your experiences with PlantUML or alternative integrations on [Twitter 🐦](https://twitter.com/an0xff)
