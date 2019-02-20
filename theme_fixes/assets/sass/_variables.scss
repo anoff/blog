@@ -1,0 +1,55 @@
+{{ $fonts := "dist/fonts/" | absURL }}
+$fonts-folder: '{{ .Site.Params.CustomFontsURL | default $fonts }}';
+
+// Set the with of the main content area
+// Notice that the actual content's width is $site-width - 100px
+$site-width: {{ .Site.Params.SiteWidth | default "800px" }};
+
+// Define your fonts.
+// If you want to import new fonts, set them in /src/css/fonts.css
+$headline-font: 'Comfortaa', sans-serif;
+$content-font: 'Open Sans', sans-serif;
+$article-footer-font: 'Roboto Mono', monospace;
+
+// main colors
+$page-background-color: #fff;
+$base-color: #444;
+$special-color: #cc0033;
+$highlight-color: #cc0033;
+$text-color: #111;
+
+// easy styling
+$nav-background-color: $special-color;
+$nav-text-color: $page-background-color;
+$algolia-search-box-color: #444;
+$algolia-search-box-icon-color: #888;
+$algolia-search-box-background-color: #fafafa;
+$algolia-border-color: #e4e4e4;
+
+$header-text-color: $page-background-color;
+$logo-color: darken( $page-background-color, 1 );
+$bubble-color: #fff;
+$bubble-background-color: #ccc;
+$bubble-hover-color: $highlight-color;
+
+$article-background-color: #fff;
+$meta-text-color: #999;
+$meta-border-color: #eee;
+$continue-reading-hover-color: $meta-text-color;
+
+$footer-border-color: #eee;
+$footer-background-color: rgba(#ffffff, 80);
+$footer-headline-color: #444;
+
+
+@mixin featuredImage() {
+    .featured-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 5;
+        opacity: 0.25;
+    }
+}

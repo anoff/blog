@@ -50,7 +50,7 @@ disqusShortname = "anoff-io"
 
   # Style configuration
     # set the width of your site's content
-    siteWidth = "960px"
+    siteWidth = "1240px"
 
     # let hugo automatically resize and crop your images to the correct sizes
     resizeImages = true
@@ -128,9 +128,9 @@ disqusShortname = "anoff-io"
 # Rewrite URLs to keep previous Jekyll links alive
 #   https://gohugo.io/content-management/urls/
 [permalinks]
-    code = "/:filename"
-    article = "/:filename"
-    book = "/:filename"
+  code = "/:filename"
+  article = "/:filename"
+  book = "/:filename"
 
 # don't change anything below
 [taxonomies]
