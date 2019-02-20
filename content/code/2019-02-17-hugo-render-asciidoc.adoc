@@ -161,7 +161,7 @@ As the Javascript snippet assigns the `class="icon-${type}"` to each icon cell w
 This yields wonderful admonitions in the final output, the same you should see on this site.
 
 .Fixed admonitions with HTML source
-image:/assets/hugo-asciidoc/antora-admonitions.png[Final admonitions]
+image::/assets/hugo-asciidoc/antora-admonitions.png[Final admonitions]
 
 '''
 
