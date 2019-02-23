@@ -1,5 +1,7 @@
 # Andreas' blog
 
+[![Build Status](https://cloud.drone.io/api/badges/anoff/blog/status.svg)](https://cloud.drone.io/anoff/blog)
+
 A dump of [my medium blog posts](https://medium.com/@an0xff) into ~~Jekyll~~ Hugo and 
 some more stuff as well.
 

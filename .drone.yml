@@ -1,0 +1,23 @@
+kind: pipeline
+name: deploy
+
+steps:
+- name: prepare
+  image: anoff/hugo-asciidoctor
+  commands:
+  - cp -R theme_fixes/** themes/bilberry-hugo-theme-fork
+- name: build
+  image: anoff/hugo-asciidoctor
+  commands:
+  - hugo --gc --minify -d _site
+- name: publish  
+  image: plugins/gh-pages
+  settings:
+    username:
+      from_secret: github_username
+    password:
+      from_secret: github_token
+    pages_directory: _site
+  when:
+    branch:
+    - master
