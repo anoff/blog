@@ -1,0 +1,9 @@
+= Drone.io automation
+
+compared to travis/gitlab
+
+* oauth github login
+* local CLI via brew
+* setup .rc files for credentials
+* `drone exec` to test locally
+* set up github pages via personal gh access token

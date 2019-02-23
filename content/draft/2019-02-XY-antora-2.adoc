@@ -1,0 +1,14 @@
+= BLUP
+
+== plantUML
+
+* vscode add :plantuml-server-url: attribute (to each site)
+[source, yaml]
+----
+asciidoc:
+  attributes:
+    plantuml-server-url: http://www.plantuml.com/plantuml
+  extensions:
+  - asciidoctor-plantuml
+----
+* hacky file copy around
