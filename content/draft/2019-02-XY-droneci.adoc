@@ -1,4 +1,11 @@
-= Drone.io automation
+---
+title: Drone.io for CI/CD
+date: 2019-02-01
+tags: [CI/CD]
+author: anoff
+resizeImages: true
+draft: true
+---
 
 compared to travis/gitlab
 

@@ -1,3 +1,6 @@
+[submodule "themes/bilberry-hugo-theme-fork"]
+	path = themes/bilberry-hugo-theme-fork
+	url = https://github.com/anoff/bilberry-hugo-theme.git
 [submodule "themes/bilberry-hugo-theme"]
 	path = themes/bilberry-hugo-theme
-	url = https://github.com/Lednerb/bilberry-hugo-theme.git
+	url = https://github.com/lednerb/bilberry-hugo-theme.git

@@ -1,4 +1,11 @@
-= BLUP
+---
+title: Setting up plantUML in antora
+date: 2019-02-01
+tags: [datascience, terraform, azure]
+author: anoff
+resizeImages: true
+draft: true
+---
 
 == plantUML
 
