@@ -1,0 +1,23 @@
+@startuml components
+skinparam monochrome true
+skinparam Nodesep 15
+skinparam Ranksep 15
+skinparam defaulttextalignment center
+actor actor
+agent "agent /\ncard /\nrectangle"
+artifact artifact
+boundary boundary
+cloud cloud
+component component
+control control
+database database
+entity entity
+file file
+folder "folder /\npackage"
+frame frame
+interface interface
+node node
+queue queue
+stack stack
+storage "storage /\nusecase"
+@enduml

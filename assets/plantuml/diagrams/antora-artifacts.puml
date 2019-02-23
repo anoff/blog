@@ -1,0 +1,23 @@
+@startuml
+caption Figure1: Antora components & modules
+skinparam monochrome true
+artifact repo1.git {
+  package component1 {
+    folder "ROOT-module" as rm1
+    folder "additional-module" as am1
+  }
+  rm1 -[hidden]down- am1
+}
+artifact repo2.git {
+  package component2 {
+    folder "ROOT-module" as rm2
+    folder "another-additional-module" as am2
+  }
+  rm2 -[hidden]down- am2
+}
+artifact repo3.git {
+  package component3 {
+    folder "ROOT-module" as rm3
+  }
+}
+@enduml
