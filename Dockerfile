@@ -42,4 +42,4 @@ WORKDIR /app
 
 # add asciidoctor hack
 COPY asciidoctor /app/asciidoctor
-RUN export PATH=/app:$PATH
+ENV PATH "/app:${PATH}"
