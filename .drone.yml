@@ -2,16 +2,24 @@ kind: pipeline
 name: deploy
 
 steps:
-- name: prepare
+
+- name: submodules
+  image: docker:git
+  commands:
+  - git submodule update --recursive --remote
+
+- name: hotfix 
   image: anoff/hugo-asciidoctor
   commands:
   - cp -R theme_fixes/** themes/bilberry-hugo-theme-fork
+
 - name: build
   image: anoff/hugo-asciidoctor
   commands:
   - hugo --gc --minify -d _site --baseURL //blog-gh.anoff.io
   - touch _site/.nojekyll
   - echo "blog-gh.anoff.io" > _site/CNAME
+
 - name: publish  
   image: plugins/gh-pages
   settings:
