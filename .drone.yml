@@ -9,12 +9,13 @@ steps:
 - name: submodules
   image: docker:git
   commands:
-  - git init
-  - git submodule update --recursive --remote
+  - git submodule update --init --recursive
 
 - name: hotfix 
   image: anoff/hugo-asciidoctor
   commands:
+  - ls -alh themes
+  - ls -alh themes/bilberry-hugo-theme
   - cp -R theme_fixes/** themes/bilberry-hugo-theme
 
 - name: build
