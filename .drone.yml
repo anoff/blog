@@ -6,12 +6,13 @@ steps:
 - name: submodules
   image: docker:git
   commands:
+  - git init
   - git submodule update --recursive --remote
 
 - name: hotfix 
   image: anoff/hugo-asciidoctor
   commands:
-  - cp -R theme_fixes/** themes/bilberry-hugo-theme-fork
+  - cp -R theme_fixes/** themes/bilberry-hugo-theme
 
 - name: build
   image: anoff/hugo-asciidoctor

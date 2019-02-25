@@ -1,7 +1,7 @@
 title = "Andreas' Blog"
 # Add an trailing slash to ensure that all fonts render correctly.
 baseURL = "//blog.anoff.io/"
-theme = "bilberry-hugo-theme-fork"
+theme = "bilberry-hugo-theme"
 
 enableRobotsTXT = true
 
@@ -115,7 +115,7 @@ disqusShortname = "anoff-io"
     youtube    = ""
     vimeo      = ""
     github     = "//github.com/anoff"
-    linkedin   = "//www.linkedin.com/in/offenhaeuser/"
+    linkedin   = "//linkedin.com/in/offenhaeuser/"
 
     # credits line configuration
     copyrightBy = "by Andreas Offenhaeuser"
