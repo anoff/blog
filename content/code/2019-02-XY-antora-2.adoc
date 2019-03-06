@@ -1,13 +1,17 @@
 ---
-title: Setting up plantUML in antora
-date: 2019-02-01
-tags: [datascience, terraform, azure]
+title: Advanced customization for Antora - PlantUML support & custom UI
+date: 2019-03-13
+tags: [development, architecture]
 author: anoff
 resizeImages: true
 draft: true
 ---
 
-== plantUML
+This post will cover some slightly advanced steps for building a multi-repository Asciidoc documentation using link://antora.org/[Antora].
+My previous post link://blog.anoff.io/2019-02-15-antora-first-steps/[blog.anoff.io/2019-02-15-antora-first-steps] covered basics of Antora and how to migrate existing AsciiDoc files.
+In this post I will go through the steps of including content from another repository, building a custom UI and adding plantUML support to the (automated, dockerized) build.
+
+== plantUML support
 
 * vscode add :plantuml-server-url: attribute (to each site)
 [source, yaml]
@@ -20,5 +24,10 @@ asciidoc:
 ----
 * hacky file copy around
 
+== Multiple repositories for a single documentation
+
 * remove navigation menu for single system but multi component builds
 ** only nested components
+
+== Customizing the Antora UI
+
