@@ -19,3 +19,6 @@ asciidoc:
   - asciidoctor-plantuml
 ----
 * hacky file copy around
+
+* remove navigation menu for single system but multi component builds
+** only nested components

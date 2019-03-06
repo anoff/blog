@@ -21,9 +21,8 @@ steps:
 - name: build
   image: anoff/hugo-asciidoctor
   commands:
-  - hugo --gc --minify -d _site --baseURL //blog-gh.anoff.io
+  - hugo --gc --minify -d _site --baseURL //blog.anoff.io
   - touch _site/.nojekyll
-  - echo "blog-gh.anoff.io" > _site/CNAME
 
 - name: publish  
   image: plugins/gh-pages
