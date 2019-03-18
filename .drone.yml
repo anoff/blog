@@ -14,9 +14,8 @@ steps:
 - name: hotfix 
   image: anoff/hugo-asciidoctor
   commands:
-  - ls -alh themes
-  - ls -alh themes/bilberry-hugo-theme
   - cp -R theme_fixes/** themes/bilberry-hugo-theme
+  - cp -R theme_fixes/** themes/bilberry-hugo-theme-fork
 
 - name: build
   image: anoff/hugo-asciidoctor
