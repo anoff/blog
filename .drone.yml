@@ -9,7 +9,7 @@ steps:
 - name: submodules
   image: docker:git
   commands:
-  - git submodule update --init --recursive
+  - git submodule update --init --recursive --remote
 
 - name: hotfix 
   image: anoff/hugo-asciidoctor
