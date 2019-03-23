@@ -1,6 +1,6 @@
 ---
 title: Hosting Gitea and Drone with Docker
-date: 2019-03-24
+date: 2019-03-23
 tags: [azure, gitea, drone, CI/CD]
 author: anoff
 resizeImages: true
