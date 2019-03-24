@@ -20,7 +20,7 @@ steps:
 - name: build
   image: anoff/hugo-asciidoctor
   commands:
-  - hugo --gc --minify -d _site --baseURL //blog.anoff.io
+  - hugo --gc --minify -d _site --baseURL https://blog.anoff.io
   - touch _site/.nojekyll
 
 - name: publish  
