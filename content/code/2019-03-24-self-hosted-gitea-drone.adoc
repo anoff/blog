@@ -1,10 +1,11 @@
 ---
 title: Hosting Gitea and Drone with Docker
-date: 2019-03-23
+date: 2019-03-24
 tags: [azure, gitea, drone, CI/CD]
 author: anoff
 resizeImages: true
-draft: true
+draft: false
+featuredImage: /assets/gitea-drone/title.png
 ---
 :plantuml-server-url: http://plantuml.com/plantuml
 :outdir: _site

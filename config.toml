@@ -63,7 +63,7 @@ disqusShortname = "anoff-io"
     gravatarEMail = ""
 
     # set an path to the image file you want to use | overwrites gravatar
-    customImage = "avatar.png"
+    customImage = "/avatar.png"
 
     # define the icon you want to use for the overlay for the customImage or gravatar.
     overlayIcon = "fa-child"
