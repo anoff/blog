@@ -447,7 +447,7 @@ docker-compose up -d
 The final setup for Drone looks like this
 
 .Drone docker setup
-image::vm-gitea.svg[Docker images for Drone VM]
+image::vm-drone.svg[Docker images for Drone VM]
 
 == Summary
 
