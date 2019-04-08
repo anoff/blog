@@ -1,13 +1,15 @@
 ---
 title: Continuous Vitae - Auto built and git versioned CV
-date: 2019-04-07
+date: 2019-04-08
 tags: [recruiting, CI/CD, drone]
 author: anoff
-resizeImages: true
-draft: true
-featuredImage: /assets/continuous-cv.png
+draft: false
+featuredImage: /assets/continuous-cv/logo.png
 ---
 :plantuml-server-url: http://plantuml.com/plantuml
+:outdir: _site
+:imagesdir: /assets/continuous-cv/
+:imagesoutdir: _site/assets/continuous-cv/
 
 Versioning your CV is important. 
 One traditional approach is to date it whenever you send it out.
@@ -15,8 +17,8 @@ I chose to present my CV on my link:https://anoff.io[website] and host it on Git
 In this blog post I want to explain how I set up continuous integration pipeline for building my CV that automatically injects a unique version into each build.
 This method is applicable for anyone choosing to ascii-based CV - in my case LaTeX.
 You also need some basic knowledge of `git`, `Docker` and CI services like `Drone`.
-
 <!--more-->
+
 
 == The Starting point
 
@@ -194,12 +196,32 @@ This is stored in a temporary file to be passed into the next pipeline step.
 The _build-cv_ step uses `sed` to replace the version placeholder with the commit SHA and execute the PDF build using `luatex`.
 
 The PDF is placed next to the input so it is best to place the `.tex` file itself into a folder that is served as static asset.
+Otherwise you may need an additional post processing step to move the file to an accessible location.
 
 === Support local build
 
-There are two ways to create the CV locally
-* drone exec
-* Makefile
+There are two easy ways to support the _create a local CV preview_ feature.
+
+The first being the original `Makefile` - it used to work and it still does work.
+You may want to remove the `git commit` step from the `Makefile` though and add the `.pdf` file itself onto `.gitignore` to make sure the preview stays local.
+Downside of this option is you may need to patch code at two different locations.
+
+The second option is to use **drone** and its awesome **drone CLI** support to run parts of the pipeline locally.
+To achieve this install the link:https://docs.drone.io/cli/install/[drone CLI] and either copy&paste or put the following line into a script file.
+
+.local CV generation
+[source, bash]
+----
+drone exec --include fetch-version --include build-cv
+----
+
+.Drone CLI output for local execution
+image::drone-exec.png[CLI output]
 
 == Summary
 
+We started out with scripting **git versioning** a LaTeX based document.
+Then we used a `Makefile` to keep all the commands needed to automate the CV generation in one place.
+In the final step I we from scripted and manually executed to scripted and **fully automated generation** of the PDF using the Drone continuous integration service.
+
+If you have any questions DM me on Twitter link:https://twitter.com/an0xff[an0xff] or leave a comment 👋
