@@ -17,8 +17,6 @@ I chose to present my CV on my link:https://anoff.io[website] and host it on Git
 In this blog post I want to explain how I set up continuous integration pipeline for building my CV that automatically injects a unique version into each build.
 This method is applicable for anyone choosing to ascii-based CV - in my case LaTeX.
 You also need some basic knowledge of `git`, `Docker` and CI services like `Drone`.
-<!--more-->
-
 
 == The Starting point
 
