@@ -60,6 +60,11 @@ If your LaTeX file has a different setup you may need to modify the regular expr
 \header{andreas}{of\/fenhaeuser}{software engineer/architect}{git:COMMITID}
 ----
 
+Finally rendered you will see something like this
+
+.git SHA as CV version
+image::git-version.png[git SHA in PDF]
+
 The complete workflow to update the CV:
 
 .Manual CV generation
