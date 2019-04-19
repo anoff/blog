@@ -14,6 +14,7 @@ featuredImage: /assets/antora-puml/title.png
 This post will cover some slightly advanced steps for building a multi-repository Asciidoc documentation using link://antora.org/[Antora].
 My previous post link://blog.anoff.io/2019-02-15-antora-first-steps/[blog.anoff.io/2019-02-15-antora-first-steps] covered basics of Antora and how to migrate existing AsciiDoc files.
 In this post I will go through the steps of including content from another repository, building a custom UI and adding plantUML support to the (automated, dockerized) build.
+<!--more-->
 
 .Screenshot of the final gitarc.xyz ARC42 Antora build
 image::/assets/antora-puml/screenshot.png[Screenshot of the gitarc.xyz page]
