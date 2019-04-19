@@ -1,7 +1,7 @@
 ---
 title: Converting existing AsciiDoc into an Antora project
 date: 2019-02-15
-tags: [development, architecture]
+tags: [development, docs, architecture]
 author: anoff
 resizeImages: true
 featuredImage: /assets/antora-arc42/antora-arc42.png

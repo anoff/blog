@@ -1,11 +1,13 @@
 ---
 title: Advanced customization for Antora - PlantUML support & custom UI
 date: 2019-03-13
-tags: [development, architecture]
+tags: [docs, architecture]
 author: anoff
 resizeImages: true
 draft: true
 ---
+:imagesdir: /assets/antora-puml/
+:plantuml-server-url: http://plantuml.com/plantuml
 
 This post will cover some slightly advanced steps for building a multi-repository Asciidoc documentation using link://antora.org/[Antora].
 My previous post link://blog.anoff.io/2019-02-15-antora-first-steps/[blog.anoff.io/2019-02-15-antora-first-steps] covered basics of Antora and how to migrate existing AsciiDoc files.
@@ -13,7 +15,33 @@ In this post I will go through the steps of including content from another repos
 
 == plantUML support
 
-* vscode add :plantuml-server-url: attribute (to each site)
+One of the most important things for me when it comes to software docs is the ability to show relationships and interactions using diagrams.
+As you might know from my link:/2018-07-31-diagrams-with-plantuml/[previous posts] I am a huge plantUML fan.
+So plantUML support is important both for rendering the Antora website and the local development.
+
+== Local preview
+
+For local previews I use the link:https://marketplace.visualstudio.com/items?itemName=joaompinto.asciidoctor-vscode[AsciiDoc extension] by João Pinto.
+
+.PlantUML preview in VS code
+image::vscode-asciidoc.png[VS Code Preview of PlantUML in .aodc]
+
+To get the plugin working you need to set the `plantuml-server-url` Asciidoctor attribute on your page as described on the link:https://github.com/eshepelyuk/asciidoctor-plantuml.js#configuration[asciidoctor-plantuml package] that is used for rendering in VSC.
+Sadly this needs to be set for every single adoc file - if you want to preview it.
+
+[source, asciidoc]
+----
+:plantuml-server-url: http://plantuml.com/plantuml
+----
+
+== Antora plantUML rendering
+
+To enable plantUML in Antora you need to register the link:https://github.com/eshepelyuk/asciidoctor-plantuml.js#configuration[asciidoctor-plantuml package] and configure the same attribute as for local preview.
+However in the case of Antora you an specify it one in the `playbook.yml`.
+
+NOTE: If you have a different server defined in the page itself, this will overrule the global config.
+
+.playbook.yml
 [source, yaml]
 ----
 asciidoc:
@@ -22,9 +50,57 @@ asciidoc:
   extensions:
   - asciidoctor-plantuml
 ----
-* hacky file copy around
 
 == Multiple repositories for a single documentation
+
+Another feature I promised to address during my link:/2019-02-15-antora-first-steps/[previous post] was splitting up content into multiple Antora modules/components.
+For my link:https://github.com/anoff/antora-arc42[arc42 dummy project] I used both.
+
+.Table of Contents for ARC42 project
+image::arc-toc.png[ARC42 table of contents]
+
+Given the above table of contents the chapters _Cross-cutting concepts_ and _Architecture decisions_ where put into a separate module within the main component.
+The modules _concepts_ and _adr_ (architecture design record) are moved into separate modules because I prefer to have each concept/adr in a separte `.adoc` file.
+For this example a simple subfolder within the `ROOT/pages` directory might suffice but in a real world scenario having a different module might come in handy to handle these important topics more efficiently.
+Both concepts and ADRs are aggregated into a single `index.adoc` file in each module and are included in the main build.
+
+A separate Antora component is used in this example for the _Media Manager_ subsystem that makes up one of the level 1 building blocks.
+Imagine this subsystem being developed in a separate repository.
+In this case you want to keep the respective documentation within the _MediaManager_ repository.
+This is done in the link:https://github.com/anoff/antora-arc42-mediaman[antora-arc42-mediaman] repository where all the subsystems source code and documentation shall be kept.
+
+In the example build the Level 2 definition of the _Media Manager_ block diagram view is included from the remote repository of the subsystem.
+You can see this include on link:https://github.com/anoff/antora-arc42/blame/master/docs/modules/ROOT/pages/05_building_block_view.adoc#L178[line 178 of the building_block_view.adoc].
+
+So overall the ARC42 build uses four modules spread across two components to build its entire documentation.
+Some modules provide link:https://docs.antora.org/antora/2.0/asciidoc/include-partial/[Antora partials] whereas others provide entire pages that get referenced in the main ROOT module.
+
+.Multi component, multi module Antora setup
+[plantuml, antora-component-setup, svg]
+....
+@startuml antora-component-setup
+!includeurl https://gist.githubusercontent.com/anoff/d8f48105ac4d3c7b14ca8c34d6d54938/raw/anoff.plantuml
+component "antora-arc42" {
+  artifact ROOT
+  artifact adr
+  artifact concepts
+  ROOT -[hidden]down- adr
+  concepts -[hidden]up- adr
+}
+component "antora-arc42-mediaman" {
+  artifact ROOT as media_root
+}
+control "Antora build" as antora
+
+antora ..> ROOT
+ROOT ..> adr
+ROOT ..> concepts
+ROOT ..> media_root
+footer FOOTER
+@enduml
+....
+
+
 
 * remove navigation menu for single system but multi component builds
 ** only nested components
