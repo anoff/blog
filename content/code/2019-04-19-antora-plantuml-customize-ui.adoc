@@ -14,10 +14,6 @@ featuredImage: /assets/antora-puml/title.png
 This post will cover some slightly advanced steps for building a multi-repository Asciidoc documentation using link://antora.org/[Antora].
 My previous post link://blog.anoff.io/2019-02-15-antora-first-steps/[blog.anoff.io/2019-02-15-antora-first-steps] covered basics of Antora and how to migrate existing AsciiDoc files.
 In this post I will go through the steps of including content from another repository, building a custom UI and adding plantUML support to the (automated, dockerized) build.
-<!--more-->
-
-.Screenshot of the final gitarc.xyz ARC42 Antora build
-image::/assets/antora-puml/screenshot.png[Screenshot of the gitarc.xyz page]
 
 == plantUML support
 
@@ -170,6 +166,9 @@ The Antora ARC42 build now consists of three repositories
 
 These repositories should act as a good reference to create more advanced builds with Antora while not cluttering the individual repositories with too many features/changes.
 As with most of my recent projects all automation is done via link:https://cloud.drone.io/anoff/antora-arc42[Drone CI], see the respective `.drone.yml` repositories in the main repository and the UI bundle for reference.
+
+.Screenshot of the final gitarc.xyz ARC42 Antora build
+image::/assets/antora-puml/screenshot.png[Screenshot of the gitarc.xyz page]
 
 You can view the final result at link:http://gitarc.xyz/system/0.9.0/03_system_scope_and_context.html?help[gitarc.xyz] with `?help` showing all the original ARC42 help texts for each chapter.
 
