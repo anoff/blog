@@ -1,7 +1,7 @@
 ---
 title: Markdown native diagrams with PlantUML
 date: 2018-07-31
-tags: [development, gitlab, github]
+tags: [development, gitlab, github, docs]
 author: anoff
 resizeImages: true
 ---

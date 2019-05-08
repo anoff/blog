@@ -8,6 +8,7 @@ resizeImages: true
 featuredImage: /assets/book-google/cover.png
 ---
 
+
 - don't turn you company into a brand that people want to work in instead make it a place people are proud of/admired for to have in their CV
 - feedback, see oneCS
 - agile business comes from empowered teams -> reporting and approval processes slow down *every* decision
