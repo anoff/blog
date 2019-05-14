@@ -1,0 +1,5 @@
+.Bird Person
+* xref:welcome.adoc[Welcome to Birdperson's life]
+include::wedding:partial$nav2.adoc[
+* xref:contact.adoc[Contact me]
+include::friends:partial$nav3.adoc[]

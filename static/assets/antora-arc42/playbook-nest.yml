@@ -1,0 +1,16 @@
+site:
+  title: Birdperson
+  # the 404 page and sitemap files only get generated when the url property is set
+  url: http://localhost:5000
+  start_page: bp:ROOT:welcome.adoc
+content:
+  sources:
+  - url: ../../..
+    start_path: static/assets/antora-arc42/nav-demo-nest
+    branches: [HEAD]
+ui:
+  bundle:
+    url: /developer/anoff/antora-arc42-ui/build/ui-bundle.zip # local
+    # url: https://github.com/anoff/antora-arc42-ui/releases/download/0.4/ui-bundle.zip
+output:
+  dir: dist/
