@@ -1,0 +1,2 @@
+* xref:wedding:invitation.adoc[Wedding Invitation]
+** xref:wedding:attendees.adoc[Attendees]
