@@ -1,9 +1,9 @@
 FROM asciidoctor/docker-asciidoctor
 LABEL maintainer="offenhaeuser@gmail.com"
 
-ENV HUGO_VERSION 0.54.0
+ENV HUGO_VERSION 0.55.6
 ENV HUGO_BINARY hugo_extended_${HUGO_VERSION}_Linux-64bit.tar.gz
-ENV GLIBC_VERSION 2.27-r0
+ENV GLIBC_VERSION 2.29-r0
 
 RUN set -x && \
   apk update && \
