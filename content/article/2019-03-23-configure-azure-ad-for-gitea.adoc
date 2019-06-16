@@ -75,4 +75,4 @@ On the Gitea administration page select _Authentication Sources_ and create a ne
 .Configured Gitea Azure AD Authentication Source (v.9f33aa6)
 image::/assets/gitea-aad/gitea-auth.png[Gitea Auth Screenshot]
 
-If you are having issues following this guide or find information being outdated feel free to leave a comment or reach out via link:https://twitter.com/an0xff[Twitter] 👋
+If you are having issues following this guide or find information being outdated feel free to leave a comment or reach out via link:https://twitter.com/anoff_io[Twitter] 👋

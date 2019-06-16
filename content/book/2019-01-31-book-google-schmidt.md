@@ -111,7 +111,7 @@ I think the act of writing these snippets is very little overhead to ones daily 
 
 ----
 
-Let me know if you liked this article or which parts you find especially fascinating by leaving a comment below, on [Twitter](https://twitter.com/an0xff) or message me on [LinkedIn](https://linkedin.com/in/offenhaeuser)
+Let me know if you liked this article or which parts you find especially fascinating by leaving a comment below, on [Twitter](https://twitter.com/anoff_io) or message me on [LinkedIn](https://linkedin.com/in/offenhaeuser)
 
 Stay tuned for the best parts of `Powerful`
 

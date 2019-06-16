@@ -15,7 +15,7 @@ In a previous post about link:/2018-07-31-diagrams-with-plantuml/[diagrams with 
 With the latest release of the asciidoctor plugin for VS Code it is possible to easily preview embedded PlantUML images within AsciiDocs.
 No more need to maintain attributes in each file 🎉
 
-Follow me on Twitter at link:https://twitter.com/an0xff[@an0xff] for future blog updates.
+Follow me on Twitter at link:https://twitter.com/anoff_io[@anoff_io] for future blog updates.
 Currently I am writing mostly about _docs-as-code_.
 Check link:/tags[my post tags] for other topics.
 
@@ -103,4 +103,4 @@ image::preview-ok.png[working preview]
 image::preview-nok.png[broken preview]
 
 Hope this post helped you.
-If you have any questions or know of better/alternative ways let me know via link:https://twitter.com/an0xff[Twitter] or leave a comment 👋
+If you have any questions or know of better/alternative ways let me know via link:https://twitter.com/anoff_io[Twitter] or leave a comment 👋

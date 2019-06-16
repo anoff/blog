@@ -234,7 +234,7 @@ If you are afraid of the bill that might come flying in if you miss stopping the
 
 Well I hope you liked this article and found some helpful tips. The general workflow can also be done with AWS machines but the Terraform template will look different. Feel free to submit a PR to my Repo and I will add the option to also use AWS resources.
 
-I would love to hear feedback via [Issues](https://github.com/anoff/vm-automation/issues/new), [Twitter 🐦](https://twitter.com/an0xff) or comments. One thought I have is to bundle all the commands into a binary CLI so it works cross platform and can just be installed by copying around a single file. If you’re interested please let me know😻
+I would love to hear feedback via [Issues](https://github.com/anoff/vm-automation/issues/new), [Twitter 🐦](https://twitter.com/anoff_io) or comments. One thought I have is to bundle all the commands into a binary CLI so it works cross platform and can just be installed by copying around a single file. If you’re interested please let me know😻
 
 Here is another look at all the commands you can use🧙‍♀️
 

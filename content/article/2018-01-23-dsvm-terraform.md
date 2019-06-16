@@ -130,4 +130,4 @@ There’s a bunch of things I want to improve on this setup:
 
 2. Auto-mount the file share into the VMs during creation. The [remote-exec provisioner](https://www.terraform.io/docs/provisioners/remote-exec.html) might be a good way to start.
 
-Feel free to discuss this approach or even implement improvements for this via a PR on github.com/anoff/tf-azure-datascience or on [twitter 🐦](https://twitter.com/an0xff). Hope you enjoyed my first article 🕺.
+Feel free to discuss this approach or even implement improvements for this via a PR on github.com/anoff/tf-azure-datascience or on [twitter 🐦](https://twitter.com/anoff_io). Hope you enjoyed my first article 🕺.

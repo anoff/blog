@@ -61,7 +61,7 @@ This gives the entire PlantUML toolstack an extremely versatile way of passing i
 
 The fastest, platform agnostic and easiest way to start creating PlantUML diagrams is using their [online editor](http://www.plantuml.com/plantuml/uml/SoWkIImgAStDuShBJqbLA4ajBk5oICrB0Oe00000) (btw. you can easily host it on prem using the [plantuml-server Docker image](https://hub.docker.com/r/plantuml/plantuml-server/)). This is fine for creating simple diagrams with a few nodes but larger diagrams require a lot of _previewing_ which is annoying in the online editor.
 
-_If you have any other local setups please let me know via [Twitter](https://twitter.com/an0xff)_
+_If you have any other local setups please let me know via [Twitter](https://twitter.com/anoff_io)_
 
 ## Visual Studio Code
 
@@ -162,4 +162,4 @@ This post covered how to write and render files locally in **VS Code**, using **
 
 There is a lot more to tell about PlantUML but I hope this article gave you enough infos to get started on whatever platform you are using. I recommend this [PlantUML Cheatsheet](https://blog.anoff.io/puml-cheatsheet.pdf) which will help you to cover an even wider range of use cases.
 
-Tell me about your experiences with PlantUML or alternative integrations on [Twitter 🐦](https://twitter.com/an0xff)
+Tell me about your experiences with PlantUML or alternative integrations on [Twitter 🐦](https://twitter.com/anoff_io)

@@ -84,4 +84,4 @@ GitLab project showing link to the original project
 
 Oh btw if you are still looking for the Why that the title promised: GitLabs CI/CD solution is just one of the most comprehensive out there imo.
 
-Feel free to message me on [twitter 🐦](https://twitter.com/an0xff)
+Feel free to message me on [twitter 🐦](https://twitter.com/anoff_io)

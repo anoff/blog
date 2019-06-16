@@ -75,7 +75,7 @@ service cloud.firestore {
     match /posts/{document=**} {
       allow read: if true;
       allow create, update: if request.auth != null;
-      allow delete: if request.auth.uid == 'an0xff';
+      allow delete: if request.auth.uid == 'anoff_io';
     }
   }
 }
@@ -231,4 +231,4 @@ To bring RBAC to your application you need to consider a few things:
 
 To see a similar design implemented you can check out my [techradar](https://github.com/anoff/techradar) project which also showcases how to implement RBAC on the frontend and setting up Travis CI to deploy Firebase rules. There are additional features available to secure Firestore data for example checking which parts of a resource are being changed in an update process to allow users to update only specific properties. 
 
-Drop me a message on [Twitter](https://twitter.com/an0xff) if you have any feedback about this post. Also check out my previous post on creating [PlantUML diagrams](https://anoff.io/blog/2018-07-31-diagrams-with-plantuml/).
+Drop me a message on [Twitter](https://twitter.com/anoff_io) if you have any feedback about this post. Also check out my previous post on creating [PlantUML diagrams](https://anoff.io/blog/2018-07-31-diagrams-with-plantuml/).

@@ -2,7 +2,7 @@
 
 [![Build Status](https://cloud.drone.io/api/badges/anoff/blog/status.svg)](https://cloud.drone.io/anoff/blog)
 
-A dump of [my medium blog posts](https://medium.com/@an0xff) into ~~Jekyll~~ Hugo and 
+A dump of [my medium blog posts](https://medium.com/@anoff_io) into ~~Jekyll~~ Hugo and 
 some more stuff as well.
 
 Ported to Hugo from Jekyll, last commit in Jekyll style: [aa1376c2d116](https://github.com/anoff/blog/tree/aa1376c2d116d8075ce6ae76a75b1920c35eb6e5) hosted for eternity on [anoff-aa1376c.surge.sh](//anoff-aa1376c.surge.sh/)

@@ -183,4 +183,4 @@ To achieve this just use the same `antora.yml` file (same `name:` and `version:`
 
 You can view the example directories in link:https://github.com/anoff/blog/tree/master/static/assets/antora-arc42/[github.com/anoff/blog] and run the `playbook-nest.yml`.
 
-If you have any questions or know additional tricks let me know via link:https://twitter.com/an0xff[Twitter] or leave a comment 👋
+If you have any questions or know additional tricks let me know via link:https://twitter.com/anoff_io[Twitter] or leave a comment 👋

@@ -227,4 +227,4 @@ We started out with scripting **git versioning** a LaTeX based document.
 Then we used a `Makefile` to keep all the commands needed to automate the CV generation in one place.
 In the final step I we from scripted and manually executed to scripted and **fully automated generation** of the PDF using the Drone continuous integration service.
 
-If you have any questions DM me on Twitter link:https://twitter.com/an0xff[an0xff] or leave a comment 👋
+If you have any questions DM me on Twitter link:https://twitter.com/anoff_io[anoff_io] or leave a comment 👋
