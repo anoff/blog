@@ -1,0 +1,55 @@
+---
+title: Manage skills with techradars
+date: 2019-07-13
+tags: [recruiting, development]
+draft: true
+author: anoff
+---
+:plantuml-server-url: http://plantuml.com/plantuml
+
+Over the last year I played around with the techradar approach for various situations in my professional life where I felt the need for new ways to deal with technical skills.
+In this post I will present these different applications where techradars can help you.
+
+:toc:
+
+== Thoughtworks techradar
+
+== Managing technology in a project or organization
+
+Thoughtworks publishes its techradar to share knowledge about emerging technology and its adoption in the software world.
+This often results in multiple competing technologies being presented in their publication.
+By changing the scope you can use the techradar method to create a competence fingerprint of a project.
+For this you just use the classic techradar configuration but only look at technologies you want to use in your project.
+
+
+== Personal competence management
+
+The classic techradar consists of four quadrants (tools, frameworks & languages, platforms and techniques) and four levels of maturity (hold, assess, trial and adopt).
+By changing the maturity level to a skill oriented scale the techradar method can be used to keep track of personal competences and skills.
+One possible scale to measure skill is the US NIH proficiency scale with the levels novice, intermetdiate, advanced and expert.
+For software developers trying to keep track of tech skills the classic quadrants should be a good fit; for other job environments or a wider range of competences you may want to modify the quadrant definition as well.
+
+== Identifying synergies at scale
+
+By comparing multiple project-level techradars you can identify which technologies and techniques they have in common.
+All too often synergies depend on the implementation details and not on the things you see in polished powerpoint slides.
+Sadly most synergies are _identified_ based on those powerpoint slides.
+Comparing the technological fingerprint of a project works across projects, organizations and functional domains.
+Teams with a similar fingerprint can leverage use synergies in their day to day life by sharing experiences, joint training sessions and even employee rotation.
+
+== Guide innovation
+
+Project level techradars can be used to establish a process of updating a teams technology stack.
+Instead of hype-driven development where new frameworks are brought from Twitter straight into production within a few sprints the techradar allows you to do this in a controlled way.
+With introducing a new tool and moving it into the _assess_ level you define how you want to assess in particular: is there an upcoming feature this tool should be used for; do you want to start a separate proof of concept.
+It does not really matter what you do - however it is important to define what you want to do and what how you measure the success of this assessment.
+After a successful assessment you can start rolling out the tool and move it into the _trial_ level and finally make it the de-facto standard (_adopt_).
+
+== Competence management for teams
+
+Combining a project level techradar and personal techradars for each developer allows you to get an overview of existing and missing competences in your team.
+For team leads it is a great way to plan competence development for their team members.
+In case of turnover within the team it is also very easy to identify the gaps that might be opening up by a person leaving the team.
+
+
+Please leave a comment or message me via link:https://twitter.com/anoff_io[Twitter] to let me know what you think of these ideas or if you already tried something similar 👋
