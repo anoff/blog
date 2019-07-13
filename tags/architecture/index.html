@@ -3,7 +3,51 @@
 <span class=readingTime>4 min read</span>
 <span class=author><a href=/author/anoff>anoff</a></span></div><p>This third post in the series of Antora posts quickly addresses a feature I only recently discovered.
 It will show you some techniques you can use to compose the navigation menu in a multi-repository, multi-module setup.
-This is especially interesting if you have content spread across repositories that you want to present hierarchically in the navigation tree.</p><p><a href=/2019-05-14-antora-navigation-files/ class=more>Continue reading</a></div><div class=footer><div class=tags><i class="fa fa-tags"></i><div class=links><a href=/tags/docs>docs</a>
+This is especially interesting if you have content spread across repositories that you want to present hierarchically in the navigation tree.</p><p></p><section class="doc-section level-1"><h2 id=_using_multiple_navigation_files>Using multiple navigation files</h2><p>Let us start with the basics: <strong>How to combine navigation files?</strong></p><p>The <a href=https://docs.antora.org/antora/2.0/navigation/register-navigation-files/>Antora docs</a> explain how you can use multiple navigation files for one component by using the <code>nav</code> key in the component descriptor.
+However this limits you to the operation of <strong>concatenation</strong>.</p><figure class=image-block><img src=/assets/antora-arc42/nav-concat.png alt="Concatenated navigation content"><figcaption>Figure 1. Concatenating navigation files via component descriptor</figcaption></figure><p>To achieve such concatenation just define your component as</p><figure class=listing-block><figcaption>antora.yml</figcaption><pre class=highlight><code class=language-yaml data-lang=yaml>name: bp
+title: Bird Person
+version: HEAD
+nav:
+- modules/ROOT/nav1.adoc
+- modules/wedding/nav2.adoc
+- modules/friends/nav3.adoc</code></pre></figure></section><section class="doc-section level-1"><h2 id=_composing_navigation_files_by_include>Composing navigation files by include</h2><p>In case a plain concatenation does not do it and you want to compose your navigation structure across three different navigation files you can use the <code>include:</code> macro.
+This can come in handy if you split content into multiple modules and want to include the content of the modules in varying order in the navigation menu.</p><figure class=image-block><img src=/assets/antora-arc42/nav-inline.png alt="Inlined navigation content"><figcaption>Figure 2. Inlining navigation content</figcaption></figure><p>In this scenario the component descriptor would reference a single navigation file</p><figure class=listing-block><figcaption>antora.yml</figcaption><pre class=highlight><code class=language-yaml data-lang=yaml>name: bp
+title: Bird Person
+version: HEAD
+nav:
+- modules/ROOT/nav1.adoc</code></pre></figure><p>But the navigation file in turn references content from additional supplemental navigation files.</p><figure class=listing-block><figcaption>modules/ROOT/nav1.adoc</figcaption><pre class=highlight><code class=language-asciidoc data-lang=asciidoc>.Bird Person
+* xref:welcome.adoc[Welcome to Birdperson's life]
+include::wedding:partial$nav2.adoc[
+* xref:contact.adoc[Contact me]
+link:friends:partial$nav3.adoc[]</code></pre></figure><figure class=listing-block><figcaption>modules/wedding/nav2.adoc</figcaption><pre class=highlight><code class=language-asciidoc data-lang=asciidoc>* xref:wedding:invitation.adoc[Wedding Invitation]
+** xref:wedding:attendees.adoc[Attendees]</code></pre></figure><figure class=listing-block><figcaption>modules/friends/nav3.adoc</figcaption><pre class=highlight><code class=language-asciidoc data-lang=asciidoc>* Friends of Birdperson
+** xref:friends:tammy.adoc[&lt;3 Tammy]
+** xref:friends:morty.adoc[Morty]
+** xref:friends:rick.adoc[Rick]</code></pre></figure><figure class=image-block><img src=/assets/antora-arc42/filetree-wedding.png alt="Screenshot of the file structure"><figcaption>Figure 3. File structure for included nav files</figcaption></figure><p>Given the above navigation files and directory structure you end up with the following navigation tree.
+Notice how <code>nav2.adoc</code> is embedded in the content defined in <code>nav1.adoc</code>.</p><section class=ulist><h6 class=block-title>Bird Person</h6><ul><li>Welcome to Birdperson&#8217;s life</li><li>Wedding Invitation<ul><li>Attendees</li></ul></li><li>Contact me</li><li>Friends of Birdperson<ul><li>&lt;3 Tammy</li><li>Morty</li><li>Rick</li></ul></li></ul></section><section class="admonition-block important" role=doc-notice><h6 class="block-title label-only"><span class=title-label>Important:</span></h6><p>For navigation files to be used by <code>include:</code> in Antora you need to place them inside a folder that is indexed by Antora. The suggested solution is storing it as a partial so it does not clutter the actual page space.</p></section></section><section class="doc-section level-1"><h2 id=_nesting_navigation_listings_across_files>Nesting navigation listings across files</h2><p>There is another interesting scenario of including remote content.
+Given our simple example this might seem far-fetched but consider the option of defining a high level list structure in <code>nav1.adoc</code> and filling certain branches of this navigation tree with included files.
+In this scenario we want to include the list of Birdperson&#8217;s friends but <strong>continue the list indentation</strong> from <code>nav1.adoc</code>.</p><figure class=image-block><img src=/assets/antora-arc42/nav-nest.png alt="Nested navigation content"><figcaption>Figure 4. Nesting navigation content</figcaption></figure><p>By extending Birdpersons relationships also to enemies we want the following nav tree to be rendered:</p><section class=ulist><h6 class=block-title>Bird Person</h6><ul><li>Welcome to Birdperson&#8217;s life</li><li>Wedding Invitation<ul><li>Attendees</li></ul></li><li>Relationships<ul><li>Enemies<ul><li>Galactic Federation</li></ul></li><li>Friends<ul><li>&lt;3 Tammy</li><li>Morty</li><li>Rick</li></ul></li></ul></li><li>Contact me</li></ul></section><p>For the sake of simplicity we will not add any pages for the <em>Enemies / Galactic Federation</em> entries.
+The changed files for this scenario are <code>nav1</code> and <code>nav3</code>.</p><figure class=listing-block><figcaption>modules/ROOT/nav1.adoc</figcaption><pre class=highlight><code class=language-asciidoc data-lang=asciidoc>.Bird Person
+* xref:welcome.adoc[Welcome to Birdperson's life]
+link:wedding:partial$nav2.adoc[]
+* Relationships
+** Enemies
+*** Galactic Federation
+** Friends
++
+--
+link:friends:partial$nav3.adoc[]
+--
++
+* xref:contact.adoc[Contact me]</code></pre></figure><figure class=listing-block><figcaption>modules/friends/nav3.adoc</figcaption><pre class=highlight><code class=language-asciidoc data-lang=asciidoc>** xref:friends:tammy.adoc[&lt;3 Tammy]
+** xref:friends:morty.adoc[Morty]
+** xref:friends:rick.adoc[Rick]</code></pre></figure><p>Notice how <code>nav3.adoc</code> in this case only hosts the sub-elements and not the <em>Friends</em> caption itself.
+Using the same directory structure as previously the final rendered result in Antora looks like the nested list we expected to get.</p><figure class=image-block><img src=/assets/antora-arc42/navtree-wedding.png alt="Nested navigation tree"><figcaption>Figure 5. Nested navigation tree in Antora</figcaption></figure><p>As expected the content of <code>nav2.adoc</code> is included on the same list level as <code>nav1.adoc</code>.
+The list of friends from <code>nav3.adoc</code> however continues as a nested indentation within <code>ROOT/nav1.adoc</code>.
+The picture below shows the included sections highlighted according to their respective navigation files.</p><figure class=image-block><img src=/assets/antora-arc42/navtree-wedding-colored.png alt="Nested navigation tree (highlighted)"><figcaption>Figure 6. Nested navigation tree in Antora (highlighted)</figcaption></figure></section><section class="doc-section level-1"><h2 id=_closing_words>Closing words</h2><p>Dan Allen posted a fantastic answer to my <a href=https://gitlab.com/antora/antora/issues/423#note_166845701>initial question</a> regarding this issue.
+I encourage you to read it if you have questions about what happens exactly.</p><p>Another neat trick is to <strong>reuse component definitions</strong> if you are forced to spread documentation across different repositories that you actually want to show up in a common navigation tree.
+This might be the case for multi-repository software projects where you want to create one generic software documentation and aggregate by content (e.g. all interfaces in one place).
+To achieve this just use the same <code>antora.yml</code> file (same <code>name:</code> and <code>version:</code>) in multiple repositories.</p><p>You can view the example directories in <a href=https://github.com/anoff/blog/tree/master/static/assets/antora-arc42/>github.com/anoff/blog</a> and run the <code>playbook-nest.yml</code>.</p><p>If you have any questions or know additional tricks let me know via <a href=https://twitter.com/anoff_io>Twitter</a> or leave a comment 👋</p></section></div><div class=footer><div class=tags><i class="fa fa-tags"></i><div class=links><a href=/tags/docs>docs</a>
 <a href=/tags/architecture>architecture</a></div></div></div></article></div><div class="article-wrapper u-cf"><a class=bubble href=/2019-04-19-antora-plantuml-customize-ui/><i class="fa fa-fw fa-code"></i></a><article class="default article"><div class=featured-image><a href=/2019-04-19-antora-plantuml-customize-ui/><img src=/assets/antora-puml/title.png alt></a></div><div class=content><h3><a href=/2019-04-19-antora-plantuml-customize-ui/>Advanced customization for Antora - PlantUML support &amp; custom UI</a></h3><div class=meta><span class="date moment">2019-04-19</span>
 <span class=readingTime>5 min read</span>
 <span class=author><a href=/author/anoff>anoff</a></span></div>This post will cover some slightly advanced steps for building a multi-repository Asciidoc documentation using Antora. My previous post blog.anoff.io/2019-02-15-antora-first-steps covered basics of Antora and how to migrate existing AsciiDoc files. In this post I will go through the steps of including content from another repository, building a custom UI and adding plantUML support to the (automated, dockerized) build.
