@@ -16,10 +16,8 @@ steps:
 - checkout: self
   displayName: 'Git checkout'
   submodules: true
-- task: Bash@3
+- script: gem install --no-document asciidoctor asciidoctor-diagram coderay rouge 
   displayName: 'Install Asciidoctor'
-  inputs:
-    script: gem install --no-document asciidoctor asciidoctor-diagram coderay rouge 
 
 - task: HugoTask@1
   displayName: 'Run Hugo'
