@@ -16,6 +16,10 @@ steps:
 - checkout: self
   displayName: 'Git checkout'
   submodules: true
+- task: Bash@3
+  displayName: 'Install Asciidoctor'
+  inputs:
+    script: gem install --no-document asciidoctor asciidoctor-diagram coderay rouge 
 
 - task: HugoTask@1
   displayName: 'Run Hugo'
@@ -27,7 +31,7 @@ steps:
 - task: PublishPipelineArtifact@0
   displayName: 'Publish artifact'
   inputs:
-    artifactName: 'hugo-site'
+    artifactName: 'blog'
     targetPath: '$(Build.ArtifactStagingDirectory)'
 
 - task: GitHubPagesPublish@1
