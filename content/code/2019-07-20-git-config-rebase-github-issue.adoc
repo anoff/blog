@@ -4,12 +4,15 @@ date: 2019-07-20
 tags: [github, development]
 draft: false
 author: anoff
+featuredImage: /assets/git-rebase/title.png
 ---
 :imagesdir: /assets/
 
 Being a developer most times means working with git.
 There are many different ways to use git and every project, every developer has their preferences.
 For my own projects I work a lot with GitHub and I love using the `git rebase -i` feature to clean up commits.
+
+<!--more-->
 
 Lately I ran into the problem that rebasing a link:http://commitizen.github.io/cz-cli/[Commitizen] commit message with a linked GitHub issue leads to problems.
 The problem is that the rebase UI treats the `&#35;` hash sign as an escape character for comments.
