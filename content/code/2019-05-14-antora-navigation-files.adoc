@@ -16,6 +16,7 @@ It will show you some techniques you can use to compose the navigation menu in a
 This is especially interesting if you have content spread across repositories that you want to present hierarchically in the navigation tree.
 
 <!--more-->
+
 == Using multiple navigation files
 
 Let us start with the basics: **How to combine navigation files?**

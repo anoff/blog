@@ -1,0 +1,58 @@
+---
+title: 'Reference GitHub #issues during git rebase'
+date: 2019-07-20
+tags: [github, development]
+draft: false
+author: anoff
+---
+:imagesdir: /assets/
+
+Being a developer most times means working with git.
+There are many different ways to use git and every project, every developer has their preferences.
+For my own projects I work a lot with GitHub and I love using the `git rebase -i` feature to clean up commits.
+
+Lately I ran into the problem that rebasing a link:http://commitizen.github.io/cz-cli/[Commitizen] commit message with a linked GitHub issue leads to problems.
+The problem is that the rebase UI treats the `&#35;` hash sign as an escape character for comments.
+In the message below the reference to the GitHub issue &#35;53 would be removed from the commit message as `&#35;` is the leading character in line 3.
+
+.Rewording a commitizen message with GitHub issue &#35;id
+image::git-rebase/reword-hash.png[Screenshot]
+
+This could be fixed by prepending some text to make sure the line does not start with a hash.
+
+.Additional text to make sure the line does not start with &#35;
+image::git-rebase/reword-hash-leading.png[Screenshot]
+
+However the Commitizen style I use creates commit messages that include the issue ID on a new line and I did not want to break this pattern during rebases.
+But luckily you can configure the escape character that git uses in the rebase UI.
+By setting the `core.commentChar = ";"` (or any other **single** character) in your git config.
+
+On my MacOS device my `~/.gitconfig` has the following entries after including the `commentChar` property.
+
+.$HOME/.gitconfig
+[source]
+....
+[user]
+  ..
+[core]
+	editor = code --wait
+	commentChar = ";"
+[push]
+	default = simple
+[alias]
+	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+[credential]
+	helper = osxkeychain
+[gui]
+	editor = nano
+....
+
+The next time you `git rebase -i` you will see that all comments are escaped using `;` instead of the hash sign.
+This also means that my original commit message with a `&#35;` leading in line 3 will now be taken over as it is no longer treated as a comment.
+
+.Rewording a commit message after setting `core.commentChar`
+image::git-rebase/reword-semicolon.png[Screenshot]
+
+You can pick any character you want to escape comments in the rebase UI, just make sure it fits your workflow and does not conflict with any rules you have for git messages.
+
+Hope this little trick can help you too 👋
