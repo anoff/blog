@@ -1,0 +1,41 @@
+# Build hugo website and publish to GitHub Pages
+#   requires the following Community Plugins
+#     https://marketplace.visualstudio.com/items?itemName=giuliovdev.hugo-extension
+#     https://marketplace.visualstudio.com/items?itemName=AccidentalFish.githubpages-publish
+
+trigger:
+- '*'
+
+variables:
+- group: integration
+
+pool:
+  vmImage: 'windows-2019'
+
+steps:
+- checkout: self
+  displayName: 'Git checkout'
+  submodules: true
+
+- task: HugoTask@1
+  displayName: 'Run Hugo'
+  inputs:
+    destination: '$(Build.ArtifactStagingDirectory)'
+    extendedVersion: true
+    baseURL: 'https://blog.anoff.io/'
+
+- task: PublishPipelineArtifact@0
+  displayName: 'Publish artifact'
+  inputs:
+    artifactName: 'hugo-site'
+    targetPath: '$(Build.ArtifactStagingDirectory)'
+
+- task: GitHubPagesPublish@1
+  displayName: 'Publish to gh-pages'
+  inputs:
+    docPath: '$(Build.ArtifactStagingDirectory)'
+    githubusername: 'anoff'
+    githubaccesstoken: '$(github_token)'
+    repositoryname: 'blog'
+    branchname: 'gh-test'
+    
