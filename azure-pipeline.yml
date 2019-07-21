@@ -38,10 +38,10 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      git clone https://anoff:$(github_token)@github.com/anoff/blog.git --branch=gh-test ./ghpages
+      git clone https://anoff:$(github_token)@github.com/anoff/blog.git --branch=gh-pages ./ghpages
       cd ./ghpages
       git config core.autocrlf false
-      git config user.email ci@anoff.io
+      git config user.email ""
       git config user.name "CI Joe"
       rm -rf *
       cp -R /d/a/1/s/dist/* . # hardcode directory because pipeline vars are windows
