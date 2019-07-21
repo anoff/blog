@@ -28,7 +28,12 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
+      echo $PWD
+      ls -ahl .
+      echo $(Build.ArtifactStagingDirectory)
+      ls -ahl $(Build.ArtifactStagingDirectory)
       docker run --rm -v $PWD:/app anoff/hugo-asciidoctor hugo --gc --minify -d $(Build.ArtifactStagingDirectory)
+      ls -ahl $(Build.ArtifactStagingDirectory)
 
 - task: PublishPipelineArtifact@0
   displayName: 'Publish artifact'
