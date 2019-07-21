@@ -34,9 +34,12 @@ steps:
 - task: NodeTool@0
   displayName: 'Install Node.js'
 
-- script: |
-    git config core.autocrlf false
-    git config user.email ci@anoff.io
-    git config user.name "CI Joe"
-    npx gh-pages --dist '$(Build.ArtifactStagingDirectory)' --dotfiles --branch gh-test --repo https://anoff:$(github_token)@github.com/anoff/blog.git
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
+      git config core.autocrlf false
+      git config user.email ci@anoff.io
+      git config user.name "CI Joe"
+      npx gh-pages --dist '$(Build.ArtifactStagingDirectory)' --dotfiles --branch gh-test --repo https://anoff:$(github_token)@github.com/anoff/blog.git
   displayName: 'Publish to gh-pages'
