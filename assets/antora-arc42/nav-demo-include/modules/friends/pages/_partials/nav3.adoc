@@ -1,4 +1,0 @@
-* Friends of Birdperson
-** xref:friends:tammy.adoc[<3 Tammy]
-** xref:friends:morty.adoc[Morty]
-** xref:friends:rick.adoc[Rick]
