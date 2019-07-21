@@ -9,7 +9,7 @@ trigger:
 variables:
 - group: integration
 pool:
-  vmImage: 'windows-2019'
+  vmImage: 'ubuntu-16.04'
 
 steps:
 - checkout: self
