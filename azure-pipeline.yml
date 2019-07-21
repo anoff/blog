@@ -41,8 +41,5 @@ steps:
       git config core.autocrlf false
       git config user.email ci@anoff.io
       git config user.name "CI Joe"
-      ls -ahl /d/a
-      echo "artifact at  $(Build.ArtifactStagingDirectory)"
-      ls -ahl /d/a/1/a
-      npx gh-pages --dist "$(Build.ArtifactStagingDirectory)" --dotfiles --branch gh-test --repo https://anoff:$(github_token)@github.com/anoff/blog.git
+      npx gh-pages --dist /d/a/1/a --dotfiles --branch gh-test --repo https://anoff:$(github_token)@github.com/anoff/blog.git
   displayName: 'Publish to gh-pages'
