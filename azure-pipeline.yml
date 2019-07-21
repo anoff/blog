@@ -38,8 +38,14 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
+      git clone https://anoff:$(github_token)@github.com/anoff/blog.git --branch=gh-test $(System.DefaultWorkingDirectory)/ghpages
+      cd $(System.DefaultWorkingDirectory)/ghpages
       git config core.autocrlf false
       git config user.email ci@anoff.io
       git config user.name "CI Joe"
-      npx gh-pages --dist /d/a/1/a --dotfiles --branch gh-test --repo https://anoff:$(github_token)@github.com/anoff/blog.git
+      rm -rf *
+      cp -R '$(Build.ArtifactStagingDirectory)' $(System.DefaultWorkingDirectory)/ghpages
+      git add .
+      git commit --allow-empty -m "Automated build $(Build.BuildId)"
+      git push
   displayName: 'Publish to gh-pages'
