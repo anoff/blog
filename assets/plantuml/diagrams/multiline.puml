@@ -1,0 +1,18 @@
+@startuml multiline
+skinparam monochrome true
+node node [
+several
+lines
+====
+of
+....
+text
+]
+
+cloud cloud [
+also works
+----
+in a cloud
+==with inline text==
+]
+@enduml

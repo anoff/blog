@@ -1,0 +1,13 @@
+.Bird Person
+* xref:welcome.adoc[Welcome to Birdperson's life]
+include::wedding:partial$nav2.adoc[]
+* Relationships
+** Enemies
+*** Galactic Federation
+** Friends
++
+--
+include::friends:partial$nav3.adoc[]
+--
++
+* xref:contact.adoc[Contact me]

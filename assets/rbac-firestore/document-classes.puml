@@ -1,0 +1,47 @@
+@startuml document-classes
+object users
+users : Collection<user>
+
+object "user" as user
+user : _id : Firebase UID
+user : uid : String
+user : displayName : String
+user : lastLogin : String
+user : name : String
+
+users o-- user
+
+object roles
+roles : Collection<role>
+
+object "role" as role
+role : _id : Firebase UID
+role : writer : Boolean (optional)
+role : editor : Boolean (optional)
+role : user : Boolean (optional)
+role : admin : Bollean (optional)
+
+roles o-- role
+role .left. user
+
+object posts
+posts : Collection<post>
+
+object post
+post : _id : Auto ID
+post : title : String
+post : text : String
+post : author : Firebase UID
+post : comments : Collection<comment>
+
+posts o-- post
+
+object comment
+comment : _id : Auto ID
+comment : date : String
+comment : newState : String
+comment : text : String
+comment : author : Firebase UID
+
+post o-- comment
+@enduml

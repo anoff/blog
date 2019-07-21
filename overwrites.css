@@ -1,0 +1,24 @@
+.bilberry-hugo-theme header div.container .logo {
+  width: 120px;
+  height: 120px;
+}
+.bilberry-hugo-theme header {
+  height: 16rem;
+}
+.bilberry-hugo-theme nav div.container ul.topnav li a {
+  padding: 0.5em 1.5em;
+}
+.bilberry-hugo-theme nav.permanentTopNav div.container {
+  min-height: 45px;
+}
+figure.listing-block {
+  margin: 15px 20px;
+}
+.bilberry-hugo-theme div.article-wrapper article {
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,.2);
+}
+.bilberry-hugo-theme div.article-wrapper.single article {
+	background-color: #fff;
+	box-shadow: none;
+}
