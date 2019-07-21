@@ -1,6 +1,6 @@
 # Andreas' blog
 
-[![Build Status](https://cloud.drone.io/api/badges/anoff/blog/status.svg)](https://cloud.drone.io/anoff/blog)
+[![Build Status](https://anoff.visualstudio.com/anoff.io/_apis/build/status/anoff.blog?branchName=master)](https://anoff.visualstudio.com/anoff.io/_build/latest?definitionId=1&branchName=master)
 
 A dump of [my medium blog posts](https://medium.com/@anoff_io) into ~~Jekyll~~ Hugo and 
 some more stuff as well.
@@ -22,16 +22,7 @@ $text-color: #111;
 ## Local preview
 
 ```sh
-PATH=$PWD:$PATH hugo server -D
-```
-
-## Deployment
-
-```sh
-# generate the static site
-PATH=$PWD:$PATH hugo --gc --minify -d _site
-# deploy via surge
-surge _site/ blog.anoff.io
+$ docker run --rm -v $PWD:/app -p 1313:1313 anoff/hugo-asciidoctor hugo server -D --bind 0.0.0.0
 ```
 
 ## Planned deployment
