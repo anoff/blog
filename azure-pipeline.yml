@@ -21,7 +21,7 @@ steps:
 - task: HugoTask@1
   displayName: 'Run Hugo'
   inputs:
-    destination: '$(Build.ArtifactStagingDirectory)'
+    destination: 'dist'
     extendedVersion: true
     baseURL: 'https://blog.anoff.io/'
 
@@ -29,7 +29,7 @@ steps:
   displayName: 'Publish artifact'
   inputs:
     artifactName: 'blog'
-    targetPath: '$(Build.ArtifactStagingDirectory)'
+    targetPath: 'dist'
 
 - task: NodeTool@0
   displayName: 'Install Node.js'
@@ -38,13 +38,15 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      git clone https://anoff:$(github_token)@github.com/anoff/blog.git --branch=gh-test $(System.DefaultWorkingDirectory)/ghpages
-      cd $(System.DefaultWorkingDirectory)/ghpages
+      echo '$(Build.BuildId)'
+      echo '$(Build.BuildNumber)'
+      git clone https://anoff:$(github_token)@github.com/anoff/blog.git --branch=gh-test ./ghpages
+      cd ./ghpages
       git config core.autocrlf false
       git config user.email ci@anoff.io
       git config user.name "CI Joe"
       rm -rf *
-      cp -R '$(Build.ArtifactStagingDirectory)' $(System.DefaultWorkingDirectory)/ghpages
+      cp -R dist/* .
       git add .
       git commit --allow-empty -m "Automated build $(Build.BuildId)"
       git push
