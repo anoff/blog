@@ -44,8 +44,8 @@ steps:
       git config user.email ci@anoff.io
       git config user.name "CI Joe"
       rm -rf *
-      cp -R /d/a/1/s/dist/* .
+      cp -R /d/a/1/s/dist/* . # hardcode directory because pipeline vars are windows
       git add .
-      git commit --allow-empty -m "Automated build \#$(Build.BuildNumber)"
+      git commit --allow-empty -m 'Automated build #$(Build.BuildNumber)'
       git push
   displayName: 'Publish to gh-pages'
