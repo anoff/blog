@@ -32,7 +32,8 @@ steps:
       ls -ahl .
       echo $(Build.ArtifactStagingDirectory)
       ls -ahl $(Build.ArtifactStagingDirectory)
-      docker run --rm -v $PWD:/app anoff/hugo-asciidoctor hugo --gc --minify -d $(Build.ArtifactStagingDirectory)
+      docker run --rm -v $PWD:/app anoff/hugo-asciidoctor hugo --gc --minify -d _site
+      cp -R _site/* $(Build.ArtifactStagingDirectory)/
       ls -ahl $(Build.ArtifactStagingDirectory)
 
 - task: PublishPipelineArtifact@0
