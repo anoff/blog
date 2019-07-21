@@ -31,14 +31,12 @@ steps:
     artifactName: 'blog'
     targetPath: '$(Build.ArtifactStagingDirectory)'
 
+- task: NodeTool@0
+  displayName: 'Install Node.js'
+
 - script: |
-    git clone https://anoff:$(github_token)@github.com/anoff/blog.git --branch=gh-test $(System.DefaultWorkingDirectory)/ghpages
-    cp -R '$(Build.ArtifactStagingDirectory)' $(System.DefaultWorkingDirectory)/ghpages
-    cd $(System.DefaultWorkingDirectory)/ghpages
     git config core.autocrlf false
     git config user.email ci@anoff.io
     git config user.name "CI Joe"
-    git add *
-    git commit --allow-empty -m "Automated build $(Build.BuildId)"
-    git push
+    npx gh-pages --dist '$(Build.ArtifactStagingDirectory)' --dotfiles --branch gh-test --repo https://anoff:$(github_token)@github.com/anoff/blog.git
   displayName: 'Publish to gh-pages'
