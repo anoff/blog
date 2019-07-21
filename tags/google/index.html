@@ -1,99 +1,307 @@
-<!doctype html><html class=no-js lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=author content="Andreas Offenhaeuser"><meta name=description content="Andreas' personal blog"><meta name=keywords content=blog,personal,software,architecture,node,markdown,plantuml,developer><meta name=generator content="Hugo 0.55.6"><title>google | Andreas&#39; Blog</title><meta name=description content="google - Andreas' personal blog"><meta itemprop=name content=google><meta itemprop=description content="google - Andreas' personal blog"><meta property=og:title content=google><meta property=og:description content="google - Andreas' personal blog"><meta property=og:image content="https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?size=200"><meta property=og:url content=https://blog.anoff.io/tags/google/><meta property=og:site_name content="Andreas' Blog"><meta property=og:type content=website><link rel=icon type=image/png href=https://blog.anoff.io/favicon-32x32.png sizes=32x32><link rel=icon type=image/png href=https://blog.anoff.io/favicon-16x16.png sizes=16x16><link href=/tags/google/ rel=alternate type=application/rss+xml title="Andreas' Blog"><link href=/tags/google/ rel=feed type=application/rss+xml title="Andreas' Blog"><link rel=stylesheet href=/sass/combined.min.52f29c7c50b8b42d07e557633ac1b4544e3f91c2f3a5bb0ab34dcd0e14b4e38e.css><link rel=stylesheet href=https://blog.anoff.io/adoc.css><link rel=stylesheet href=https://blog.anoff.io/overwrites.css><link rel=stylesheet href=//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css></head><body class=bilberry-hugo-theme><nav class=permanentTopNav><div class=container><ul class=topnav><li><a href=//anoff.io/ target=_self>About me</a></li><li><a href=/ target=_self>Blog</a></li><li><a href=//anoff.io/project/ target=_self>Projects</a></li><li><a href=/tags target=_self>by Tags</a></li><li><a href=//radar.anoff.io target=_blank>Tech skills</a></li><li><a href=//anoff.github.io/legal/ target=_blank>Legal</a></li></ul></div></nav><header><div class=container><div class=logo><a href=/ class=logo><img src=/avatar.png alt>
-<span class=overlay><i class="fa fa-child"></i></span></a></div><div class=titles><h3 class=title><a href=/>Andreas&#39; Blog</a></h3><span class=subtitle>Adventures of a software engineer/architect</span></div><div class="toggler permanentTopNav"><i class="fa fa-bars" aria-hidden=true></i></div></div></header><div class="main container"><div class="article-wrapper u-cf"><a class=bubble href=https://blog.anoff.io/2018-08-12-rbac-firestore/><i class="fa fa-fw fa-code"></i></a><article class="default article"><div class=featured-image><a href=https://blog.anoff.io/2018-08-12-rbac-firestore/><img src=/assets/rbac-firestore/feature.png alt></a></div><div class=content><h3><a href=https://blog.anoff.io/2018-08-12-rbac-firestore/>RBAC with Google Firestore</a></h3><div class=meta><span class="date moment">2018-08-12</span>
-<span class=readingTime>7 min read</span>
-<span class=author><a href=/author/anoff>anoff</a></span></div><p>This post will explain how to implement role based access control (<a href=https://en.wikipedia.org/wiki/Role-based_access_control>RBAC</a>) using the Google Firestore serverless database. Firebase and Firestore in particular with the concept presented in this post offers the most seamless integration of serverless infrastructure with a mobile client at this point. It has become my go to backend for all minor web apps I build.</p><ul><li><a href=#firestore-basics>Firestore basics</a></li><li><a href=#firestore-security-rules>Firestore Security Rules</a></li><li><a href=#rbac-example-scenario>RBAC example scenario</a></li><li><a href=#required-security-rules-for-rbac>Required security rules for RBAC</a></li><li><a href=#implementing-security-rules-for-rbac>Implementing security rules for RBAC</a><ul><li><a href=#rbac-helper-functions>RBAC helper functions</a></li><li><a href=#users-collection>Users collection</a></li><li><a href=#roles-collection>Roles collection</a></li><li><a href=#posts-collection>Posts collection</a></li><li><a href=#comments-collection>Comments collection</a></li></ul></li><li><a href=#summary>Summary</a></li></ul><h2 id=firestore-basics>Firestore basics</h2><p>Firestore is database that is part of Googles Firebase suite for mobile app development. It is currently in <em>beta</em> and has the potential to replace the current Firebase Realtime Database due to its superior API and features.
-&gt; <a href=https://firebase.google.com/docs/firestore/>Cloud Firestore</a> is a flexible, scalable database for mobile, web, and server development from Firebase and Google Cloud Platform</p><p>For those that never used a Firebase database; it is a NoSQL document oriented database. Firestore allows you to nest documents by creating multiple collections inside a document.</p><p><img src=/assets/rbac-firestore/firestore-documents.png width=640px alt="Screenshot of a Firestore database with nested collections"></p><p>The Firebase suite is built for mobile development and provides SDKs for all major languages. JavaScript/Node.js, Swift, Objective C, Android, Java, Python, Ruby, Go. The SDKs allow add, query or delete data as well as other operations required when interacting with a database as a client. One feature I really like is the possiblity to register your client to receive <a href=https://firebase.google.com/docs/firestore/query-data/listen>updates</a> automatically. This allows you to build <strong>three way data binding</strong> in realtime applications easily. This is a feature I used in my <a href=https://github.com/anoff/microllaborators>first project with Firebase</a>.</p><p>In combination with the Firebase <a href=https://firebase.google.com/docs/auth/>authentication provider</a> you can limit access the database to people that are logged in. The auth provider also provides an SDK and requires only a few lines of code to implement in a web app.</p><p><img src=/assets/rbac-firestore/dist/arch.svg alt="Firebase application design"></p><h2 id=firestore-security-rules>Firestore Security Rules</h2><p>The ability to create a detailed rule set make Firestore enable use cases for a serverless database without any backend code and still keeping data secure. It is also the foundation for building a role based access control.</p><blockquote><p>All roles and authorization rules will be enforced by the Firestore server</p></blockquote><p>Security rules are written in a JavaScript-like syntax but have their own methods. First you nest <code>match</code> operators to specify the document level you want to be affected by this rule. Use <code>{wildcards}</code> that can later on be referenced in the rule definition. Granting/denying access is done via an <code>allow &lt;method&gt; if</code> statement that grants access if it returns <code>true</code> or otherwise blocks the transaction.</p><pre><code class=language-javascript>service cloud.firestore {
-  match /databases/{database}/documents {
-    allow read, write: if &lt;some_condition&gt;;
-    allow delete: if false;
-  }
-}
-</code></pre><p>There are <strong>five methods</strong> that can be specified:</p><ol><li><code>get</code>: retrieve a single document</li><li><code>list</code>: read an entire collection or perform queries</li><li><code>create</code>: write to non existing documents</li><li><code>update</code>: write to existing documents</li><li><code>delete</code>: remove a document</li></ol><p>The modifying operations 3-5 can be addressed using the <code>write</code> method instead of specifying them individually, <code>read</code> applies both <em>get</em> and <em>list</em>. If multiple rules match for a request only one needs to resolve to <code>true</code> for the request to be successful.</p><pre><code class=language-javascript>// allow anyone to read but only signed in users to create/update; only a specific user can delete
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /posts/{document=**} {
-      allow read: if true;
-      allow create, update: if request.auth != null;
-      allow delete: if request.auth.uid == 'anoff_io';
-    }
-  }
-}
-</code></pre><h2 id=rbac-example-scenario>RBAC example scenario</h2><p>We will setup RBAC for a simple content site with <em>posts</em> that can be commented with the following roles:</p><ul><li><strong>admin</strong>: can assign roles</li><li><strong>writer</strong>: can create new posts, can modify its own posts</li><li><strong>editor</strong>: can edit any post, delete comments</li><li><strong>user</strong>: can create and modify its own comments, can modify his user settings</li></ul><p>On the root level of Firestore we add three different collections. One holds the content, one for user details and one that implements the roles per user. The reason to separate role assignments from the user document is to easily allow users to modify their own details without giving them the possibility to grant themselves new roles.</p><p><img src=/assets/rbac-firestore/dist/document-classes.svg alt="Class diagram of the database structure"></p><h2 id=required-security-rules-for-rbac>Required security rules for RBAC</h2><p>Given the collection setup and the above role definition we can define the rules we need to implement for each collection.</p><table><thead><tr><th></th><th>User</th><th>Roles</th><th>Posts</th><th>Comments</th></tr></thead><tbody><tr><td><code>get</code></td><td>anyone</td><td>user (own), admin</td><td>anyone</td><td>anyone</td></tr><tr><td><code>list</code></td><td>noone</td><td>admin</td><td>anyone</td><td>anyone</td></tr><tr><td><code>create</code></td><td>noone</td><td>noone</td><td>writer</td><td>user</td></tr><tr><td><code>update</code></td><td>user (own profile)</td><td>admin</td><td>writer (own), editor</td><td>user (own)</td></tr><tr><td><code>delete</code></td><td>user (own profile)</td><td>noone</td><td>writer (own)</td><td>user (own), editor</td></tr></tbody></table><h2 id=implementing-security-rules-for-rbac>Implementing security rules for RBAC</h2><p>We start with a default <em>DENY ALL</em> policy setup for the collections in our project.</p><pre><code class=language-javascript>service cloud.firestore {
-  match /databases/{database}/documents {
-    // this addresses any entry in the user collection
-    match /users/{user} {
-     	allow read, write: if false;
-    }
-    // rules for the roles setup
-    match /roles/{user} {
-      allow read, write: if false;
-    }
+<!doctype html>
+<html class="no-js" lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="author" content="Andreas Offenhaeuser">
+        <meta name="description" content="Andreas&#39; personal blog">
+        <meta name="keywords" content="blog,personal,software,architecture,node,markdown,plantuml,developer">
+        <meta name="generator" content="Hugo 0.55.6" />
+        <title> google | Andreas&#39; Blog</title>
+        <meta name="description" content="google - Andreas&#39; personal blog">
+        <meta itemprop="name" content="google">
+        <meta itemprop="description" content="google - Andreas&#39; personal blog">
+        <meta property="og:title" content="google">
+        <meta property="og:description" content="google - Andreas&#39; personal blog">
+        <meta property="og:image" content="https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?size=200">
+        <meta property="og:url" content="https://blog.anoff.io/tags/google/">
+        <meta property="og:site_name" content="Andreas&#39; Blog"><meta property="og:type" content="website">
+        <link rel="icon" type="image/png" href="https://blog.anoff.io/favicon-32x32.png" sizes="32x32">
+        <link rel="icon" type="image/png" href="https://blog.anoff.io/favicon-16x16.png" sizes="16x16">
 
-    match /posts/{post} {
-      allow read, write: if false;
-    }
+	
+	  <link href="/tags/google/" rel="alternate" type="application/rss+xml" title="Andreas&#39; Blog" />
+	  <link href="/tags/google/" rel="feed" type="application/rss+xml" title="Andreas&#39; Blog" />
+	
 
-    match /posts/{post}/comments/{comment} {
-      allow read, write: if false;
-    }
-  }
+        
+        
+        
+        
+        <link rel="stylesheet" href="/sass/combined.min.e59b3a385f4eecf22b37689781c927e19eb7f9f3c17f6dc4704f3e8a26dece8c.css">
+
+        
+
+        
+            
+                <link rel="stylesheet" href="https://blog.anoff.io/adoc.css">
+            
+                <link rel="stylesheet" href="https://blog.anoff.io/overwrites.css">
+            
+                <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css">
+            
+        
+    </head>
+    <body class="bilberry-hugo-theme">
+        
+<nav class="permanentTopNav">
+
+    <div class="container">
+        <ul class="topnav">
+            
+                
+                    <li><a href="//anoff.io/" target="_self">About me</a></li>
+                
+            
+                
+                    <li><a href="/" target="_self">Blog</a></li>
+                
+            
+                
+                    <li><a href="//anoff.io/project/" target="_self">Projects</a></li>
+                
+            
+                
+                    <li><a href="/tags" target="_self">by Tags</a></li>
+                
+            
+                
+                    <li><a href="//radar.anoff.io" target="_blank">Tech skills</a></li>
+                
+            
+                
+                    <li><a href="//anoff.github.io/legal/" target="_blank">Legal</a></li>
+                
+            
+        </ul>
+
+        
+    </div>
+</nav>
+
+
+        <header>
+    <div class="container">
+        <div class="logo">
+            <a href="/" class="logo">
+                
+                    <img src="/avatar.png" alt="">
+                
+
+                <span class="overlay"><i class="fa fa-child"></i></span>
+            </a>
+        </div>
+        <div class="titles">
+            <h3 class="title"><a href="/">Andreas&#39; Blog</a></h3>
+            
+                <span class="subtitle">Adventures of a software engineer/architect</span>
+            
+        </div>
+
+    
+
+        
+        <div class="toggler permanentTopNav">
+        
+            <i class="fa fa-bars" aria-hidden="true"></i>
+        </div>
+    </div>
+</header>
+
+
+        <div class="main container">
+            
+    
+    
+        <div class="article-wrapper u-cf">
+            
+                <a class="bubble" href="https://blog.anoff.io/2018-08-12-rbac-firestore/">
+    <i class="fa fa-fw fa-code"></i>
+</a>
+
+<article class="default article">
+    
+    <div class="featured-image">
+        <a href="https://blog.anoff.io/2018-08-12-rbac-firestore/">
+            <img src="/assets/rbac-firestore/feature.png" alt="">
+        </a>
+    </div>
+
+
+    <div class="content">
+    <h3><a href="https://blog.anoff.io/2018-08-12-rbac-firestore/">RBAC with Google Firestore</a></h3>
+    <div class="meta">
+        
+            
+                <span class="date moment">2018-08-12</span>
+            
+        
+
+        
+            <span class="readingTime">7 min read</span>
+        
+
+        
+
+        
+            <span class="author"><a href="/author/anoff">anoff</a></span>
+        
+    </div>
+
+    
+        <p>This post will explain how to implement role based access control (<a href="https://en.wikipedia.org/wiki/Role-based_access_control">RBAC</a>) using the Google Firestore serverless database. Firebase and Firestore in particular with the concept presented in this post offers the most seamless integration of serverless infrastructure with a mobile client at this point. It has become my go to backend for all minor web apps I build.</p>
+
+        
+            <a href="https://blog.anoff.io/2018-08-12-rbac-firestore/" class="more">Continue reading</a>
+        
+    
+</div>
+
+    
+<div class="footer">
+
+
+    
+        <div class="tags">
+            <i class="fa fa-tags"></i>
+            <div class="links">
+                
+                    <a href="/tags/google">google</a>
+                
+                    <a href="/tags/serverless">serverless</a>
+                
+                    <a href="/tags/web">web</a>
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+</article>
+
+            
+        </div>
+    
+
+    
+    <div class="paginator">
+        
+
+        
+    </div>
+
+
+
+        </div>
+
+        
+<footer>
+    <div class="container">
+
+        
+
+        
+
+        <div class="right">
+            
+            <div class="external-profiles">
+                <strong>Social media</strong>
+
+                
+                
+                    <a href="//twitter.com/anoff_io" target="_blank"><i class="fa fa-twitter-adblock-proof"></i></a>
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                    <a href="//github.com/anoff" target="_blank"><i class="fa fa-github"></i></a>
+                
+                
+                    <a href="//linkedin.com/in/offenhaeuser/" target="_blank"><i class="fa fa-linkedin"></i></a>
+                
+            </div>
+            
+
+            
+        </div>
+    </div>
+</footer>
+
+
+<div class="credits">
+    <div class="container">
+        <div class="copyright">
+            <a href="//anoff.io" target="_blank">
+                &copy;
+                
+                    2019
+                
+                by Andreas Offenhaeuser
+            </a>
+	    -
+		<a href="https://blog.anoff.io/tags/google/index.xml">RSS</a>
+        </div>
+        <div class="author">
+            <a href="//github.com/Lednerb/bilberry-hugo-theme" target="_blank">Bilberry Hugo Theme</a>
+        </div>
+    </div>
+</div>
+
+
+        
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-93890295-4', 'auto');
+	
+	ga('send', 'pageview');
 }
-</code></pre><h3 id=rbac-helper-functions>RBAC helper functions</h3><p>We start by implementing a few custom functions that help us define role based rules.</p><pre><code class=language-javascript>service cloud.firestore {
-  match /databases/{database}/documents {
-    ...
-    // the request object contains info about the authentication status of the requesting user
-    // if the .auth property is not set, the user is not signed in
-    function isSignedIn() {
-      return request.auth != null;
-    }
-    // return the current users entry in the roles collection
-    function getRoles() {
-      return get(/databases/$(database)/documents/roles/$(request.auth.uid)).data
-    }
-    // check if the current user has a specific role
-    function hasRole(role) {
-      return isSignedIn() &amp;&amp; getRoles()[role] == true;
-    }
-    // check if the user has any of the given roles (list)
-    function hasAnyRole(roles) {
-      return isSignedIn() &amp;&amp; getRoles().keys().hasAny(roles);
-    }
-  }
-}
-</code></pre><p>With these functions in the security rules you can now easily implement security roles based on the users roles.</p><h3 id=users-collection>Users collection</h3><p>First we make sure only the <em>user</em> itself can modify its data and <em>anyone</em> can view a specific user profile to enable them to see who posted comments.</p><pre><code class=language-javascript>match /users/{user} {
-  // anyone can see a specific users profile data (name, email etc), in a real scenario you might want to make this more granular
-  allow get: if true;
-  // noone can query for users
-  allow list, create: if false;
-  // users can modify their own data
-  allow update, delete: if request.auth.uid == user;
-}
-</code></pre><h3 id=roles-collection>Roles collection</h3><p>Next we enforce the rules for the role collection which should only allow <em>admins</em> to set roles. Of course a <em>user</em> should be able to retrieve its own designated roles in order to switch frontend features accordingly.</p><pre><code class=language-javascript>match /roles/{user} {
-  allow get: if request.auth.uid == user || hasRole('admin');
-  allow list: if hasRole('admin');
-  allow update: if hasRole('admin');
-  allow create, delete: if false;
-}
-</code></pre><h3 id=posts-collection>Posts collection</h3><p>This one is a little trickier because we first need to figure out who actually created the post if we want to enforce the <em>update</em> rule. Any <em>writer</em> should be able to create a new post but only update their own. An <em>editor</em> on the other hand should be able to update anyones post but not create one.</p><pre><code class=language-javascript>match /posts/{post} {
-  allow get, list: if true;
-  allow create: if hasRole('writer');
-  // check if the post author is identical to requesting user
-  allow update: if (hasRole('writer') &amp;&amp; resource.data.author == request.auth.uid) || hasRole('editor');
-  allow delete: if hasRole('writer') &amp;&amp; resource.data.author == request.auth.uid;
-}
-</code></pre><h3 id=comments-collection>Comments collection</h3><p>Make sure that <em>users</em> can modify or delete their comments and editors can <em>moderate</em> (delete) anyones comments. <em>Anyone</em> should be able to see read the available comments.</p><pre><code class=language-javascript>match /posts/{post}/comments/{comment} {
-  allow get, list: if true;
-  allow create: if hasRole('user');
-  // check if the comment author is identical to requesting user
-  allow update: if resource.data.author == request.auth.uid);
-  allow delete: if hasRole('editor') || (hasRole('user') &amp;&amp; resource.data.author == request.auth.uid);
-}
-</code></pre><h2 id=summary>Summary</h2><p>You created a Firestore ruleset that enforces <strong>data privacy and integrity</strong> by limiting access to resources based according to a role design.
-To bring RBAC to your application you need to consider a few things:</p><ol><li><a href=https://firebase.google.com/docs/firestore/security/get-started#use_the_firebase_cli>Deploy</a> the security rules into your Firebase project, highly recommend using the CLI or Travis</li><li>Implement a Firebase function that creates an entry in the <code>users</code> and <code>roles</code> collection for each new user using the <a href=https://firebase.google.com/docs/functions/auth-events>authentication trigger</a></li><li>Log in to your app and then manually grant yourself <em>admin</em> rights via the Firebase console</li></ol><p>To see a similar design implemented you can check out my <a href=https://github.com/anoff/techradar>techradar</a> project which also showcases how to implement RBAC on the frontend and setting up Travis CI to deploy Firebase rules. There are additional features available to secure Firestore data for example checking which parts of a resource are being changed in an update process to allow users to update only specific properties.</p><p>Drop me a message on <a href=https://twitter.com/anoff_io>Twitter</a> if you have any feedback about this post. Also check out my previous post on creating <a href=https://anoff.io/blog/2018-07-31-diagrams-with-plantuml/>PlantUML diagrams</a>.</p></div><div class=footer><div class=tags><i class="fa fa-tags"></i><div class=links><a href=/tags/google>google</a>
-<a href=/tags/serverless>serverless</a>
-<a href=/tags/web>web</a></div></div></div></article></div><div class=paginator></div></div><footer><div class=container><div class=right><div class=external-profiles><strong>Social media</strong>
-<a href=//twitter.com/anoff_io target=_blank><i class="fa fa-twitter-adblock-proof"></i></a><a href=//github.com/anoff target=_blank><i class="fa fa-github"></i></a><a href=//linkedin.com/in/offenhaeuser/ target=_blank><i class="fa fa-linkedin"></i></a></div></div></div></footer><div class=credits><div class=container><div class=copyright><a href=//anoff.io target=_blank>&copy;
-2019
-by Andreas Offenhaeuser</a>
--
-<a href=https://blog.anoff.io/tags/google/index.xml>RSS</a></div><div class=author><a href=//github.com/Lednerb/bilberry-hugo-theme target=_blank>Bilberry Hugo Theme</a></div></div></div><script type=application/javascript>var doNotTrack=false;if(!doNotTrack){window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;ga('create','UA-93890295-4','auto');ga('send','pageview');}</script><script async src=https://www.google-analytics.com/analytics.js></script><script type=text/javascript src=/js/externalDependencies.39c47e10e241eae2947b3fe21809c572.js integrity="md5-OcR&#43;EOJB6uKUez/iGAnFcg=="></script><script type=text/javascript src=/js/theme.ff50ae6dc1bfc220b23bf69dbb41b54e.js integrity="md5-/1CubcG/wiCyO/adu0G1Tg=="></script><script>$(".moment").each(function(){$(this).text(moment($(this).text()).locale("en").format('LL'));});$(".footnote-return sup").html("");</script><script src=https://blog.anoff.io/fix-adoc.js type=application/javascript></script><script src=//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js type=application/javascript></script><script src=https://blog.anoff.io/init-cookieconsent.js type=application/javascript></script></body></html>
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+        
+
+        
+        
+        <script type="text/javascript" src="/js/externalDependencies.d9216f6db8fba82175fa5f40d0bb9b8c.js" integrity="md5-2SFvbbj7qCF1&#43;l9A0LubjA=="></script>
+
+        
+        
+        <script type="text/javascript" src="/js/theme.d1b29b9e0ef43ea877f514c7e101a399.js" integrity="md5-0bKbng70Pqh39RTH4QGjmQ=="></script>
+
+        <script>
+            $(".moment").each(function() {
+                $(this).text(
+                    moment( $(this).text() )
+                        .locale( "en" )
+                        .format('LL')
+                );
+            });
+
+            $(".footnote-return sup").html("");
+        </script>
+
+        
+            
+                <script src="https://blog.anoff.io/fix-adoc.js" type="application/javascript"></script>
+            
+                <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js" type="application/javascript"></script>
+            
+                <script src="https://blog.anoff.io/init-cookieconsent.js" type="application/javascript"></script>
+            
+        
+
+        
+
+
+    </body>
+</html>

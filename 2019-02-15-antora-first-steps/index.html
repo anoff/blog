@@ -1,9 +1,333 @@
-<!doctype html><html class=no-js lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=author content="Andreas Offenhaeuser"><meta name=description content="Andreas' personal blog"><meta name=keywords content=blog,personal,software,architecture,node,markdown,plantuml,developer><meta name=generator content="Hugo 0.55.6"><title>Converting existing AsciiDoc into an Antora project | Andreas&#39; Blog</title><meta name=description content="Converting existing AsciiDoc into an Antora project - Andreas' personal blog"><meta itemprop=name content="Converting existing AsciiDoc into an Antora project"><meta itemprop=description content="Converting existing AsciiDoc into an Antora project - Andreas' personal blog"><meta property=og:title content="Converting existing AsciiDoc into an Antora project"><meta property=og:description content="Converting existing AsciiDoc into an Antora project - Andreas' personal blog"><meta property=og:image content=/assets/antora-arc42/antora-arc42.png><meta property=og:url content=https://blog.anoff.io/2019-02-15-antora-first-steps/><meta property=og:site_name content="Andreas' Blog"><meta property=og:type content=article><link rel=icon type=image/png href=https://blog.anoff.io/favicon-32x32.png sizes=32x32><link rel=icon type=image/png href=https://blog.anoff.io/favicon-16x16.png sizes=16x16><link href=/2019-02-15-antora-first-steps/ rel=alternate type=application/rss+xml title="Andreas' Blog"><link href=/2019-02-15-antora-first-steps/ rel=feed type=application/rss+xml title="Andreas' Blog"><link rel=stylesheet href=/sass/combined.min.52f29c7c50b8b42d07e557633ac1b4544e3f91c2f3a5bb0ab34dcd0e14b4e38e.css><link rel=stylesheet href=https://blog.anoff.io/adoc.css><link rel=stylesheet href=https://blog.anoff.io/overwrites.css><link rel=stylesheet href=//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css></head><body class=bilberry-hugo-theme><nav class=permanentTopNav><div class=container><ul class=topnav><li><a href=//anoff.io/ target=_self>About me</a></li><li><a href=/ target=_self>Blog</a></li><li><a href=//anoff.io/project/ target=_self>Projects</a></li><li><a href=/tags target=_self>by Tags</a></li><li><a href=//radar.anoff.io target=_blank>Tech skills</a></li><li><a href=//anoff.github.io/legal/ target=_blank>Legal</a></li></ul></div></nav><header><div class=container><div class=logo><a href=/ class=logo><img src=/avatar.png alt>
-<span class=overlay><i class="fa fa-child"></i></span></a></div><div class=titles><h3 class=title><a href=/>Andreas&#39; Blog</a></h3><span class=subtitle>Adventures of a software engineer/architect</span></div><div class="toggler permanentTopNav"><i class="fa fa-bars" aria-hidden=true></i></div></div></header><div class="main container"><div class="article-wrapper u-cf single"><a class=bubble href=https://blog.anoff.io/2019-02-15-antora-first-steps/><i class="fa fa-fw fa-code"></i></a><article class="default article"><div class=featured-image><a href=https://blog.anoff.io/2019-02-15-antora-first-steps/><img src=/assets/antora-arc42/antora-arc42.png alt></a></div><div class=content><h3><a href=https://blog.anoff.io/2019-02-15-antora-first-steps/>Converting existing AsciiDoc into an Antora project</a></h3><div class=meta><span class="date moment">2019-02-15</span>
-<span class=readingTime>7 min read</span>
-<span class=author><a href=/author/anoff>anoff</a></span></div><p>After 2 years of working with the arc42 template in markdown, I spent the last few weeks learning about an asciidoc based site generator named <a href=//antora.org/>Antora</a>. The main reason for the interest in AsciiDoc was the fact that the limited feature set in markdown often impairs you while writing down complex things. But I had one problem; most of our documentation is scattered across multiple repositories as we try to keep the docs as close to the code as possible. That is why this series will cover how to get a multi repository (software) architecture template up and running using <a href=//antora.org/>Antora</a>.</p><figure class=image-block><a class=image href=//antora-arc42-1.surge.sh><img src=/assets/antora-arc42/website.png alt="Preview image"></a><figcaption>Figure 1. This is a screenshot of the final result</figcaption></figure><section class="doc-section level-1"><h2 id=_the_starting_point>The starting point</h2><p>There are a few things that you should at least have heard of before you continue reading:</p><div class="olist arabic"><ol class=arabic><li><a href=//asciidoctor.org/docs/what-is-asciidoc/>AsciiDoc</a> is a markup language, kind of like Markdown but more powerful. Think of it as a hybrid between the extremely powerful LaTeX and the simple but easy to read Markdown.<ul><li>Compared to Markdown it focuses more on providing large documents like books or full blown documentation</li><li>You might also stumble upon <a href=//asciidoctor.org/>Asciidoctor</a> which is the de-facto standard for converting <code>asciidoc</code> files into readable formats like <code>pdf</code>, <code>html</code>, <code>epub</code> etc. whereas AsciiDoc itself is the markup syntax itself</li></ul></li><li><a href=//arc42.org/>arc42</a> is a software architecture template under MIT license that can be used in almost any scenario because it proves to be highly flexible and inherently agnostic of technology and domains</li><li><a href=//antora.org/>Antora</a> solves the problem of writing <code>AsciiDoc</code> distributed over multiple repositories by introducing a component concept and providing a generator that merges the multiple sources automatically</li></ol></div><p>The official <a href=//github.com/arc42/arc42-template/tree/master/EN/asciidoc>arc42 asciidoc template</a> is structured into the twelve arc42 chapters and one main file <code>arc42-template.adoc</code> which includes all the chapters as refernce to combine them into a kind of <em>book</em>.
-The main conflict I had with this concept in my projects was that I want my lower level software architecture to be close to the implementation and - in my multi-repository environment - that means a different repository than the overall concepts that arc42 focuses on in the first chapters.</p><p>The first step to introduce Antora is to make your <code>AsciiDoc</code> files actually comply with the Antora way of structuring documentation.</p></section><section class="doc-section level-1"><h2 id=_changing_docs_into_the_antora_structure>Changing docs into the Antora structure</h2><aside class="admonition-block note" role=note><h6 class="block-title label-only"><span class=title-label>Note:</span></h6><p>Because <a href=//gitlab.com/graphitefriction>Sara White</a> and <a href=//gitlab.com/mojavelinux>Dan Allen</a> did an amazing job with <a href=//docs.antora.org/>the Antora docs</a> detailing all the concepts behind Antora I will only mention the essentials here.</p></aside><p>There are two types of <em>abstraction</em> that Antora makes for distributed documentation; <code>Component</code> and <code>Module</code></p><div class=image-block><img src=/assets/plantuml/diagrams/dist/antora-artifacts.svg alt="Antora artifacts"></div><p>A <strong>component</strong> can have multiple modules that are all located in a fixed directory structure adjacent to each other, there can be only one component within a git repository. Each component must have at least one module, the <em>ROOT</em> module.
-The <strong>playbook</strong> (overall config of the documentation) references one or more git repositories that each contains a component with 1 or more modules.</p><div class="olist arabic"><ol class=arabic><li>Antora expects all documentation to be part of a <em>component</em><ol class=loweralpha type=a><li>any asciidoc file can reference or include files from other components within the same Antora project</li></ol></li><li>the playbook can define multiple content sources<ol class=loweralpha type=a><li>each content source needs to point to a root directory of a git repo (local or remote)</li><li>you can use <code>start_path</code> in a <a href=//docs.antora.org/antora/2.0/playbook/playbook-schema/#content-category>playfile source</a> to make the docs start relative to the git root</li><li>the repo must have at least one commit</li></ol></li><li>within this start path <a href=//docs.antora.org/antora/2.0/modules/#module-overview>a component structure</a> is expected<ol class=loweralpha type=a><li>the <a href=//docs.antora.org/antora/2.0/component-descriptor/#component-descriptor-requirements>antora.yml</a> file defines the position of a component</li><li>there must be a <code>modules/ROOT</code> (uppercase) module present</li><li>all <code>.adoc</code> files must reside in the <code>modules/XYZ/pages</code> directory</li></ol></li><li>files are only <code>include::</code>-able in Antora if they have the <code>:page-partial:</code> attribute<ol class=loweralpha type=a><li>see <a href=//gitlab.com/antora/antora/issues/405>antora#405</a> for Dan&#8217;s comments</li><li>the <code>:page-partial:</code> attribute only works as a document attribute following the document heading</li><li>if you only have lvl1 headings the attribute should be the very first line</li><li>my current feeling is that antora <code>.adoc</code> files should best be written as their own documents i.e. give each file a document title followed by the partial attribute</li></ol></li></ol></div></section><section class="doc-section level-1"><h2 id=_modifications_to_the_arc42_template>Modifications to the arc42 template</h2><div class=image-block><img src=/assets/antora-arc42/antora-arc42-s.png alt="Antora arc42 mashup"></div><section class="admonition-block warning" role=doc-notice><h6 class="block-title label-only"><span class=title-label>Warning:</span></h6><p>All links to my GitHub repo point to the HEAD commit at the time of writing; things might have changed on master.</p></section><p>The first version of the antora port remains as close to the original template as possible. To reproduce the result a couple of steps are necessary.</p><div class="olist arabic"><ol class=arabic><li>create the antora component structure with <code>docs/modules/ROOT/pages/</code><ol class=loweralpha type=a><li>the <code>docs/</code> folder is not required by Antora, but I did not like having documentation <em>modules</em> in the root of a git repo 🙄</li><li><p>add a <a href=//github.com/anoff/antora-arc42/blob/0e46f1c8b700e594b5b2e22718264a23b5f6cf42/playbook.yml>playbook.yml</a> to the root directory of the git repository specifying the current local directory as the only component and <code>start_path: docs</code></p><figure class=listing-block><figcaption>playbook.yml</figcaption><pre class=highlight><code class=language-adoc data-lang=adoc>site:
+<!doctype html>
+<html class="no-js" lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="author" content="Andreas Offenhaeuser">
+        <meta name="description" content="Andreas&#39; personal blog">
+        <meta name="keywords" content="blog,personal,software,architecture,node,markdown,plantuml,developer">
+        <meta name="generator" content="Hugo 0.55.6" />
+        <title> Converting existing AsciiDoc into an Antora project | Andreas&#39; Blog</title>
+        <meta name="description" content="Converting existing AsciiDoc into an Antora project - Andreas&#39; personal blog">
+        <meta itemprop="name" content="Converting existing AsciiDoc into an Antora project">
+        <meta itemprop="description" content="Converting existing AsciiDoc into an Antora project - Andreas&#39; personal blog">
+        <meta property="og:title" content="Converting existing AsciiDoc into an Antora project">
+        <meta property="og:description" content="Converting existing AsciiDoc into an Antora project - Andreas&#39; personal blog">
+        <meta property="og:image" content="/assets/antora-arc42/antora-arc42.png">
+        <meta property="og:url" content="https://blog.anoff.io/2019-02-15-antora-first-steps/">
+        <meta property="og:site_name" content="Andreas&#39; Blog">
+        <meta property="og:type" content="article">
+        <link rel="icon" type="image/png" href="https://blog.anoff.io/favicon-32x32.png" sizes="32x32">
+        <link rel="icon" type="image/png" href="https://blog.anoff.io/favicon-16x16.png" sizes="16x16">
+
+	
+	  <link href="/2019-02-15-antora-first-steps/" rel="alternate" type="application/rss+xml" title="Andreas&#39; Blog" />
+	  <link href="/2019-02-15-antora-first-steps/" rel="feed" type="application/rss+xml" title="Andreas&#39; Blog" />
+	
+
+        
+        
+        
+        
+        <link rel="stylesheet" href="/sass/combined.min.e59b3a385f4eecf22b37689781c927e19eb7f9f3c17f6dc4704f3e8a26dece8c.css">
+
+        
+
+        
+            
+                <link rel="stylesheet" href="https://blog.anoff.io/adoc.css">
+            
+                <link rel="stylesheet" href="https://blog.anoff.io/overwrites.css">
+            
+                <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css">
+            
+        
+    </head>
+    <body class="bilberry-hugo-theme">
+        
+<nav class="permanentTopNav">
+
+    <div class="container">
+        <ul class="topnav">
+            
+                
+                    <li><a href="//anoff.io/" target="_self">About me</a></li>
+                
+            
+                
+                    <li><a href="/" target="_self">Blog</a></li>
+                
+            
+                
+                    <li><a href="//anoff.io/project/" target="_self">Projects</a></li>
+                
+            
+                
+                    <li><a href="/tags" target="_self">by Tags</a></li>
+                
+            
+                
+                    <li><a href="//radar.anoff.io" target="_blank">Tech skills</a></li>
+                
+            
+                
+                    <li><a href="//anoff.github.io/legal/" target="_blank">Legal</a></li>
+                
+            
+        </ul>
+
+        
+    </div>
+</nav>
+
+
+        <header>
+    <div class="container">
+        <div class="logo">
+            <a href="/" class="logo">
+                
+                    <img src="/avatar.png" alt="">
+                
+
+                <span class="overlay"><i class="fa fa-child"></i></span>
+            </a>
+        </div>
+        <div class="titles">
+            <h3 class="title"><a href="/">Andreas&#39; Blog</a></h3>
+            
+                <span class="subtitle">Adventures of a software engineer/architect</span>
+            
+        </div>
+
+    
+
+        
+        <div class="toggler permanentTopNav">
+        
+            <i class="fa fa-bars" aria-hidden="true"></i>
+        </div>
+    </div>
+</header>
+
+
+        <div class="main container">
+            
+     
+    <div class="article-wrapper u-cf single">
+        
+            <a class="bubble" href="https://blog.anoff.io/2019-02-15-antora-first-steps/">
+    <i class="fa fa-fw fa-code"></i>
+</a>
+
+<article class="default article">
+    
+    <div class="featured-image">
+        <a href="https://blog.anoff.io/2019-02-15-antora-first-steps/">
+            <img src="/assets/antora-arc42/antora-arc42.png" alt="">
+        </a>
+    </div>
+
+
+    <div class="content">
+    <h3><a href="https://blog.anoff.io/2019-02-15-antora-first-steps/">Converting existing AsciiDoc into an Antora project</a></h3>
+    <div class="meta">
+        
+            
+                <span class="date moment">2019-02-15</span>
+            
+        
+
+        
+            <span class="readingTime">7 min read</span>
+        
+
+        
+
+        
+            <span class="author"><a href="/author/anoff">anoff</a></span>
+        
+    </div>
+
+    
+        <div class="paragraph">
+<p>After 2 years of working with the arc42 template in markdown, I spent the last few weeks learning about an asciidoc based site generator named <a href="//antora.org/">Antora</a>. The main reason for the interest in AsciiDoc was the fact that the limited feature set in markdown often impairs you while writing down complex things. But I had one problem; most of our documentation is scattered across multiple repositories as we try to keep the docs as close to the code as possible. That is why this series will cover how to get a multi repository (software) architecture template up and running using <a href="//antora.org/">Antora</a>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="//antora-arc42-1.surge.sh"><img src="/assets/antora-arc42/website.png" alt="Preview image"></a>
+</div>
+<div class="title">Figure 1. This is a screenshot of the final result</div>
+</div>
+<div class="sect1">
+<h2 id="_the_starting_point">The starting point</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>There are a few things that you should at least have heard of before you continue reading:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><a href="//asciidoctor.org/docs/what-is-asciidoc/">AsciiDoc</a> is a markup language, kind of like Markdown but more powerful. Think of it as a hybrid between the extremely powerful LaTeX and the simple but easy to read Markdown.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Compared to Markdown it focuses more on providing large documents like books or full blown documentation</p>
+</li>
+<li>
+<p>You might also stumble upon <a href="//asciidoctor.org/">Asciidoctor</a> which is the de-facto standard for converting <code>asciidoc</code> files into readable formats like <code>pdf</code>, <code>html</code>, <code>epub</code> etc. whereas AsciiDoc itself is the markup syntax itself</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><a href="//arc42.org/">arc42</a> is a software architecture template under MIT license that can be used in almost any scenario because it proves to be highly flexible and inherently agnostic of technology and domains</p>
+</li>
+<li>
+<p><a href="//antora.org/">Antora</a> solves the problem of writing <code>AsciiDoc</code> distributed over multiple repositories by introducing a component concept and providing a generator that merges the multiple sources automatically</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The official <a href="//github.com/arc42/arc42-template/tree/master/EN/asciidoc">arc42 asciidoc template</a> is structured into the twelve arc42 chapters and one main file <code>arc42-template.adoc</code> which includes all the chapters as refernce to combine them into a kind of <em>book</em>.
+The main conflict I had with this concept in my projects was that I want my lower level software architecture to be close to the implementation and - in my multi-repository environment - that means a different repository than the overall concepts that arc42 focuses on in the first chapters.</p>
+</div>
+<div class="paragraph">
+<p>The first step to introduce Antora is to make your <code>AsciiDoc</code> files actually comply with the Antora way of structuring documentation.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_changing_docs_into_the_antora_structure">Changing docs into the Antora structure</h2>
+<div class="sectionbody">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Because <a href="//gitlab.com/graphitefriction">Sara White</a> and <a href="//gitlab.com/mojavelinux">Dan Allen</a> did an amazing job with <a href="//docs.antora.org/">the Antora docs</a> detailing all the concepts behind Antora I will only mention the essentials here.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>There are two types of <em>abstraction</em> that Antora makes for distributed documentation; <code>Component</code> and <code>Module</code></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/plantuml/diagrams/dist/antora-artifacts.svg" alt="Antora artifacts">
+</div>
+</div>
+<div class="paragraph">
+<p>A <strong>component</strong> can have multiple modules that are all located in a fixed directory structure adjacent to each other, there can be only one component within a git repository. Each component must have at least one module, the <em>ROOT</em> module.
+The <strong>playbook</strong> (overall config of the documentation) references one or more git repositories that each contains a component with 1 or more modules.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Antora expects all documentation to be part of a <em>component</em></p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>any asciidoc file can reference or include files from other components within the same Antora project</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>the playbook can define multiple content sources</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>each content source needs to point to a root directory of a git repo (local or remote)</p>
+</li>
+<li>
+<p>you can use <code>start_path</code> in a <a href="//docs.antora.org/antora/2.0/playbook/playbook-schema/#content-category">playfile source</a> to make the docs start relative to the git root</p>
+</li>
+<li>
+<p>the repo must have at least one commit</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>within this start path <a href="//docs.antora.org/antora/2.0/modules/#module-overview">a component structure</a> is expected</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>the <a href="//docs.antora.org/antora/2.0/component-descriptor/#component-descriptor-requirements">antora.yml</a> file defines the position of a component</p>
+</li>
+<li>
+<p>there must be a <code>modules/ROOT</code> (uppercase) module present</p>
+</li>
+<li>
+<p>all <code>.adoc</code> files must reside in the <code>modules/XYZ/pages</code> directory</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>files are only <code>include::</code>-able in Antora if they have the <code>:page-partial:</code> attribute</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>see <a href="//gitlab.com/antora/antora/issues/405">antora#405</a> for Dan&#8217;s comments</p>
+</li>
+<li>
+<p>the <code>:page-partial:</code> attribute only works as a document attribute following the document heading</p>
+</li>
+<li>
+<p>if you only have lvl1 headings the attribute should be the very first line</p>
+</li>
+<li>
+<p>my current feeling is that antora <code>.adoc</code> files should best be written as their own documents i.e. give each file a document title followed by the partial attribute</p>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_modifications_to_the_arc42_template">Modifications to the arc42 template</h2>
+<div class="sectionbody">
+<div class="imageblock">
+<div class="content">
+<img src="/assets/antora-arc42/antora-arc42-s.png" alt="Antora arc42 mashup">
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+All links to my GitHub repo point to the HEAD commit at the time of writing; things might have changed on master.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The first version of the antora port remains as close to the original template as possible. To reproduce the result a couple of steps are necessary.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>create the antora component structure with <code>docs/modules/ROOT/pages/</code></p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>the <code>docs/</code> folder is not required by Antora, but I did not like having documentation <em>modules</em> in the root of a git repo 🙄</p>
+</li>
+<li>
+<p>add a <a href="//github.com/anoff/antora-arc42/blob/0e46f1c8b700e594b5b2e22718264a23b5f6cf42/playbook.yml">playbook.yml</a> to the root directory of the git repository specifying the current local directory as the only component and <code>start_path: docs</code></p>
+<div class="listingblock">
+<div class="title">playbook.yml</div>
+<div class="content">
+<pre class="highlight"><code class="language-adoc" data-lang="adoc">site:
   title: Antora ARC42 Template
   # the 404 page and sitemap files only get generated when the url property is set
   url: https://anoff.io/antora-arc42
@@ -17,12 +341,86 @@ ui:
   bundle:
     url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/master/raw/build/ui-bundle.zip?job=bundle-stable
     snapshot: true
-  supplemental_files: ./supplemental-ui</code></pre></figure></li><li>move all <a href=//github.com/arc42/arc42-template/tree/master/EN/asciidoc>arc42 template</a> files into the <code>ROOT/pages</code> directory directly - do not use subfolders within the pages directory</li><li><p>create an <a href=//github.com/anoff/antora-arc42/blob/0e46f1c8b700e594b5b2e22718264a23b5f6cf42/docs/antora.yml>antora.yml</a> that defines the entry point for the component into the <code>docs/</code> folder</p><figure class=listing-block><figcaption>antora.yml</figcaption><pre class=highlight><code class=language-adoc data-lang=adoc>name: system
+  supplemental_files: ./supplemental-ui</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>move all <a href="//github.com/arc42/arc42-template/tree/master/EN/asciidoc">arc42 template</a> files into the <code>ROOT/pages</code> directory directly - do not use subfolders within the pages directory</p>
+</li>
+<li>
+<p>create an <a href="//github.com/anoff/antora-arc42/blob/0e46f1c8b700e594b5b2e22718264a23b5f6cf42/docs/antora.yml">antora.yml</a> that defines the entry point for the component into the <code>docs/</code> folder</p>
+<div class="listingblock">
+<div class="title">antora.yml</div>
+<div class="content">
+<pre class="highlight"><code class="language-adoc" data-lang="adoc">name: system
 title: System Level
 version: 0.9.0
 start_page: 03_system_scope_and_context.adoc
 nav:
-  - modules/ROOT/nav.adoc</code></pre></figure></li></ol></li><li>rewrite all template files to be adoc documents<ol class=loweralpha type=a><li>turn the <code>== Level 1 Heading</code> into <code>= Document title</code></li><li>adjust subsequent headings to preserve heading hierarchy</li><li>add the <code>:page-partial:</code> attribute to each document</li></ol></li><li>I got rid of all the help popups and instead made it fully visible <em>sidebar</em> content</li><li>create a <a href=//github.com/anoff/antora-arc42/blob/0e46f1c8b700e594b5b2e22718264a23b5f6cf42/docs/modules/ROOT/nav.adoc>nav.adoc</a> navigation entry for the ROOT component<ol class=loweralpha type=a><li>this is used to create the navbar entry on the right</li></ol></li><li>Fix paths in the overview document<ol class=loweralpha type=a><li>I renamed <code>arc42-template.adoc</code> to <code>index.adoc</code></li><li>also make sure to change all <code>include::</code> paths to no longer use the <code>src/</code> subfolder</li><li><a href=//gitlab.com/antora/antora/issues/405#note_139121293>Dan recommends</a> to use component references instead of local paths from the beginning, I assume this makes copy pasting less error-prone</li></ol></li></ol></div><p>If you want to follow the steps in detail, take a look at the <a href=//github.com/anoff/antora-arc42/commits/0e46f1c8b700e594b5b2e22718264a23b5f6cf42>commits on my GitHub repo</a>.</p><p>This should already yield a working page. You can test it running the following commands</p><div class=listing-block><pre class=highlight><code class=language-sh data-lang=sh># install the antora tools
+  - modules/ROOT/nav.adoc</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>rewrite all template files to be adoc documents</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>turn the <code>== Level 1 Heading</code> into <code>= Document title</code></p>
+</li>
+<li>
+<p>adjust subsequent headings to preserve heading hierarchy</p>
+</li>
+<li>
+<p>add the <code>:page-partial:</code> attribute to each document</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>I got rid of all the help popups and instead made it fully visible <em>sidebar</em> content</p>
+</li>
+<li>
+<p>create a <a href="//github.com/anoff/antora-arc42/blob/0e46f1c8b700e594b5b2e22718264a23b5f6cf42/docs/modules/ROOT/nav.adoc">nav.adoc</a> navigation entry for the ROOT component</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>this is used to create the navbar entry on the right</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Fix paths in the overview document</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>I renamed <code>arc42-template.adoc</code> to <code>index.adoc</code></p>
+</li>
+<li>
+<p>also make sure to change all <code>include::</code> paths to no longer use the <code>src/</code> subfolder</p>
+</li>
+<li>
+<p><a href="//gitlab.com/antora/antora/issues/405#note_139121293">Dan recommends</a> to use component references instead of local paths from the beginning, I assume this makes copy pasting less error-prone</p>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>If you want to follow the steps in detail, take a look at the <a href="//github.com/anoff/antora-arc42/commits/0e46f1c8b700e594b5b2e22718264a23b5f6cf42">commits on my GitHub repo</a>.</p>
+</div>
+<div class="paragraph">
+<p>This should already yield a working page. You can test it running the following commands</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sh" data-lang="sh"># install the antora tools
 npm i -g @antora/cli@2.0 @antora/site-generator-default@2.0
 # install the serve utility to start a local web server
 npm i -g serve
@@ -31,13 +429,262 @@ npm i -g serve
 antora generate playbook.yml --to-dir dist/ --clean
 
 # browse the output locally
-serve dist/</code></pre></div><aside class="admonition-block tip" role=doc-tip><h6 class="block-title label-only"><span class=title-label>Tip:</span></h6><p>In case you want to publish to gh pages or any other service that might run jekyll <a href=//docs.antora.org/antora/2.0/run-antora/#publish-to-github-pages>take a look at these notes</a> describing how to make antora work in a jekyll environment</p></aside></section><section class="doc-section level-1"><h2 id=_customizing_the_ui>Customizing the UI</h2><p>I actually think Antora&#8217;s default UI is quite pleasing - compared to the default plantUML theme 🙄. But I wanted to modify their default footer content. For small changes Antora has a concept of <em>supplemental</em> UI files that allows you to switch individual files of the UI component that are used during the Antora site generation.</p><p>By taking a look at the <a href=//gitlab.com/antora/antora-ui-default/tree/master/src/partials>default UI project</a> I identified the <code>footer-content.hbs</code> as the file I wanted to replace.
-This is achieved by the <code>supplemental_files: ./supplemental-ui</code> section in the <code>playbook.yml</code> and adding the custom footer file in the respective directory.</p><figure class=listing-block><figcaption>supplemental-ui/footer-content.hbs</figcaption><pre class=highlight><code class=language-hbs data-lang=hbs>&lt;footer class="footer"&gt;
+serve dist/</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+In case you want to publish to gh pages or any other service that might run jekyll <a href="//docs.antora.org/antora/2.0/run-antora/#publish-to-github-pages">take a look at these notes</a> describing how to make antora work in a jekyll environment
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_customizing_the_ui">Customizing the UI</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>I actually think Antora&#8217;s default UI is quite pleasing - compared to the default plantUML theme 🙄. But I wanted to modify their default footer content. For small changes Antora has a concept of <em>supplemental</em> UI files that allows you to switch individual files of the UI component that are used during the Antora site generation.</p>
+</div>
+<div class="paragraph">
+<p>By taking a look at the <a href="//gitlab.com/antora/antora-ui-default/tree/master/src/partials">default UI project</a> I identified the <code>footer-content.hbs</code> as the file I wanted to replace.
+This is achieved by the <code>supplemental_files: ./supplemental-ui</code> section in the <code>playbook.yml</code> and adding the custom footer file in the respective directory.</p>
+</div>
+<div class="listingblock">
+<div class="title">supplemental-ui/footer-content.hbs</div>
+<div class="content">
+<pre class="highlight"><code class="language-hbs" data-lang="hbs">&lt;footer class="footer"&gt;
   &lt;p&gt;Original arc42 template licensed under &lt;a href="https://raw.githubusercontent.com/arc42/arc42-template/master/LICENSE.txt"&gt;MIT&lt;/a&gt; and modified for antora fit by &lt;a href="https://anoff.io"&gt;Andreas Offenhaeuser&lt;/a&gt;, the page is created using the Antora Default UI licensed under &lt;a href="https://gitlab.com/antora/antora-ui-default/blob/master/LICENSE"&gt;MPL-2.0&lt;/a&gt; &lt;/p&gt;
-&lt;/footer&gt;</code></pre></figure><p>In addition to this I added the <strong>Find on GitHub</strong> entry in the header, but I am sure you can figure out how that works 😉</p><p>You can find the final result of all steps in this first tutorial <a href=//antora-arc42-1.surge.sh>at antora-arc42-1.surge.sh</a></p></section><section class="doc-section level-1"><h2 id=_next_steps>Next steps</h2><p>Over the next few days/weeks I will keep working on this setup to bring in more aspects I see necessary for a real life scenario.</p><div class="olist arabic"><ol class=arabic><li>separate <em>larger</em> sections of the arc42 template into their own antora component, e.g. architecture decisions, cross cutting concepts</li><li>setting up a multi repo arc42 playbook that consists of<ul><li>a <em>system</em> repository containing the top level architecture docs</li><li>two components that implement a part of the system and have the component specific documentation allocated in the same repository</li><li>an antora build that generates a fully integrated arc42 documentation out of those three repos</li></ul></li><li>build a custom UI project<ul><li>modified header colors etc</li></ul></li><li>add plantUML support</li></ol></div><p>Stay tuned for follow up posts on these steps.</p><p>If you have any questions send me a DM on <a href=//twitter.com/anoff_io>Twitter</a> or leave a comment below.</p></section></div><div class=footer><div class=tags><i class="fa fa-tags"></i><div class=links><a href=/tags/development>development</a>
-<a href=/tags/docs>docs</a>
-<a href=/tags/architecture>architecture</a></div></div></div></article></div><div id=disqus_thread></div><script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return;}
-var d=document,s=d.createElement('script');s.async=true;s.src='//'+"anoff-io"+'.disqus.com/embed.js';s.setAttribute('data-timestamp',+new Date());(d.head||d.body).appendChild(s);})();</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div><footer><div class=container><div class=right><div class=external-profiles><strong>Social media</strong>
-<a href=//twitter.com/anoff_io target=_blank><i class="fa fa-twitter-adblock-proof"></i></a><a href=//github.com/anoff target=_blank><i class="fa fa-github"></i></a><a href=//linkedin.com/in/offenhaeuser/ target=_blank><i class="fa fa-linkedin"></i></a></div></div></div></footer><div class=credits><div class=container><div class=copyright><a href=//anoff.io target=_blank>&copy;
-2019
-by Andreas Offenhaeuser</a></div><div class=author><a href=//github.com/Lednerb/bilberry-hugo-theme target=_blank>Bilberry Hugo Theme</a></div></div></div><script type=application/javascript>var doNotTrack=false;if(!doNotTrack){window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;ga('create','UA-93890295-4','auto');ga('send','pageview');}</script><script async src=https://www.google-analytics.com/analytics.js></script><script type=text/javascript src=/js/externalDependencies.39c47e10e241eae2947b3fe21809c572.js integrity="md5-OcR&#43;EOJB6uKUez/iGAnFcg=="></script><script type=text/javascript src=/js/theme.ff50ae6dc1bfc220b23bf69dbb41b54e.js integrity="md5-/1CubcG/wiCyO/adu0G1Tg=="></script><script>$(".moment").each(function(){$(this).text(moment($(this).text()).locale("en").format('LL'));});$(".footnote-return sup").html("");</script><script src=https://blog.anoff.io/fix-adoc.js type=application/javascript></script><script src=//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js type=application/javascript></script><script src=https://blog.anoff.io/init-cookieconsent.js type=application/javascript></script></body></html>
+&lt;/footer&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In addition to this I added the <strong>Find on GitHub</strong> entry in the header, but I am sure you can figure out how that works 😉</p>
+</div>
+<div class="paragraph">
+<p>You can find the final result of all steps in this first tutorial <a href="//antora-arc42-1.surge.sh">at antora-arc42-1.surge.sh</a></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_next_steps">Next steps</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Over the next few days/weeks I will keep working on this setup to bring in more aspects I see necessary for a real life scenario.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>separate <em>larger</em> sections of the arc42 template into their own antora component, e.g. architecture decisions, cross cutting concepts</p>
+</li>
+<li>
+<p>setting up a multi repo arc42 playbook that consists of</p>
+<div class="ulist">
+<ul>
+<li>
+<p>a <em>system</em> repository containing the top level architecture docs</p>
+</li>
+<li>
+<p>two components that implement a part of the system and have the component specific documentation allocated in the same repository</p>
+</li>
+<li>
+<p>an antora build that generates a fully integrated arc42 documentation out of those three repos</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>build a custom UI project</p>
+<div class="ulist">
+<ul>
+<li>
+<p>modified header colors etc</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>add plantUML support</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Stay tuned for follow up posts on these steps.</p>
+</div>
+<div class="paragraph">
+<p>If you have any questions send me a DM on <a href="//twitter.com/anoff_io">Twitter</a> or leave a comment below.</p>
+</div>
+</div>
+</div>
+
+    
+</div>
+
+    
+<div class="footer">
+
+
+    
+        <div class="tags">
+            <i class="fa fa-tags"></i>
+            <div class="links">
+                
+                    <a href="/tags/development">development</a>
+                
+                    <a href="/tags/docs">docs</a>
+                
+                    <a href="/tags/architecture">architecture</a>
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+</article>
+
+        
+    </div>
+
+    
+        <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "anoff-io" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    
+
+     
+
+        </div>
+
+        
+<footer>
+    <div class="container">
+
+        
+
+        
+
+        <div class="right">
+            
+            <div class="external-profiles">
+                <strong>Social media</strong>
+
+                
+                
+                    <a href="//twitter.com/anoff_io" target="_blank"><i class="fa fa-twitter-adblock-proof"></i></a>
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                    <a href="//github.com/anoff" target="_blank"><i class="fa fa-github"></i></a>
+                
+                
+                    <a href="//linkedin.com/in/offenhaeuser/" target="_blank"><i class="fa fa-linkedin"></i></a>
+                
+            </div>
+            
+
+            
+        </div>
+    </div>
+</footer>
+
+
+<div class="credits">
+    <div class="container">
+        <div class="copyright">
+            <a href="//anoff.io" target="_blank">
+                &copy;
+                
+                    2019
+                
+                by Andreas Offenhaeuser
+            </a>
+	    
+        </div>
+        <div class="author">
+            <a href="//github.com/Lednerb/bilberry-hugo-theme" target="_blank">Bilberry Hugo Theme</a>
+        </div>
+    </div>
+</div>
+
+
+        
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-93890295-4', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+        
+
+        
+        
+        <script type="text/javascript" src="/js/externalDependencies.d9216f6db8fba82175fa5f40d0bb9b8c.js" integrity="md5-2SFvbbj7qCF1&#43;l9A0LubjA=="></script>
+
+        
+        
+        <script type="text/javascript" src="/js/theme.d1b29b9e0ef43ea877f514c7e101a399.js" integrity="md5-0bKbng70Pqh39RTH4QGjmQ=="></script>
+
+        <script>
+            $(".moment").each(function() {
+                $(this).text(
+                    moment( $(this).text() )
+                        .locale( "en" )
+                        .format('LL')
+                );
+            });
+
+            $(".footnote-return sup").html("");
+        </script>
+
+        
+            
+                <script src="https://blog.anoff.io/fix-adoc.js" type="application/javascript"></script>
+            
+                <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js" type="application/javascript"></script>
+            
+                <script src="https://blog.anoff.io/init-cookieconsent.js" type="application/javascript"></script>
+            
+        
+
+        
+
+
+    </body>
+</html>

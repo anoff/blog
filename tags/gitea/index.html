@@ -1,263 +1,388 @@
-<!doctype html><html class=no-js lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=author content="Andreas Offenhaeuser"><meta name=description content="Andreas' personal blog"><meta name=keywords content=blog,personal,software,architecture,node,markdown,plantuml,developer><meta name=generator content="Hugo 0.55.6"><title>gitea | Andreas&#39; Blog</title><meta name=description content="gitea - Andreas' personal blog"><meta itemprop=name content=gitea><meta itemprop=description content="gitea - Andreas' personal blog"><meta property=og:title content=gitea><meta property=og:description content="gitea - Andreas' personal blog"><meta property=og:image content="https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?size=200"><meta property=og:url content=https://blog.anoff.io/tags/gitea/><meta property=og:site_name content="Andreas' Blog"><meta property=og:type content=website><link rel=icon type=image/png href=https://blog.anoff.io/favicon-32x32.png sizes=32x32><link rel=icon type=image/png href=https://blog.anoff.io/favicon-16x16.png sizes=16x16><link href=/tags/gitea/ rel=alternate type=application/rss+xml title="Andreas' Blog"><link href=/tags/gitea/ rel=feed type=application/rss+xml title="Andreas' Blog"><link rel=stylesheet href=/sass/combined.min.52f29c7c50b8b42d07e557633ac1b4544e3f91c2f3a5bb0ab34dcd0e14b4e38e.css><link rel=stylesheet href=https://blog.anoff.io/adoc.css><link rel=stylesheet href=https://blog.anoff.io/overwrites.css><link rel=stylesheet href=//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css></head><body class=bilberry-hugo-theme><nav class=permanentTopNav><div class=container><ul class=topnav><li><a href=//anoff.io/ target=_self>About me</a></li><li><a href=/ target=_self>Blog</a></li><li><a href=//anoff.io/project/ target=_self>Projects</a></li><li><a href=/tags target=_self>by Tags</a></li><li><a href=//radar.anoff.io target=_blank>Tech skills</a></li><li><a href=//anoff.github.io/legal/ target=_blank>Legal</a></li></ul></div></nav><header><div class=container><div class=logo><a href=/ class=logo><img src=/avatar.png alt>
-<span class=overlay><i class="fa fa-child"></i></span></a></div><div class=titles><h3 class=title><a href=/>Andreas&#39; Blog</a></h3><span class=subtitle>Adventures of a software engineer/architect</span></div><div class="toggler permanentTopNav"><i class="fa fa-bars" aria-hidden=true></i></div></div></header><div class="main container"><div class="article-wrapper u-cf"><a class=bubble href=https://blog.anoff.io/2019-03-24-self-hosted-gitea-drone/><i class="fa fa-fw fa-code"></i></a><article class="default article"><div class=featured-image><a href=https://blog.anoff.io/2019-03-24-self-hosted-gitea-drone/><img src=/assets/gitea-drone/title.png alt></a></div><div class=content><h3><a href=https://blog.anoff.io/2019-03-24-self-hosted-gitea-drone/>Hosting Gitea and Drone with Docker</a></h3><div class=meta><span class="date moment">2019-03-24</span>
-<span class=readingTime>8 min read</span>
-<span class=author><a href=/author/anoff>anoff</a></span></div><p>This post will walk you through setting up a self hosted git based continuous integration environment on a two machine setup - assuming you already have two virtual machines at your disposal.
-Using <a href=https://gitea.io/><strong>Gitea</strong></a> for git hosting and contribution management and <a href=https://drone.io/><strong>Drone</strong></a> for docker-based build jobs, this will guide you through creating <strong>docker-compose</strong> files as well as configuring the individual services and getting <strong>SSL certificates</strong> via <a href=https://traefik.io/><strong>traefik</strong></a>.
-Docker and docker-compose knowledge is required for this tutorial. It mostly focuses on the correct configuration of all the services at play here and not explaining their basic functionality.</p><p>This tutorial uses Azure resources so some of the aspects might not be 100% applicable if you chose another infrastructure provider.</p><p><figure class=image-block><img src=/assets/gitea-drone/vm-setup.svg alt="Infrastructure setup"><figcaption>Figure 1. Required infrastructure setup</figcaption></figure><p>The post will keep referring to <em>the gitea vm</em> or <em>the drone machine</em>, it might be useful to add DNS records to easily identify which machine you are looking at.</p></section><section class="doc-section level-1"><h2 id=_prepare_postgresql>Prepare PostgreSQL</h2><p>This is suggested if you want to have a shared PostgreSQL server with other applications accessing it too.
-Administration is easiest via <a href=https://shell.azure.com>Azure Cloud shell</a> after activating <em>Allow access to Azure services</em> in the <em>Connection Security</em> pane of the Postgres server.
-The Azure Shell already has the <code>psql</code> and other CLIs installed by default.</p><div class=listing-block><pre class=highlight><code class=language-bash data-lang=bash>psql --host=mydb.postgres.database.azure.com --port=5432 --username=machina@mydb --dbname=postgres
-# interactive password login
-CREATE EXTENSION pg_trgm;
-CREATE ROLE gitea with LOGIN CREATEDB PASSWORD 'supersexypassword';
-CREATE DATABASE gitea;
-GRANT ALL PRIVILEGES ON DATABASE gitea to gitea;</code></pre></div></section><section class="doc-section level-1"><h2 id=_configure_the_virtual_machines>Configure the Virtual Machines</h2><p>For each virtual machine do the following steps</p><div class="olist arabic"><ol class=arabic><li>Install Docker &amp; docker-compose</li><li>Format &amp; auto mount data disk</li><li>Create a Docker user</li><li>Change SSH port to 2022</li></ol></div><section class="doc-section level-2"><h3 id=_install_docker_docker_compose>Install Docker &amp; docker-compose</h3><div class=listing-block><pre class=highlight><code class=language-bash data-lang=bash># Docker
-#   https://docs.docker.com/install/linux/docker-ce/ubuntu/
-sudo apt-get remove docker docker-engine docker.io containerd runc
-sudo apt-get update
-sudo apt-get -y install \
-  apt-transport-https \
-  ca-certificates \
-  curl \
-  gnupg-agent \
-  software-properties-common
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-sudo add-apt-repository \
-   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
-   $(lsb_release -cs) \
-   stable"
-sudo apt-get update
-sudo apt-get -y install docker-ce docker-ce-cli containerd.io
+<!doctype html>
+<html class="no-js" lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="author" content="Andreas Offenhaeuser">
+        <meta name="description" content="Andreas&#39; personal blog">
+        <meta name="keywords" content="blog,personal,software,architecture,node,markdown,plantuml,developer">
+        <meta name="generator" content="Hugo 0.55.6" />
+        <title> gitea | Andreas&#39; Blog</title>
+        <meta name="description" content="gitea - Andreas&#39; personal blog">
+        <meta itemprop="name" content="gitea">
+        <meta itemprop="description" content="gitea - Andreas&#39; personal blog">
+        <meta property="og:title" content="gitea">
+        <meta property="og:description" content="gitea - Andreas&#39; personal blog">
+        <meta property="og:image" content="https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?size=200">
+        <meta property="og:url" content="https://blog.anoff.io/tags/gitea/">
+        <meta property="og:site_name" content="Andreas&#39; Blog"><meta property="og:type" content="website">
+        <link rel="icon" type="image/png" href="https://blog.anoff.io/favicon-32x32.png" sizes="32x32">
+        <link rel="icon" type="image/png" href="https://blog.anoff.io/favicon-16x16.png" sizes="16x16">
 
-# Compose
-#   https://docs.docker.com/compose/install/
-sudo curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose</code></pre></div></section><section class="doc-section level-2"><h3 id=_mount_data_disk>Mount data disk</h3><aside class="admonition-block note" role=note><h6 class="block-title label-only"><span class=title-label>Note:</span></h6><p>This step is only necessary if you want to use external data disks like I do and do not have them mounted already.</p></aside><p><code>lsblk</code>: Find available disks and check for the device mountpoint of your data disk</p><p>The following script will format the device as <code>ext4</code> and mount it under <code>/data</code>. If you prefer your data to reside anywhere else keep in mind that this tutorial uses <code>/data</code> later on again.</p><div class=listing-block><pre class=highlight><code class=language-bash data-lang=bash>sudo -s # enter root mode
-DATA_DISK=/dev/sdc # CHANGE TO YOUR &lt;MOUNTPOINT&gt;
-# Mount data disk, xfs will not encrypt on Azure
-mkfs.ext4 ${DATA_DISK}
+	
+	  <link href="/tags/gitea/" rel="alternate" type="application/rss+xml" title="Andreas&#39; Blog" />
+	  <link href="/tags/gitea/" rel="feed" type="application/rss+xml" title="Andreas&#39; Blog" />
+	
 
-# identify UUID: blkid -s UUID
-DATA_DISK_UUID=$(blkid -s UUID -o value ${DATA_DISK})
-mkdir /data
-# Add line to /etc/fstab
-echo "UUID=${DATA_DISK_UUID} /data auto defaults 0 0" &gt;&gt; /etc/fstab
-mount -a
-exit</code></pre></div><p>For more information refer to the [Azure help](<a class=bare href=https://docs.microsoft.com/en-us/azure/virtual-machines/linux/attach-disk-portal>https://docs.microsoft.com/en-us/azure/virtual-machines/linux/attach-disk-portal</a>).</p></section><section class="doc-section level-2"><h3 id=_create_a_docker_user>Create a Docker user</h3><p>To isolate the docker process create a separate unix user that belongs to the docker group and owns the data directory.
-This user will later be used to run the docker containers.</p><div class=listing-block><pre class=highlight><code class=language-sh data-lang=sh>sudo -s
-DOCKER_USER=minion
-mkdir /data/home
-mkdir /data/volumes
-useradd -d /data/home ${DOCKER_USER}
-chown ${DOCKER_USER}: /data/home -R
-chown ${DOCKER_USER}: /data/volumes/ -R
-# give docker access by adding it to the group
-gpasswd -a ${DOCKER_USER} docker
-exit
-# find user ID
-id ${DOCKER_USER}</code></pre></div><aside class="admonition-block note" role=note><h6 class="block-title label-only"><span class=title-label>Note:</span></h6><p>For the Gitea setup we will later need this users ID.</p></aside></section><section class="doc-section level-2"><h3 id=_change_ssh_port>Change SSH port</h3><p>Changing the SSH port only reduces the attack vector but does not make your system any more secure.
-It is still a practice I follow for all my systems because it is minimal effort and makes it harder for port scanners to find the machine.
-In the case of the Gitea server this is also recommended as it easily allows you to bind the SSH port for git access.</p><div class=listing-block><pre class=highlight><code class=language-bash data-lang=bash>sudo nano /etc/ssh/sshd_config
-# uncomment and change L3: Port 2222</code></pre></div></section></section><section class="doc-section level-1"><h2 id=_reverse_proxy_setup>Reverse Proxy setup</h2><p>Even though Gitea and Drone come with integrated <a href=https://letsencrypt.org/>Let&#8217;s Encrypt</a> support to generate SSL certificates I chose another path.
-For one reason I could not get them working properly and adding a dedicated reverse proxy to handle SSL and routing makes any migrations or changes to the setup easier.</p><p>In this setup <a href=https://traefik.io/>traefik</a> is used as a low profile router.
-The picture below shows an example setup how traefik can be used within docker to make two different services A and service B accessible from the outside, both via HTTP on port 80 as well as auto generated SSL certificates on HTTPS 443.
-Traefik by default forwards HTTP requests to HTTPS which should be what you want.
-By configuring traefik within the docker-compose you can expose both services under different DNS names with a single public IP address.</p><aside class="admonition-block note" role=note><h6 class="block-title label-only"><span class=title-label>Note:</span></h6><p>If you do not wish to use a reverse proxy then simply do not follow the traefik specific configuration.</p></aside><figure class=image-block><img src=/assets/gitea-drone/rp-setup.svg alt="Proxy setup"><figcaption>Figure 2. Reverse proxy in docker using traefik</figcaption></figure></section><section class="doc-section level-1"><h2 id=_setting_up_gitea>Setting up Gitea</h2><p>Connect to the gitea VM, switch to the user that was previously created using <code>sudo su - minion</code> and create the <code>docker-compose.yml</code>.
-Even though it is possible to configure Gitea to some extend using docker-compose I suggest only using minimal definitions in the compose file itself and then modify the <code>app.ini</code> after an initial start.
-There are certain settings that are only possible in the ini file itself.</p><section class="doc-section level-2"><h3 id=_compose_file>Compose file</h3><figure class=listing-block><figcaption>docker-compose.yml</figcaption><pre class=highlight><code class=language-yaml data-lang=yaml>version: "2"
+        
+        
+        
+        
+        <link rel="stylesheet" href="/sass/combined.min.e59b3a385f4eecf22b37689781c927e19eb7f9f3c17f6dc4704f3e8a26dece8c.css">
 
-networks:
-  gitea:
-    external: false
+        
 
-services:
-  server:
-    image: gitea/gitea:1 # :latest runs dev builds https://hub.docker.com/r/gitea/gitea/tags
-    environment:
-      - USER_UID=1001 <b class=conum>1</b>
-      - USER_GID=1001
-      - DB_TYPE=postgres
-      - DB_HOST=mydb.postgres.database.azure.com:5432 <b class=conum>2</b>
-      - DB_NAME=gitea
-      - DB_USER=gitea
-      - DB_PASSWD=supersexypassword
-      - SSH_DOMAIN=gitea.mydomain.com <b class=conum>3</b>
-      - HTTP_PORT=80
-      - ROOT_URL=""
-    networks:
-      - gitea
-    volumes:
-      - /data/volumes/gitea:/data <b class=conum>4</b>
-    ports:
-      - "3000:3000" <b class=conum>5</b>
-      - "22:22"
-    labels:
-      - "traefik.enabled=true"
-      - "traefik.backend=gitea"
-      - "traefik.frontend.rule=Host:gitea.mydomain.com" <b class=conum>3</b>
-      - "traefik.docker.network=gitea"
-      - "traefik.port=3000" <b class=conum>5</b>
-    container_name: gitea
-    restart: always
+        
+            
+                <link rel="stylesheet" href="https://blog.anoff.io/adoc.css">
+            
+                <link rel="stylesheet" href="https://blog.anoff.io/overwrites.css">
+            
+                <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css">
+            
+        
+    </head>
+    <body class="bilberry-hugo-theme">
+        
+<nav class="permanentTopNav">
 
-  traefik:
-    image: traefik:latest
-    command: --docker
-    ports:
-      - "80:80" <b class=conum>6</b>
-      - "443:443"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.backend=dashboard"
-      - "traefik.frontend.rule=Host:traefik-gitea.mydomain.com"
-      - "traefik.port=8080"
-    networks:
-      - gitea
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /data/volumes/traefik/traefik.toml:/traefik.toml <b class=conum>7</b>
-      - /data/volumes/traefik/acme.json:/acme.json <b class=conum>7</b>
-    container_name: traefik
-    restart: always</code></pre><ol class="callout-list arabic"><li>add the ID of the user that was created previously for running the docker commands</li><li>replace with your own PostgreSQL credentials</li><li>Gitea needs to know its domain to generate correct links, Traefik needs to know it to generate correct SSL certs and route correctly</li><li>stores any data written by Gitea onto <code>/data</code> (data disk)</li><li>tell Gitea which custom port to run on and traefik where to route the requests to</li><li>Traefik needs to be reachable via HTTP to run the Let&#8217;s encrypt challenge for domain verification</li><li>Two custom files need to be passed to the traefik container</li></ol></figure></section><section class="doc-section level-2"><h3 id=_traefik_configuration>Traefik configuration</h3><p>Before starting the containers add the traefik configuration files under <code>/data/volumes/traefik/</code></p><figure class=listing-block><figcaption>traefik.toml</figcaption><pre class=highlight><code class=language-toml data-lang=toml>#Traefik Global Configuration
-debug = false
-checkNewVersion = true
-logLevel = "ERROR"
+    <div class="container">
+        <ul class="topnav">
+            
+                
+                    <li><a href="//anoff.io/" target="_self">About me</a></li>
+                
+            
+                
+                    <li><a href="/" target="_self">Blog</a></li>
+                
+            
+                
+                    <li><a href="//anoff.io/project/" target="_self">Projects</a></li>
+                
+            
+                
+                    <li><a href="/tags" target="_self">by Tags</a></li>
+                
+            
+                
+                    <li><a href="//radar.anoff.io" target="_blank">Tech skills</a></li>
+                
+            
+                
+                    <li><a href="//anoff.github.io/legal/" target="_blank">Legal</a></li>
+                
+            
+        </ul>
 
-#Define the EntryPoint for HTTP and HTTPS
-defaultEntryPoints = ["https","http"]
-[entryPoints]
-[entryPoints.http]
-address = ":80"
-[entryPoints.https]
-address = ":443"
-#Enable automatically redirect HTTP to HTTPS
-[entryPoints.http.redirect]
-entryPoint = "https"
-[entryPoints.https.tls]
+        
+    </div>
+</nav>
 
-#Enable Traefik Dashboard on port 8080
-#with basic authentication method
-[entryPoints.dash]
-address=":8080"
-[entryPoints.dash.auth]
-[entryPoints.dash.auth.basic]
-    users = [
-        "minion:&lt;base64encodedpassword&gt;",
-    ]
 
-[api]
-entrypoint="dash"
-dashboard = true
+        <header>
+    <div class="container">
+        <div class="logo">
+            <a href="/" class="logo">
+                
+                    <img src="/avatar.png" alt="">
+                
 
-#Enable retry sending a request if the network error
-[retry]
+                <span class="overlay"><i class="fa fa-child"></i></span>
+            </a>
+        </div>
+        <div class="titles">
+            <h3 class="title"><a href="/">Andreas&#39; Blog</a></h3>
+            
+                <span class="subtitle">Adventures of a software engineer/architect</span>
+            
+        </div>
 
-#Define Docker Backend Configuration
-[docker]
-endpoint = "unix:///var/run/docker.sock"
-domain = "mydomain.com"
-watch = true
-exposedbydefault = false
+    
 
-#Define the Letsencrypt ACME HTTP challenge
-[acme]
-email = "email@mydomain.com"
-storage = "acme.json"
-entryPoint = "https"
-OnHostRule = true
-  [acme.httpChallenge]
-  entryPoint = "http"</code></pre></figure><p>See the <a href=https://www.howtoforge.com/tutorial/ubuntu-docker-traefik-proxy/#step-install-and-configure-traefik-reverse-proxy>howtoforge.com/ubuntu-docker-traefik-proxy</a> blog post for more details.</p><p>The <code>acme.json</code> file just needs before starting docker.</p><div class=listing-block><pre class=highlight><code class=language-bash data-lang=bash>touch /data/volumes/traefik/acme.json
-chmod 600 touch /data/volumes/traefik/acme.json</code></pre></div></section><section class="doc-section level-2"><h3 id=_starting_the_gitea_container>Starting the Gitea container</h3><p>Finally start the services on the gitea VM from the home directory</p><div class=listing-block><pre class=highlight><code class=language-bash data-lang=bash>cd $HOME
-docker-compose up -d</code></pre></div><p>This is the setup we just rolled out on the Gitea VM.</p><figure class=image-block><img src=/assets/gitea-drone/vm-gitea.svg alt="Docker images for Gitea VM"><figcaption>Figure 3. Gitea docker setup</figcaption></figure></section><section class="doc-section level-2"><h3 id=_customize_gitea>Customize Gitea</h3><p>After the initial start of the Gitea container, stop it again <code>docker-compose stop</code> and modify the configuration as needed. Refer to the <a href=https://docs.gitea.io/en-us/config-cheat-sheet>Gitea Config Cheatsheet</a> for a full list of available settings.</p><div class=listing-block><pre class=highlight><code class=language-bash data-lang=bash>nano /data/volumes/gitea/gitea/config/app.ini</code></pre></div></section></section><section class="doc-section level-1"><h2 id=_setting_up_drone>Setting up Drone</h2><p>The drone VM will also use traefik as a reverse proxy and SSL provider, refer to the Gitea setup for the generic traefik steps.
-SSH into the <em>Drone VM</em> and change to the minion user.</p><section class="doc-section level-2"><h3 id=_drone_compose_file>Drone compose file</h3><p>Place the following file into the home directory:</p><figure class=listing-block><figcaption>docker-compose.yml</figcaption><pre class=highlight><code class=language-yaml data-lang=yaml>version: "2"
+        
+        <div class="toggler permanentTopNav">
+        
+            <i class="fa fa-bars" aria-hidden="true"></i>
+        </div>
+    </div>
+</header>
 
-networks:
-  internal:
-    external: false
 
-services:
-  drone-server:
-    # https://hub.docker.com/r/drone/drone/tags
-    image: drone/drone:1.0.0
-    ports:
-      - "3000"
-    networks:
-      - internal
-    volumes:
-      - /data/volumes/drone-server:/var/lib/drone/
-      - /var/run/docker.sock:/var/run/docker.sock
-    restart: always
-    environment:
-      DRONE_SERVER_PORT: "3000" <b class=conum>3</b>
-      DRONE_SERVER_HOST: "drone.mydomain.com"
-      DRONE_SERVER_PROTO: "https"
-      # DRONE_DEBUG: "true"
-      DRONE_SECRET: "somethingverysecret" <b class=conum>1</b>
-      DRONE_DATABASE_DRIVER: sqlite3
-      DRONE_DATABASE_DATASOURCE: /var/lib/drone/drone.sqlite
-      DRONE_RUNNER_CAPACITY: 2
-      DRONE_TLS_AUTOCERT: "false"
-      # DRONE_ORGS: ""
-      DRONE_ADMIN: myusername
-      DRONE_ADMIN_ALL: "false"
-      # GITEA params
-      DRONE_GITEA_SERVER: "https://gitea.mydomain.com" <b class=conum>2</b>
-      DRONE_GITEA_SKIP_VERIFY: "false"
-      DRONE_GIT_USERNAME: "drone-runner" <b class=conum>4</b>
-      DRONE_GIT_PASSWORD: "anothersecretpassword"
-      DRONE_GIT_ALWAYS_AUTH : "true" <b class=conum>5</b>
-    labels:
-      - "traefik.enabled=true"
-      - "traefik.backend=drone"
-      - "traefik.frontend.rule=Host:traefik-drone.mydomain.com"
-      - "traefik.docker.network=internal"
-      - "traefik.port=3000" <b class=conum>3</b>
+        <div class="main container">
+            
+    
+    
+        <div class="article-wrapper u-cf">
+            
+                <a class="bubble" href="https://blog.anoff.io/2019-03-24-self-hosted-gitea-drone/">
+    <i class="fa fa-fw fa-code"></i>
+</a>
 
-  drone-agent:
-    image: drone/agent:1.0.0
-    command: agent
-    depends_on:
-      - drone-server
-    networks:
-      - internal
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    restart: always
-    environment:
-      DRONE_SERVER: ws://drone-server/ws/broker
-      DRONE_DEBUG: "true"
-      DRONE_SECRET: "somethingverysecret" <b class=conum>1</b>
+<article class="default article">
+    
+    <div class="featured-image">
+        <a href="https://blog.anoff.io/2019-03-24-self-hosted-gitea-drone/">
+            <img src="/assets/gitea-drone/title.png" alt="">
+        </a>
+    </div>
 
-  traefik:
-    image: traefik:latest
-    command: --docker
-    ports:
-      - "80:80"
-      - "443:443"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.backend=dashboard"
-      - "traefik.frontend.rule=Host:drone.mydomain.com"
-      - "traefik.port=8080"
-    networks:
-      - internal
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /data/volumes/traefik/traefik.toml:/traefik.toml
-      - /data/volumes/traefik/acme.json:/acme.json
-    container_name: traefik
-    restart: always</code></pre><ol class="callout-list arabic"><li>the drone server and agents need to use the same secret to communicate</li><li>Drone needs to know its domain to generate correct links, Traefik needs to know it to generate correct SSL certs and route correctly</li><li>tell Drone which custom port to run on and traefik where to route the requests to</li><li>valid Gitea user credentials for Drone to use when fetching repositories</li><li>Always authenticate when running git commands against Gitea - required if you use private repositories</li></ol></figure></section><section class="doc-section level-2"><h3 id=_starting_the_gitea_container_2>Starting the Gitea container</h3><section class="admonition-block caution" role=doc-notice><h6 class="block-title label-only"><span class=title-label>Caution:</span></h6><p>Make sure traefik is correctly configured on this VM as well</p></section><p>Start the docker containers from the home directory</p><div class=listing-block><pre class=highlight><code class=language-bash data-lang=bash>cd $HOME
-docker-compose up -d</code></pre></div><p>The final setup for Drone looks like this</p><figure class=image-block><img src=/assets/gitea-drone/vm-drone.svg alt="Docker images for Drone VM"><figcaption>Figure 4. Drone docker setup</figcaption></figure></section></section><section class="doc-section level-1"><h2 id=_summary>Summary</h2><p>Gitea and Drone are running on individual machines but are fully configured to talk to each other.
-This separation beyond the container level guarantees that the performance of the git server will not be influenced by any builds running in the CI/CD pipeline.
-If that is not a concern the both services could also be set up on a single virtual machine with either one or two docker-compose files.</p><p>I hope this tutorial helped you and if you stumble upon any problems or errors let me know in the comments or via Twitter 👋</p></section></div><div class=footer><div class=tags><i class="fa fa-tags"></i><div class=links><a href=/tags/azure>azure</a>
-<a href=/tags/gitea>gitea</a>
-<a href=/tags/drone>drone</a>
-<a href=/tags/ci/cd>CI/CD</a></div></div></div></article></div><div class="article-wrapper u-cf"><a class=bubble href=https://blog.anoff.io/2019-03-23-configure-azure-ad-for-gitea/><i class="fa fa-fw fa-pencil"></i></a><article class="default article"><div class=featured-image><a href=https://blog.anoff.io/2019-03-23-configure-azure-ad-for-gitea/><img src=/assets/gitea-aad/title.png alt></a></div><div class=content><h3><a href=https://blog.anoff.io/2019-03-23-configure-azure-ad-for-gitea/>Configure Azure Active Directory as Authentication Provider for Gitea</a></h3><div class=meta><span class="date moment">2019-03-23</span>
-<span class=readingTime>3 min read</span>
-<span class=author><a href=/author/anoff>anoff</a></span></div><p><a href=https://gitea.io/en-us/>Gitea</a> is an open source git hosting platform, written in Go forked from the Gogs project and seems to be highly inspired by GitHub.
-If you want to host your own git platform and want to use <strong>Azure Active Directory</strong> as an authentication provider - this post might help you.</p><p><a href=https://blog.anoff.io/2019-03-23-configure-azure-ad-for-gitea/ class=more>Continue reading</a></div><div class=footer><div class=tags><i class="fa fa-tags"></i><div class=links><a href=/tags/gitea>gitea</a>
-<a href=/tags/azure>azure</a></div></div></div></article></div><div class=paginator></div></div><footer><div class=container><div class=right><div class=external-profiles><strong>Social media</strong>
-<a href=//twitter.com/anoff_io target=_blank><i class="fa fa-twitter-adblock-proof"></i></a><a href=//github.com/anoff target=_blank><i class="fa fa-github"></i></a><a href=//linkedin.com/in/offenhaeuser/ target=_blank><i class="fa fa-linkedin"></i></a></div></div></div></footer><div class=credits><div class=container><div class=copyright><a href=//anoff.io target=_blank>&copy;
-2019
-by Andreas Offenhaeuser</a>
--
-<a href=https://blog.anoff.io/tags/gitea/index.xml>RSS</a></div><div class=author><a href=//github.com/Lednerb/bilberry-hugo-theme target=_blank>Bilberry Hugo Theme</a></div></div></div><script type=application/javascript>var doNotTrack=false;if(!doNotTrack){window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;ga('create','UA-93890295-4','auto');ga('send','pageview');}</script><script async src=https://www.google-analytics.com/analytics.js></script><script type=text/javascript src=/js/externalDependencies.39c47e10e241eae2947b3fe21809c572.js integrity="md5-OcR&#43;EOJB6uKUez/iGAnFcg=="></script><script type=text/javascript src=/js/theme.ff50ae6dc1bfc220b23bf69dbb41b54e.js integrity="md5-/1CubcG/wiCyO/adu0G1Tg=="></script><script>$(".moment").each(function(){$(this).text(moment($(this).text()).locale("en").format('LL'));});$(".footnote-return sup").html("");</script><script src=https://blog.anoff.io/fix-adoc.js type=application/javascript></script><script src=//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js type=application/javascript></script><script src=https://blog.anoff.io/init-cookieconsent.js type=application/javascript></script></body></html>
+
+    <div class="content">
+    <h3><a href="https://blog.anoff.io/2019-03-24-self-hosted-gitea-drone/">Hosting Gitea and Drone with Docker</a></h3>
+    <div class="meta">
+        
+            
+                <span class="date moment">2019-03-24</span>
+            
+        
+
+        
+            <span class="readingTime">9 min read</span>
+        
+
+        
+
+        
+            <span class="author"><a href="/author/anoff">anoff</a></span>
+        
+    </div>
+
+    
+        <div class="paragraph">
+<p>This post will walk you through setting up a self hosted git based continuous integration environment on a two machine setup - assuming you already have two virtual machines at your disposal.
+Using <a href="https://gitea.io/"><strong>Gitea</strong></a> for git hosting and contribution management and <a href="https://drone.io/"><strong>Drone</strong></a> for docker-based build jobs, this will guide you through creating <strong>docker-compose</strong> files as well as configuring the individual services and getting <strong>SSL certificates</strong> via <a href="https://traefik.io/"><strong>traefik</strong></a>.
+Docker and docker-compose knowledge is required for this tutorial. It mostly focuses on the correct configuration of all the services at play here and not explaining their basic functionality.</p>
+</div>
+<div class="paragraph">
+<p>This tutorial uses Azure resources so some of the aspects might not be 100% applicable if you chose another infrastructure provider.</p>
+</div>
+
+        
+            <a href="https://blog.anoff.io/2019-03-24-self-hosted-gitea-drone/" class="more">Continue reading</a>
+        
+    
+</div>
+
+    
+<div class="footer">
+
+
+    
+        <div class="tags">
+            <i class="fa fa-tags"></i>
+            <div class="links">
+                
+                    <a href="/tags/azure">azure</a>
+                
+                    <a href="/tags/gitea">gitea</a>
+                
+                    <a href="/tags/drone">drone</a>
+                
+                    <a href="/tags/ci/cd">CI/CD</a>
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+</article>
+
+            
+        </div>
+    
+        <div class="article-wrapper u-cf">
+            
+                <a class="bubble" href="https://blog.anoff.io/2019-03-23-configure-azure-ad-for-gitea/">
+    <i class="fa fa-fw fa-pencil"></i>
+</a>
+
+<article class="default article">
+    
+    <div class="featured-image">
+        <a href="https://blog.anoff.io/2019-03-23-configure-azure-ad-for-gitea/">
+            <img src="/assets/gitea-aad/title.png" alt="">
+        </a>
+    </div>
+
+
+    <div class="content">
+    <h3><a href="https://blog.anoff.io/2019-03-23-configure-azure-ad-for-gitea/">Configure Azure Active Directory as Authentication Provider for Gitea</a></h3>
+    <div class="meta">
+        
+            
+                <span class="date moment">2019-03-23</span>
+            
+        
+
+        
+            <span class="readingTime">3 min read</span>
+        
+
+        
+
+        
+            <span class="author"><a href="/author/anoff">anoff</a></span>
+        
+    </div>
+
+    
+        <div class="paragraph">
+<p><a href="https://gitea.io/en-us/">Gitea</a> is an open source git hosting platform, written in Go forked from the Gogs project and seems to be highly inspired by GitHub.
+If you want to host your own git platform and want to use <strong>Azure Active Directory</strong> as an authentication provider - this post might help you.</p>
+</div>
+
+        
+            <a href="https://blog.anoff.io/2019-03-23-configure-azure-ad-for-gitea/" class="more">Continue reading</a>
+        
+    
+</div>
+
+    
+<div class="footer">
+
+
+    
+        <div class="tags">
+            <i class="fa fa-tags"></i>
+            <div class="links">
+                
+                    <a href="/tags/gitea">gitea</a>
+                
+                    <a href="/tags/azure">azure</a>
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+</article>
+
+            
+        </div>
+    
+
+    
+    <div class="paginator">
+        
+
+        
+    </div>
+
+
+
+        </div>
+
+        
+<footer>
+    <div class="container">
+
+        
+
+        
+
+        <div class="right">
+            
+            <div class="external-profiles">
+                <strong>Social media</strong>
+
+                
+                
+                    <a href="//twitter.com/anoff_io" target="_blank"><i class="fa fa-twitter-adblock-proof"></i></a>
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                    <a href="//github.com/anoff" target="_blank"><i class="fa fa-github"></i></a>
+                
+                
+                    <a href="//linkedin.com/in/offenhaeuser/" target="_blank"><i class="fa fa-linkedin"></i></a>
+                
+            </div>
+            
+
+            
+        </div>
+    </div>
+</footer>
+
+
+<div class="credits">
+    <div class="container">
+        <div class="copyright">
+            <a href="//anoff.io" target="_blank">
+                &copy;
+                
+                    2019
+                
+                by Andreas Offenhaeuser
+            </a>
+	    -
+		<a href="https://blog.anoff.io/tags/gitea/index.xml">RSS</a>
+        </div>
+        <div class="author">
+            <a href="//github.com/Lednerb/bilberry-hugo-theme" target="_blank">Bilberry Hugo Theme</a>
+        </div>
+    </div>
+</div>
+
+
+        
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-93890295-4', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+        
+
+        
+        
+        <script type="text/javascript" src="/js/externalDependencies.d9216f6db8fba82175fa5f40d0bb9b8c.js" integrity="md5-2SFvbbj7qCF1&#43;l9A0LubjA=="></script>
+
+        
+        
+        <script type="text/javascript" src="/js/theme.d1b29b9e0ef43ea877f514c7e101a399.js" integrity="md5-0bKbng70Pqh39RTH4QGjmQ=="></script>
+
+        <script>
+            $(".moment").each(function() {
+                $(this).text(
+                    moment( $(this).text() )
+                        .locale( "en" )
+                        .format('LL')
+                );
+            });
+
+            $(".footnote-return sup").html("");
+        </script>
+
+        
+            
+                <script src="https://blog.anoff.io/fix-adoc.js" type="application/javascript"></script>
+            
+                <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js" type="application/javascript"></script>
+            
+                <script src="https://blog.anoff.io/init-cookieconsent.js" type="application/javascript"></script>
+            
+        
+
+        
+
+
+    </body>
+</html>

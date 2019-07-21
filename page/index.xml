@@ -1,1 +1,68 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Pages on Andreas&#39; Blog</title><link>https://blog.anoff.io/page/</link><description>Recent content in Pages on Andreas&#39; Blog</description><generator>Hugo -- gohugo.io</generator><lastBuildDate>Sun, 17 Feb 2019 13:17:56 +0100</lastBuildDate><atom:link href="https://blog.anoff.io/page/index.xml" rel="self" type="application/rss+xml"/><item><title>About me</title><link>https://blog.anoff.io/page/about/</link><pubDate>Sun, 17 Feb 2019 13:17:56 +0100</pubDate><guid>https://blog.anoff.io/page/about/</guid><description/></item><item><title>Blog</title><link>https://blog.anoff.io/page/blog/</link><pubDate>Sun, 17 Feb 2019 13:17:56 +0100</pubDate><guid>https://blog.anoff.io/page/blog/</guid><description/></item><item><title>Projects</title><link>https://blog.anoff.io/page/projects/</link><pubDate>Sun, 17 Feb 2019 13:17:56 +0100</pubDate><guid>https://blog.anoff.io/page/projects/</guid><description/></item><item><title>by Tags</title><link>https://blog.anoff.io/page/tags/</link><pubDate>Mon, 16 Feb 2015 13:17:56 +0100</pubDate><guid>https://blog.anoff.io/page/tags/</guid><description/></item><item><title>Tech skills</title><link>https://blog.anoff.io/page/techradar/</link><pubDate>Tue, 16 Feb 2010 13:17:56 +0100</pubDate><guid>https://blog.anoff.io/page/techradar/</guid><description/></item><item><title>Legal</title><link>https://blog.anoff.io/page/legal/</link><pubDate>Wed, 16 Feb 2000 13:17:56 +0100</pubDate><guid>https://blog.anoff.io/page/legal/</guid><description/></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Pages on Andreas&#39; Blog</title>
+    <link>https://blog.anoff.io/page/</link>
+    <description>Recent content in Pages on Andreas&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sun, 17 Feb 2019 13:17:56 +0100</lastBuildDate>
+    
+	<atom:link href="https://blog.anoff.io/page/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>About me</title>
+      <link>https://blog.anoff.io/page/about/</link>
+      <pubDate>Sun, 17 Feb 2019 13:17:56 +0100</pubDate>
+      
+      <guid>https://blog.anoff.io/page/about/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Blog</title>
+      <link>https://blog.anoff.io/page/blog/</link>
+      <pubDate>Sun, 17 Feb 2019 13:17:56 +0100</pubDate>
+      
+      <guid>https://blog.anoff.io/page/blog/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Projects</title>
+      <link>https://blog.anoff.io/page/projects/</link>
+      <pubDate>Sun, 17 Feb 2019 13:17:56 +0100</pubDate>
+      
+      <guid>https://blog.anoff.io/page/projects/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>by Tags</title>
+      <link>https://blog.anoff.io/page/tags/</link>
+      <pubDate>Mon, 16 Feb 2015 13:17:56 +0100</pubDate>
+      
+      <guid>https://blog.anoff.io/page/tags/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Tech skills</title>
+      <link>https://blog.anoff.io/page/techradar/</link>
+      <pubDate>Tue, 16 Feb 2010 13:17:56 +0100</pubDate>
+      
+      <guid>https://blog.anoff.io/page/techradar/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Legal</title>
+      <link>https://blog.anoff.io/page/legal/</link>
+      <pubDate>Wed, 16 Feb 2000 13:17:56 +0100</pubDate>
+      
+      <guid>https://blog.anoff.io/page/legal/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>
