@@ -45,6 +45,7 @@ steps:
       git config user.name "CI Joe"
       rm -rf *
       cp -R /d/a/1/s/dist/* . # hardcode directory because pipeline vars are windows
+      echo blog.anoff.io > CNAME
       git add .
       git commit --allow-empty -m 'Automated build #$(Build.BuildNumber)'
       git push
