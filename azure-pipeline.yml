@@ -19,9 +19,9 @@ steps:
 - task: Bash@3
   displayName: 'Hotfix theme'
   inputs:
-  targetType: 'inline'
-  script: |
-    cp -R theme_fixes/** themes/bilberry-hugo-theme
+    targetType: 'inline'
+    script: |
+      cp -R theme_fixes/** themes/bilberry-hugo-theme
 
 - task: Bash@3
   displayName: 'Build HTML'
