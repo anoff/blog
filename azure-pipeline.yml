@@ -8,7 +8,6 @@ trigger:
 
 variables:
 - group: integration
-- name: 
 pool:
   vmImage: 'windows-2019'
 
