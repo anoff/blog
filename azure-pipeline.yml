@@ -15,24 +15,26 @@ steps:
 - checkout: self
   displayName: 'Git checkout'
   submodules: true
-- script: gem install --no-document asciidoctor asciidoctor-diagram coderay rouge 
-  displayName: 'Install Asciidoctor'
 
-- task: HugoTask@1
-  displayName: 'Run Hugo'
+- task: Bash@3
+  displayName: 'Hotfix theme'
   inputs:
-    destination: 'dist'
-    extendedVersion: true
-    baseURL: 'https://blog.anoff.io/'
+  targetType: 'inline'
+  script: |
+    cp -R theme_fixes/** themes/bilberry-hugo-theme
+
+- task: Bash@3
+  displayName: 'Build HTML'
+  inputs:
+  targetType: 'inline'
+  script: |
+    docker run --rm -v $PWD:/app anoff/hugo-asciidoctor hugo --gc --minify -d _site
 
 - task: PublishPipelineArtifact@0
   displayName: 'Publish artifact'
   inputs:
     artifactName: 'blog'
-    targetPath: 'dist'
-
-- task: NodeTool@0
-  displayName: 'Install Node.js'
+    targetPath: '_site'
 
 - task: Bash@3
   inputs:
@@ -44,7 +46,7 @@ steps:
       git config user.email ""
       git config user.name "CI Joe"
       rm -rf *
-      cp -R /d/a/1/s/dist/* . # hardcode directory because pipeline vars are windows
+      cp -R /d/a/1/s/_site/* . # hardcode directory because pipeline vars are windows
       echo blog.anoff.io > CNAME
       git add .
       git commit --allow-empty -m 'Automated build #$(Build.BuildNumber)'
