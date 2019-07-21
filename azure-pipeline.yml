@@ -26,9 +26,9 @@ steps:
 - task: Bash@3
   displayName: 'Build HTML'
   inputs:
-  targetType: 'inline'
-  script: |
-    docker run --rm -v $PWD:/app anoff/hugo-asciidoctor hugo --gc --minify -d _site
+    targetType: 'inline'
+    script: |
+      docker run --rm -v $PWD:/app anoff/hugo-asciidoctor hugo --gc --minify -d _site
 
 - task: PublishPipelineArtifact@0
   displayName: 'Publish artifact'
