@@ -4,7 +4,7 @@
 #     https://marketplace.visualstudio.com/items?itemName=AccidentalFish.githubpages-publish
 
 trigger:
-- '*'
+- pipelines
 
 variables:
 - group: integration
@@ -38,8 +38,6 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      echo '$(Build.BuildId)'
-      echo '$(Build.BuildNumber)'
       git clone https://anoff:$(github_token)@github.com/anoff/blog.git --branch=gh-test ./ghpages
       cd ./ghpages
       git config core.autocrlf false
@@ -48,6 +46,6 @@ steps:
       rm -rf *
       cp -R /d/a/1/s/dist/* .
       git add .
-      git commit --allow-empty -m "Automated build $(Build.BuildId)"
+      git commit --allow-empty -m "Automated build \#$(Build.BuildNumber)"
       git push
   displayName: 'Publish to gh-pages'
