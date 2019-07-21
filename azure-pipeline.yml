@@ -28,13 +28,13 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      docker run --rm -v $PWD:/app anoff/hugo-asciidoctor hugo --gc --minify -d _site
+      docker run --rm -v $PWD:/app anoff/hugo-asciidoctor hugo --gc --minify -d $(Build.ArtifactStagingDirectory)
 
 - task: PublishPipelineArtifact@0
   displayName: 'Publish artifact'
   inputs:
     artifactName: 'blog'
-    targetPath: '_site'
+    targetPath: '$(Build.ArtifactStagingDirectory)'
 
 - task: Bash@3
   inputs:
@@ -46,7 +46,7 @@ steps:
       git config user.email ""
       git config user.name "CI Joe"
       rm -rf *
-      cp -R /d/a/1/s/_site/* . # hardcode directory because pipeline vars are windows
+      cp -R $(Build.ArtifactStagingDirectory)/* . # hardcode directory because pipeline vars are windows
       echo blog.anoff.io > CNAME
       git add .
       git commit --allow-empty -m 'Automated build #$(Build.BuildNumber)'
