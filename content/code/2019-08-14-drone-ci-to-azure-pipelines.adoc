@@ -1,0 +1,237 @@
+---
+title: How to start with Azure Pipelines
+date: 2019-08-23
+tags: [CI/CD]
+author: anoff
+resizeImages: true
+draft: true
+---
+:imagesdir: /assets/
+
+:toc:
+
+Beginning of the year I switched my blogs build chain from Travis CI to link:https://drone.io/[drone CI].
+Due to some tasks with Azure DevOps at work I wanted to test how good it fits my private projects.
+In this post I will NOT tell you how to set up your pipelines project because Microsoft has link:https://docs.microsoft.com/en-us/azure/devops/pipelines/create-first-pipeline?view=azure-devops&tabs=tfs-2018-2[great docs] for that.
+Instead this post will cover how to best put your build workflow into a pipeline specification.
+Readers should be familiar with `bash`, `yaml` and basic `docker` concepts.
+
+> This post will explain the fundamental differences between Drone and Azure Pipelines, then explain specifically what I needed to do to migrate an existing CI pipeline.
+
+== Introduction to Azure Pipelines 👋
+
+Azure Pipelines is part of the Azure DevOps* service.
+The service aims to provide a web based collaboration platform with issue management, git hosting, test and release management.
+Similar to the Atlassian stack (Jira + BitBucket + Bamboo) or the GitLab stack.
+
+....
+*) worst name ever
+....
+
+See the announcement Microsoft made last year about the introduction of the service for details.
+
+.link:https://azure.microsoft.com/en-in/updates/introducing-azure-devops/[Introducing Azure DevOps] - announcement
+....
+
+Posted on 10 September 2018
+
+The single service that was Visual Studio Team Services (VSTS) is now becoming a new set of Azure DevOps services. Throughout our documentation and websites, and in the product, you'll start to notice new icons and names for Azure DevOps and each of the services within it:
+
+    Azure Pipelines to continuously build, test, and deploy to any platform and cloud.
+    Azure Boards for powerful work management.
+    Azure Artifacts for Maven, npm, and NuGet package feeds.
+    Azure Repos for unlimited cloud-hosted private Git repos.
+    Azure Test Plans for planned and exploratory testing.
+
+With the launch of Azure Pipelines, we've introduced a new app to the GitHub Marketplace, refreshed a number of the experiences to help you get started, and begun to offer unlimited CI/CD minutes and 10 parallel jobs for open-source projects.
+
+View the full release notes.
+....
+
+== Specifying pipelines with YAML syntax
+
+Although the default way pipelines are configured is the UI on link://dev.azure.com[dev.azure.com] I strongly advise to use the new link:https://docs.microsoft.com/en-us/azure/devops/pipelines/process/stages?view=azure-devops&tabs=yaml[YAML based] configuration method. 
+This way you can to configure (almost) your entire build behavior versioned with your sourcecode.
+The YAML syntax also allows multi-stage builds.
+
+.Azure Pipelines hierarchy
+[plantuml, png]
+....
+!includeurl https://gist.githubusercontent.com/anoff/d8f48105ac4d3c7b14ca8c34d6d54938/raw/7381f13a14e048bbd3cb4ecc70369e913908151a/anoff.plantuml
+node Pipeline
+node Stage
+node Job
+node Step
+
+Pipeline .> Stage: 0+
+Pipeline .> Job: 1+
+Stage .> Job: 1+
+Job .> Step: 1+
+....
+
+The YAML hierarchy has (starting on the lowest level):
+
+* **Steps** execute an action
+* **Jobs** group multiple steps
+** run in parallel by default (if sufficient link:https://docs.microsoft.com/en-us/azure/devops/pipelines/licensing/concurrent-jobs?view=azure-devops[quota])
+** run on individual agents i.e. work directories are not shared
+** define error behavior
+** create artifacts and publish within a single job
+* **Stage** groups multiple jobs
+** allows to fan-in parallel jobs
+** structure larger pipelines into functional groups
+* **Pipeline** your definition
+** one pipeline per YAML file
+** you can have multiple YAML files in one repository and create multiple Pipelines for one repository, but Azure does not assume any relationship between them -> handling pipeline status is up to you
+
+== Fan-In and Fan-Out pipeline jobs 🍾
+
+Without specifying stages and job concurrency the jobs in your pipeline will run in parallel.
+If one step in a job fails the job will stop executing but other jobs will continue executing.
+
+Multiple **Jobs** within a pipeline are a **Fan-Out** scenario as they get executed in parallel.
+
+image::azure-pipelines/fan-out.png[Fan-Out scneario]
+
+.Example for a simple stage-less pipeline
+[source, yaml]
+....
+pool:
+  vmImage: 'ubuntu-latest'
+jobs:
+- job: job1
+  steps:
+  - bash: echo "Hello world"
+  - bash: echo "Nothing else to do"
+- job: job2
+  steps:
+  - bash: echo "I echo more or less at the same time"
+  - bash: echo "Welcome world"
+  - bash: echo "Really nothing else to do"
+....
+
+.Pipeline execution without stage
+[plantuml, png]
+....
+!includeurl https://gist.githubusercontent.com/anoff/d8f48105ac4d3c7b14ca8c34d6d54938/raw/7381f13a14e048bbd3cb4ecc70369e913908151a/anoff.plantuml
+node Pipeline
+node Job1
+node Step1.1
+node Step1.2
+node Job2
+node Step2.1
+node Step2.2
+node Step2.3
+
+Pipeline --> Job1
+Pipeline --> Job2
+Job1 --> Step1.1
+Step1.1 --> Step1.2
+
+Job2 --> Step2.1
+Step2.1 --> Step2.2
+Step2.2 --> Step2.3
+....
+
+By specifying **Stages** you can execute fan-out and fan-in multiple times within your pipeline.
+Each **Stage** represents a fan-in operation where all defined jobs need to finish before the next stage is triggered which can fan-out again.
+
+image::azure-pipelines/fan-out.png[Fan-Out Fan-In with stages]
+
+Looking back at the hierarchies existing the YAML file the actual execution pattern can be described with the state machine below.
+Only one stage is executing at a time; if possible all jobs within this stage are executed in parallel.
+
+.Pipeline with two stages
+[plantuml, png]
+....
+@startuml
+!includeurl https://gist.githubusercontent.com/anoff/d8f48105ac4d3c7b14ca8c34d6d54938/raw/7381f13a14e048bbd3cb4ecc70369e913908151a/anoff.plantuml
+[*] --> Stage1
+Stage1 --> Stage2
+Stage2 --> [*]
+
+state Stage1 {
+  [*] --> Job1.1
+  [*] --> Job1.2
+  state Job1.1 {
+    [*] --> Step1.1.1
+    Step1.1.1 --> Step1.1.2
+  }
+  state Job1.2 {
+    [*] --> Step1.2.1
+    Step1.2.1 --> Step1.2.2
+    Step1.2.2 --> Step1.2.3
+    Step1.2.3 --> Step1.2.4
+  }
+
+  Step1.1.2 --> [*]
+  Step1.2.4 --> [*]
+}
+
+state Stage2 {
+  [*] --> Job2.1
+  [*] --> Job2.2
+  [*] --> Job2.3
+
+  state Job2.1 {
+    [*] --> Step2.1.1
+    Step2.1.1 --> Step2.1.2
+  }
+  state Job2.2 {
+    [*] --> Step2.2.1
+  }
+  state Job2.3 {
+    [*] --> Step2.3.1
+    Step2.3.1 --> Step2.3.2
+    Step2.3.2 --> Step2.3.3
+  }
+  Step2.1.2 --> [*]
+  Step2.2.1 --> [*]
+  Step2.3.3 --> [*]
+}
+@enduml
+....
+
+== Not so great things
+
+Here are some things that I learned over time and I hope will improve in the future.
+
+=== Scheduled jobs only run when people use the UI
+
+As described in the FAQ of Pipelines a scheduled job only runs **ONCE** after the last person logs out (active session) the Azure DevOps UI.
+
+.My build didn't run. What happened?, link:https://docs.microsoft.com/en-us/azure/devops/pipelines/build/triggers?view=azure-devops&tabs=yaml#q--a[source]
+....
+
+Someone must view a page in your organization regularly for CI and scheduled builds to run. It can be any page, including, for example, Azure Pipelines.
+
+Your organization goes dormant five minutes after the last user signed out of Azure DevOps. After that, each of your build pipelines will run one more time. For example, while your organization is dormant:
+
+    A nightly build of code in your organization will run only one night until someone signs in again.
+
+    CI builds of an Other Git repo will stop running until someone signs in again.
+....
+
+This is by far THE worst restriction that Azure Pipelines has in my opinion.
+It basically will not run nightly builds over the weekend.
+
+=== By default pipeline executions are removed after 30 days
+
+This is something you can - and probably should - reconfigure.
+You can actually set this value to as high as 2 years.
+So I do not understand why the default is just a month.
+
+image::azure-pipelines/configure-retention.png[Configure pipeline retention]
+
+The worst thing is that _Keeping a run_ not only means keeping the logs but actually after those 30 days Pipelines does not even know there ever was a run.
+The image below was taken today, where the last commit - and pipeline execution - was more than 30 days old.
+It seems like the pipeline never ran at all.
+
+I wish they just deleted the logs but kept the meta-data like date, run result and related commit ID.
+
+image::azure-pipelines/no-executions.png[Azure Pipelines showing no executions after 30 days]
+
+=== YAML spec seems over-complicated
+
+Having used Travis CI, Drone and GitLab CI before I have to say the link:https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=schema[YAML syntax] just feels bloated.
+There are many more things you can configure compared to Travis but after the few pipelines I built I already found that these options often do match my use case and I end up writing hand-crafted inline scripts instead of using the provided tasks as well.
