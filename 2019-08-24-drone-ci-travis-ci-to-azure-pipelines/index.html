@@ -1,0 +1,279 @@
+<!doctype html><html class=no-js lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=author content="Andreas Offenhaeuser"><meta name=description content="Andreas' personal blog"><meta name=keywords content=blog,personal,software,architecture,node,markdown,plantuml,developer><meta name=generator content="Hugo 0.55.6"><title>Migrating to Azure Pipelines | Andreas&#39; Blog</title><meta name=description content="Migrating to Azure Pipelines - Andreas' personal blog"><meta itemprop=name content="Migrating to Azure Pipelines"><meta itemprop=description content="Migrating to Azure Pipelines - Andreas' personal blog"><meta property=og:title content="Migrating to Azure Pipelines"><meta property=og:description content="Migrating to Azure Pipelines - Andreas' personal blog"><meta property=og:image content=/assets/azure-pipelines/title.png><meta property=og:url content=//blog.anoff.io/2019-08-24-drone-ci-travis-ci-to-azure-pipelines/><meta property=og:site_name content="Andreas' Blog"><meta property=og:type content=article><link rel=icon type=image/png href=//blog.anoff.io/favicon-32x32.png sizes=32x32><link rel=icon type=image/png href=//blog.anoff.io/favicon-16x16.png sizes=16x16><link href=/2019-08-24-drone-ci-travis-ci-to-azure-pipelines/ rel=alternate type=application/rss+xml title="Andreas' Blog"><link href=/2019-08-24-drone-ci-travis-ci-to-azure-pipelines/ rel=feed type=application/rss+xml title="Andreas' Blog"><link rel=stylesheet href=/sass/combined.min.f327a75a4aad18c5bec7b5dd7b51a776643885a0f7cca521b438abae302cc24d.css><link rel=stylesheet href=//blog.anoff.io/adoc.css><link rel=stylesheet href=//blog.anoff.io/overwrites.css><link rel=stylesheet href=//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css></head><body class=bilberry-hugo-theme><nav class=permanentTopNav><div class=container><ul class=topnav><li><a href=//anoff.io/ target=_self>About me</a></li><li><a href=/ target=_self>Blog</a></li><li><a href=//anoff.io/project/ target=_self>Projects</a></li><li><a href=/tags target=_self>by Tags</a></li><li><a href=//radar.anoff.io target=_blank>Tech skills</a></li><li><a href=//anoff.github.io/legal/ target=_blank>Legal</a></li></ul></div></nav><header><div class=container><div class=logo><a href=//blog.anoff.io/ class=logo><img src=/avatar.png alt>
+<span class=overlay><i class="fa fa-child"></i></span></a></div><div class=titles><h3 class=title><a href=//blog.anoff.io/>Andreas&#39; Blog</a></h3><span class=subtitle>Adventures of a software engineer/architect</span></div><div class="toggler permanentTopNav"><i class="fa fa-bars" aria-hidden=true></i></div></div></header><div class="main container"><div class="article-wrapper u-cf single"><a class=bubble href=//blog.anoff.io/2019-08-24-drone-ci-travis-ci-to-azure-pipelines/><i class="fa fa-fw fa-code"></i></a><article class="default article"><div class=featured-image><a href=//blog.anoff.io/2019-08-24-drone-ci-travis-ci-to-azure-pipelines/><img src=/assets/azure-pipelines/title.png alt></a></div><div class=content><h3><a href=//blog.anoff.io/2019-08-24-drone-ci-travis-ci-to-azure-pipelines/>Migrating to Azure Pipelines</a></h3><div class=meta><span class="date moment">2019-08-24</span>
+<span class=readingTime>10 min read</span>
+<span class=author><a href=/author/anoff>anoff</a></span></div><p>Beginning of the year I switched my blogs build chain from Travis CI to <a href=https://drone.io/>drone CI</a>.
+Due to some tasks with Azure DevOps at work I wanted to test how good it fits my private projects.
+In this post I will NOT tell you how to set up your pipelines project because Microsoft has <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/create-first-pipeline?view=azure-devops&amp;tabs=tfs-2018-2">great docs</a> for that.
+Instead this post will cover how to best put your build workflow into a pipeline specification.
+In addition I will cover the necessary steps to migrate existing CI/CD workloads from Travis and drone to Azure Pipelines.</p><p>Readers should be familiar with <code>bash</code>, <code>yaml</code> and basic <code>docker</code> concepts.</p><section class="doc-section level-1"><h2 id=_introduction_to_azure_pipelines><a class=link href=#_introduction_to_azure_pipelines>Introduction to Azure Pipelines 👋</a></h2><p>Azure Pipelines is part of the Azure DevOps* service.
+The service aims to provide a web based collaboration platform with issue management, git hosting, test and release management.
+Similar to the Atlassian stack (Jira + BitBucket + Bamboo) or the GitLab stack.</p><div class=literal-block><pre>*) worst name ever</pre></div><p>See the <a href=https://azure.microsoft.com/en-in/updates/introducing-azure-devops/>announcement</a> Microsoft made last year about the introduction of the service for details.</p><div class=quote-block><blockquote><p>Introducing Azure DevOps</p><p>Posted on 10 September 2018</p><p>The single service that was Visual Studio Team Services (VSTS) is now becoming a new set of Azure DevOps services. Throughout our documentation and websites, and in the product, you&#8217;ll start to notice new icons and names for Azure DevOps and each of the services within it:</p><div class=ulist><ul><li>Azure Pipelines to continuously build, test, and deploy to any platform and cloud.</li><li>Azure Boards for powerful work management.</li><li>Azure Artifacts for Maven, npm, and NuGet package feeds.</li><li>Azure Repos for unlimited cloud-hosted private Git repos.</li><li>Azure Test Plans for planned and exploratory testing.</li></ul></div><footer>&#8212; <cite>Azure DevOps Newsletter</cite></footer></blockquote></div></section><section class="doc-section level-1"><h2 id=_specifying_pipelines_with_yaml_syntax><a class=link href=#_specifying_pipelines_with_yaml_syntax>Specifying pipelines with YAML syntax</a></h2><p>Although the default way pipelines are configured is the UI on <a href=//dev.azure.com>dev.azure.com</a> I strongly advise to use the new <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/process/stages?view=azure-devops&amp;tabs=yaml">YAML based</a> configuration method.
+This way you can to configure (almost) your entire build behavior versioned with your sourcecode.
+The YAML syntax also allows multi-stage builds.</p><figure class=image-block><img src=/assets/azure-pipelines/diag-31d7aea066550edbe2748253796d325c.png alt="diag 31d7aea066550edbe2748253796d325c" width=506 height=145><figcaption>Figure 1. Azure Pipelines hierarchy</figcaption></figure><p>The YAML hierarchy has (starting on the lowest level):</p><div class=ulist><ul><li><strong>Steps</strong> execute an action</li><li><strong>Jobs</strong> group multiple steps<ul><li>run in parallel by default (if sufficient <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/licensing/concurrent-jobs?view=azure-devops">quota</a>)</li><li>run on individual agents i.e. work directories are not shared</li><li>define error behavior</li><li>create artifacts and publish within a single job</li></ul></li><li><strong>Stage</strong> groups multiple jobs<ul><li>allows to fan-in parallel jobs</li><li>structure larger pipelines into functional groups</li></ul></li><li><strong>Pipeline</strong> your definition<ul><li>one pipeline per YAML file</li><li>you can have multiple YAML files in one repository and create multiple Pipelines for one repository, but Azure does not assume any relationship between them &#8594; handling pipeline status is up to you</li></ul></li></ul></div></section><section class="doc-section level-1"><h2 id=_fan_in_and_fan_out_pipeline_jobs><a class=link href=#_fan_in_and_fan_out_pipeline_jobs>Fan-In and Fan-Out pipeline jobs 🍾</a></h2><p>Without specifying stages and job concurrency the jobs in your pipeline will run in parallel.
+If one step in a job fails the job will stop executing but other jobs will continue executing.</p><p>Multiple <strong>Jobs</strong> within a pipeline are a <strong>Fan-Out</strong> scenario as they get executed in parallel.</p><div class=image-block><img src=/assets/azure-pipelines/fan-out.png alt="Fan-Out scneario"></div><figure class=listing-block><figcaption>Example for a simple stage-less pipeline</figcaption><pre class="CodeRay highlight linenums"><code data-lang=yaml><table class=CodeRay><tr>
+  <td class=line-numbers><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre></td><td class=code><pre><span class=key>pool</span>:
+  <span class=key>vmImage</span>: <span class=string><span class=content>'ubuntu-latest'</span></span>
+<span class=key>jobs</span>:
+- <span class=string><span class=content>job: job1</span></span>
+  <span class=key>steps</span>:
+  - <span class=string><span class=content>bash: echo &quot;Hello world&quot;</span></span>
+  - <span class=string><span class=content>bash: echo &quot;Nothing else to do&quot;</span></span>
+- <span class=string><span class=content>job: job2</span></span>
+  <span class=key>steps</span>:
+  - <span class=string><span class=content>bash: echo &quot;I echo more or less at the same time&quot;</span></span>
+  - <span class=string><span class=content>bash: echo &quot;Welcome world&quot;</span></span>
+  - <span class=string><span class=content>bash: echo &quot;Really nothing else to do&quot;</span></span></pre></td></tr></table></code></pre></figure><figure class=image-block><img src=/assets/azure-pipelines/diag-b6f6d702eb455ef29d05b3a0a2312818.png alt="diag b6f6d702eb455ef29d05b3a0a2312818" width=287 height=508><figcaption>Figure 2. Pipeline execution without stage</figcaption></figure><p>By specifying <strong>Stages</strong> you can execute fan-out and fan-in multiple times within your pipeline.
+Each <strong>Stage</strong> represents a fan-in operation where all defined jobs need to finish before the next stage is triggered which can fan-out again.</p><div class=image-block><img src=/assets/azure-pipelines/fan-out-fan-in.png alt="Fan-Out Fan-In with stages"></div><p>Looking back at the hierarchies existing the YAML file the actual execution pattern can be described with the state machine below.
+Only one stage is executing at a time; if possible all jobs within this stage are executed in parallel.</p><figure class=image-block><img src=/assets/azure-pipelines/diag-62226aa7e6d8d134a4ca25a0be6db703.png alt="diag 62226aa7e6d8d134a4ca25a0be6db703" width=689 height=754><figcaption>Figure 3. Pipeline with two stages</figcaption></figure></section><section class="doc-section level-1"><h2 id=_migrating_from_drone_to_azure_pipelines><a class=link href=#_migrating_from_drone_to_azure_pipelines>Migrating from drone to Azure Pipelines 🚐</a></h2><p>The first CI/CD workload I moved to Azure Pipelines was this blog.
+As you can see in the image below, this is a very simple pipeline with just a few steps and no fan-in/fan-out behavior.</p><figure class=image-block><img src=/assets/azure-pipelines/drone-steps.png alt="Step overview"><figcaption>Figure 4. CI steps in the existing drone pipeline</figcaption></figure><p>The drone pipeline was already relying on a <a href=https://hub.docker.com/r/anoff/hugo-asciidoctor>custom docker image</a> as described <a href=https://blog.anoff.io/2019-02-17-hugo-render-asciidoc/>in this previous blog post about rendering asciidoc in hugo</a>.
+That made the migration quite easy as there is not a lot of customization to the build agent necessary.
+All required tools to run the pipeline are encapsuled in that docker image.</p><p>I played around with various plugins available on the DevOps marketplace for Docker, Hugo and GitHub pages deploy but they either did not support the use case I have or ran outdated versions of the tools and did not let me update.
+Now let&#8217;s compare the actual pipeline definition.</p><figure class=listing-block><figcaption>drone pipeline config</figcaption><pre class="CodeRay highlight linenums"><code data-lang=yaml><table class=CodeRay><tr>
+  <td class=line-numbers><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+</pre></td><td class=code><pre><span class=key>kind</span>: <span class=string><span class=content>pipeline</span></span>
+<span class=key>name</span>: <span class=string><span class=content>deploy</span></span>
+
+<span class=key>clone</span>:
+  <span class=key>depth</span>: <span class=string><span class=content>50</span></span>
+
+<span class=key>steps</span>:
+
+- <span class=string><span class=content>name: submodules </span></span><b class=conum>1</b>
+  <span class=key>image</span>: <span class=string><span class=content>docker:git</span></span>
+  <span class=key>commands</span>:
+  - <span class=string><span class=content>git submodule update --init --recursive --remote</span></span>
+
+- <span class=string><span class=content>name: hotfix </span></span><b class=conum>2</b>
+  <span class=key>image</span>: <span class=string><span class=content>anoff/hugo-asciidoctor</span></span>
+  <span class=key>commands</span>:
+  - <span class=string><span class=content>cp -R theme_fixes/** themes/bilberry-hugo-theme</span></span>
+  - <span class=string><span class=content>cp -R theme_fixes/** themes/bilberry-hugo-theme-fork</span></span>
+
+- <span class=string><span class=content>name: build </span></span><b class=conum>3</b>
+  <span class=key>image</span>: <span class=string><span class=content>anoff/hugo-asciidoctor</span></span>
+  <span class=key>commands</span>:
+  - <span class=string><span class=content>hugo --gc --minify -d _site --baseURL https://blog.anoff.io</span></span>
+  - <span class=string><span class=content>touch _site/.nojekyll</span></span>
+
+- <span class=string><span class=content>name: publish </span></span><b class=conum>4</b>
+  <span class=key>image</span>: <span class=string><span class=content>plugins/gh-pages</span></span>
+  <span class=key>settings</span>:
+    <span class=key>username</span>:
+      <span class=key>from_secret</span>: <span class=string><span class=content>github_username</span></span>
+    <span class=key>password</span>:
+      <span class=key>from_secret</span>: <span class=string><span class=content>github_token</span></span>
+    <span class=key>pages_directory</span>: <span class=string><span class=content>_site</span></span>
+  <span class=key>when</span>:
+    <span class=key>branch</span>:
+    - <span class=string><span class=content>master</span></span></pre></td></tr></table></code></pre><ol class="callout-list arabic"><li>Clone the repository content</li><li>Hotfix something in the hugo theme by copying over files</li><li>Create HTML content by running Hugo</li><li>Publish HTML</li></ol></figure><figure class=listing-block><figcaption>drone pipeline config</figcaption><pre class="CodeRay highlight linenums"><code data-lang=yaml><table class=CodeRay><tr>
+  <td class=line-numbers><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+</pre></td><td class=code><pre><span class=key>trigger</span>:
+- <span class=string><span class=content>master</span></span>
+
+<span class=key>variables</span>:
+- <span class=string><span class=content>group: integration</span></span>
+<span class=key>pool</span>:
+  <span class=key>vmImage</span>: <span class=string><span class=content>'ubuntu-latest'</span></span>
+
+<span class=key>steps</span>:
+- <span class=string><span class=content>checkout: self </span></span><b class=conum>1</b>
+  <span class=key>displayName</span>: <span class=string><span class=content>'Git checkout'</span></span>
+  <span class=key>submodules</span>: <span class=string><span class=content>true</span></span>
+
+- <span class=string><span class=content>task: Bash@3 </span></span><b class=conum>2</b>
+  <span class=key>displayName</span>: <span class=string><span class=content>'Hotfix theme'</span></span>
+  <span class=key>inputs</span>:
+    <span class=key>targetType</span>: <span class=string><span class=content>'inline'</span></span>
+    <span class=key>script</span>: <span class=string><span class=content>cp -R theme_fixes/** themes/bilberry-hugo-theme</span></span>
+- <span class=string><span class=content>task: Bash@3 </span></span><b class=conum>3</b>
+  <span class=key>displayName</span>: <span class=string><span class=content>'Build HTML'</span></span>
+  <span class=key>inputs</span>:
+    <span class=key>targetType</span>: <span class=string><span class=content>'inline'</span></span>
+    <span class=key>script</span>: <span class=string><span class=delimiter>|</span><span class=content>
+      docker run --rm -v $PWD:/app anoff/hugo-asciidoctor hugo --gc --minify -d _site
+      cp -R _site/* $(Build.ArtifactStagingDirectory)/</span></span>
+
+- <span class=string><span class=content>task: PublishPipelineArtifact@0 </span></span><b class=conum>3</b>
+  <span class=key>displayName</span>: <span class=string><span class=content>'Publish artifact'</span></span>
+  <span class=key>inputs</span>:
+    <span class=key>artifactName</span>: <span class=string><span class=content>'blog'</span></span>
+    <span class=key>targetPath</span>: <span class=string><span class=content>'$(Build.ArtifactStagingDirectory)'</span></span>
+
+- <span class=string><span class=content>task: Bash@3 </span></span><b class=conum>4</b>
+  <span class=key>inputs</span>:
+    <span class=key>targetType</span>: <span class=string><span class=content>'inline'</span></span>
+    <span class=key>script</span>: <span class=string><span class=delimiter>|</span><span class=content>
+      git clone https://anoff:$(github_token)@github.com/anoff/blog.git --branch=gh-pages ./ghpages
+      cd ./ghpages
+      git config core.autocrlf false
+      git config user.email &quot;&quot;
+      git config user.name &quot;CI Joe&quot;
+      rm -rf *
+      cp -R $(Build.ArtifactStagingDirectory)/* .
+      echo blog.anoff.io &gt; CNAME
+      git add .
+      git commit --allow-empty -m 'Automated build #$(Build.BuildNumber)'
+      git push</span></span>
+  <span class=key>displayName</span>: <span class=string><span class=content>'Publish to gh-pages'</span></span></pre></td></tr></table></code></pre><ol class="callout-list arabic"><li>Clone the repository content</li><li>Hotfix something in the hugo theme by copying over files</li><li>Create HTML content by running Hugo</li><li>Publish HTML</li></ol></figure><p>You can find the <a href=https://github.com/anoff/blog/blob/764493af186955eab28a30a2eb7e87de1a3e38dd/.drone.yml>drone CI definition</a> and <a href=https://github.com/anoff/blog/blob/dfe198ca9bbc3737fcc5a1c4e773ca5e5e80fe3c/azure-pipeline.yml>Azure Pipelines YAML</a> in my GitHub repo.</p><p>The necessary steps for this migration were:</p><div class="olist arabic"><ol class=arabic><li>Write the Azure Pipelines YAML specification for my pipeline</li><li>Create <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/get-started/pipelines-sign-up?view=azure-devops">Azure DevOps project</a></li><li>Create a <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=azure-devops&amp;tabs=yaml">variables group</a> containing the secrets for the GitHub repo (to push <code>gh-pages</code> branch)</li><li>Set up a <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/create-first-pipeline?view=azure-devops&amp;tabs=tfs-2018-2">new pipeline</a> referencing my YAML</li><li>Switch off the drone CI service for the repo</li><li>Change CI badge in README to <em>[![Build Status](<a class=bare href="https://anoff.visualstudio.com/anoff.io/_apis/build/status/anoff.blog?branchName=master">https://anoff.visualstudio.com/anoff.io/_apis/build/status/anoff.blog?branchName=master</a>)](<a class=bare href="https://anoff.visualstudio.com/anoff.io/_build/latest?definitionId=1&amp;branchName=master">https://anoff.visualstudio.com/anoff.io/_build/latest?definitionId=1&amp;branchName=master</a>)</em> ✅</li></ol></div><figure class=image-block><img src=/assets/azure-pipelines/pipelines-step.png alt="Step overview"><figcaption>Figure 5. CI steps in the new Azure Pipeline</figcaption></figure></section><section class="doc-section level-1"><h2 id=_migrating_from_travis_ci><a class=link href=#_migrating_from_travis_ci>Migrating from Travis CI</a></h2><p>Another project I migrated was a simple Node.js project <a href=https://github.com/anoff/azure-keyvault-secretstore/commit/e2f262f2aae4390c6042fe93eef6c2e2fa325bb2>azure-keyvault-secretstore</a>.
+Previously the build was done via Travis CI and only used the default Node.js behavior of Travis; doing an <code>npm ci</code> (install dependencies) and <code>npm test</code> to run any tests.
+However this one used a build matrix to execute tests on multiple Node.js versions in parallel.
+This is something <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&amp;tabs=schema#job">Azure Pipelines</a> supports as well with the <code>strategy:matrix</code> property.</p><p>Comparison of the two configurations shows only slight differences in the syntax and the fact that Travis auto-assumed <code>npm test</code> as a default command in Node.js environments</p><figure class=listing-block><figcaption>Travis CI configuration</figcaption><pre class="CodeRay highlight linenums"><code data-lang=yaml><table class=CodeRay><tr>
+  <td class=line-numbers><pre>1
+2
+3
+4
+5
+6
+7
+</pre></td><td class=code><pre><span class=key>language</span>: <span class=string><span class=content>node_js</span></span>
+<span class=key>node_js</span>:
+  - <span class=string><span class=content>'8'</span></span>
+  - <span class=string><span class=content>'10'</span></span>
+  - <span class=string><span class=content>'12'</span></span>
+<span class=key>after_script</span>: <b class=conum>1</b>
+- <span class=string><span class=content>'cat coverage/lcov.info | ./node_modules/.bin/coveralls'</span></span></pre></td></tr></table></code></pre><ol class="callout-list arabic"><li>Travis uses <code>(before|after)_script</code> tags to separate a build in up to three steps, in this <code>after</code> step the code coverage results generated during <code>npm test</code> are uploaded to coveralls</li></ol></figure><figure class=listing-block><figcaption>Azure Pipelines configuration</figcaption><pre class="CodeRay highlight linenums"><code data-lang=yaml><table class=CodeRay><tr>
+  <td class=line-numbers><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+</pre></td><td class=code><pre><span class=key>pool</span>:
+  <span class=key>vmImage</span>: <span class=string><span class=content>'ubuntu-latest'</span></span>
+<span class=key>strategy</span>:
+  <span class=key>matrix</span>:
+    <span class=key>node_8</span>:
+      <span class=key>node_version</span>: <span class=string><span class=content>'8'</span></span>
+    <span class=key>node_10</span>:
+      <span class=key>node_version</span>: <span class=string><span class=content>'10'</span></span>
+    <span class=key>node_12</span>:
+      <span class=key>node_version</span>: <span class=string><span class=content>'12'</span></span>
+
+<span class=key>steps</span>:
+- <span class=string><span class=content>task: NodeTool@0</span></span>
+  <span class=key>inputs</span>:
+    <span class=key>versionSpec</span>: <span class=string><span class=content>$(node_version) </span></span><b class=conum>1</b>
+- <span class=string><span class=content>bash: npm ci </span></span><b class=conum>2</b>
+- <span class=string><span class=content>bash: npm test </span></span><b class=conum>3</b>
+- <span class=string><span class=content>bash: 'cat coverage/lcov.info | ./node_modules/.bin/coveralls' </span></span><b class=conum>4</b>
+</pre></td></tr></table></code></pre><ol class="callout-list arabic"><li>set an explicit Node.js version on the agent</li><li>install dependencies</li><li>run unit tests and generate code coverage</li><li>upload code coverage results, this step still fails 🐞 because the <code>coveralls</code> module for Node.js does not yet support Azure Pipelines as runtime environment</li></ol></figure><p>Besides steps being made explicitly the Azure Pipelines config is very similar to the Travis CI configuration.
+Migration is merely setting up an account and getting into the Azure Pipelines YAML syntax.</p></section><section class="doc-section level-1"><h2 id=_some_things_to_look_out_for_when_using_azure_pipelines><a class=link href=#_some_things_to_look_out_for_when_using_azure_pipelines>Some things to look out for when using Azure Pipelines 🐞</a></h2><p>Here are some things that I learned over time and I hope will be fixed soon.</p><section class="doc-section level-2"><h3 id=_scheduled_jobs_only_run_when_people_use_the_ui><a class=link href=#_scheduled_jobs_only_run_when_people_use_the_ui>Scheduled jobs only run when people use the UI</a></h3><p>As described in the FAQ of Pipelines a scheduled job only runs <strong>ONCE</strong> after the last person logs out (active session) the Azure DevOps UI.</p><div class=quote-block><blockquote><p>My build didn&#8217;t run. What happened?</p><p>Someone must view a page in your organization regularly for CI and scheduled builds to run. It can be any page, including, for example, Azure Pipelines.</p><p>Your organization goes dormant five minutes after the last user signed out of Azure DevOps. After that, each of your build pipelines will run one more time. For example, while your organization is dormant:</p><div class=ulist><ul><li>A nightly build of code in your organization will run only one night until someone signs in again.</li><li>CI builds of an Other Git repo will stop running until someone signs in again.</li></ul></div><footer>&#8212; <cite>Azure DevOps FAQ</cite></footer></blockquote></div><p>This is by far the worst restriction that Azure Pipelines has in my opinion.
+It basically will not run nightly builds over the weekend.</p></section><section class="doc-section level-2"><h3 id=_by_default_pipeline_executions_are_removed_after_30_days><a class=link href=#_by_default_pipeline_executions_are_removed_after_30_days>By default pipeline executions are removed after 30 days</a></h3><p>This is something you can - and probably should - reconfigure.
+You can actually set this value to as high as 2 years.
+So I do not understand why the default is just a month.</p><figure class=image-block><img src=/assets/azure-pipelines/configure-retention.png alt="Configure pipeline retention"><figcaption>Figure 6. Configure pipeline retention in the project settings</figcaption></figure><p>The worst thing is that <em>Keeping a run</em> not only means keeping the logs but actually after those 30 days Pipelines does not even know there ever was a run.
+The image below was taken today, where the last commit - and pipeline execution - was more than 30 days old.
+It seems like the pipeline never ran at all.</p><p>I wish they just deleted the logs but kept the meta-data like date, run result and related commit ID.</p><figure class=image-block><img src=/assets/azure-pipelines/no-executions.png alt="Azure Pipelines showing no executions after 30 days"><figcaption>Figure 7. All past pipeline executions are completely gone</figcaption></figure></section><section class="doc-section level-2"><h3 id=_yaml_spec_seems_over_complicated><a class=link href=#_yaml_spec_seems_over_complicated>YAML spec seems over-complicated</a></h3><p>Having used Travis CI, drone and GitLab CI before I have to say the <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&amp;tabs=schema">YAML syntax</a> just feels bloated.
+There are many more things you can configure compared to Travis but after the few pipelines I built I already found that these options often do match my use case and I end up writing hand-crafted inline scripts instead of using the provided tasks as well.</p></section><section class="doc-section level-2"><h3 id=_azure_devops_projectpipeline_structure><a class=link href=#_azure_devops_projectpipeline_structure>Azure DevOps Project/Pipeline structure</a></h3><p>In Azure DevOps you can have a project that has multiple repositories and multiple pipelines.
+There is no 1:1 relationship between repos and pipelines.
+Multiple projects are grouped into an organization.</p><figure class=image-block><img src=/assets/azure-pipelines/org.png alt="Screenshot of dev.azure.com"><figcaption>Figure 8. Azure DevOps project overview</figcaption></figure><figure class=image-block><img src=/assets/azure-pipelines/project.png alt="Screenshot of dev.azure.com"><figcaption>Figure 9. Azure Pipelines overview for a given project</figcaption></figure><p>This was new at first because most CI services out there just create one project/pipeline per repository.
+Even after several weeks I do not really get familiar with this additional <em>layer</em> that the project represents.</p><figure class=image-block><img src=/assets/azure-pipelines/drone-repos.png alt="Screenshot of cloud.drone.io"><figcaption>Figure 10. drone.io repositories overview</figcaption></figure></section></section><section class="doc-section level-1"><h2 id=_summary><a class=link href=#_summary>Summary</a></h2><p>Migrating to Azure Pipelines from an existing CI service is not a very complicated task if your existing workload fulfills the following requirements - which should be best practice 😉</p><div class="olist arabic"><ol class=arabic><li>no customized agents, instead bundle tools into docker images that serve as runtime for the CI job</li><li>no hard dependency on service-specific plugins/features</li><li>secrets can be easily injected via environment variables or arguments</li><li>your pipeline is modular - not really necessary but a single job, single step pipeline looks weird on the UI</li></ol></div><p>If you have any questions drop me a DM via <a href=https://twitter.com/anoff_io>Twitter</a> or leave a comment 👋</p></section></div><div class=footer><div class=tags><i class="fa fa-tags"></i><div class=links><a href=/tags/ci/cd>CI/CD</a></div></div></div></article></div><div id=disqus_thread></div><script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return;}
+var d=document,s=d.createElement('script');s.async=true;s.src='//'+"anoff-io"+'.disqus.com/embed.js';s.setAttribute('data-timestamp',+new Date());(d.head||d.body).appendChild(s);})();</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div><footer><div class=container><div class=right><div class=external-profiles><strong>Social media</strong>
+<a href=//twitter.com/anoff_io target=_blank><i class="fa fa-twitter-adblock-proof"></i></a><a href=//github.com/anoff target=_blank><i class="fa fa-github"></i></a><a href=//linkedin.com/in/offenhaeuser/ target=_blank><i class="fa fa-linkedin"></i></a></div></div></div></footer><div class=credits><div class=container><div class=copyright><a href=//anoff.io target=_blank>&copy;
+2019
+by Andreas Offenhaeuser</a></div><div class=author><a href=//github.com/Lednerb/bilberry-hugo-theme target=_blank>Bilberry Hugo Theme</a></div></div></div><script type=application/javascript>var doNotTrack=false;if(!doNotTrack){window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;ga('create','UA-93890295-4','auto');ga('send','pageview');}</script><script async src=https://www.google-analytics.com/analytics.js></script><script type=text/javascript src=/js/externalDependencies.39c47e10e241eae2947b3fe21809c572.js integrity="md5-OcR&#43;EOJB6uKUez/iGAnFcg=="></script><script type=text/javascript src=/js/theme.ff50ae6dc1bfc220b23bf69dbb41b54e.js integrity="md5-/1CubcG/wiCyO/adu0G1Tg=="></script><script>$(".moment").each(function(){$(this).text(moment($(this).text()).locale("en").format('LL'));});$(".footnote-return sup").html("");</script><script src=//blog.anoff.io/fix-adoc.js type=application/javascript></script><script src=//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js type=application/javascript></script><script src=//blog.anoff.io/init-cookieconsent.js type=application/javascript></script></body></html>
