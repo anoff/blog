@@ -10,6 +10,8 @@ featuredImage: /assets/azure-pipelines/title.png
 :imagesdir: /assets/azure-pipelines/
 :imagesoutdir: _site/assets/azure-pipelines/
 :plantuml-server-url: http://plantuml.com/plantuml
+:source-highlighter: coderay
+:sectlinks:
 
 Beginning of the year I switched my blogs build chain from Travis CI to link:https://drone.io/[drone CI].
 Due to some tasks with Azure DevOps at work I wanted to test how good it fits my private projects.
@@ -31,23 +33,20 @@ Similar to the Atlassian stack (Jira + BitBucket + Bamboo) or the GitLab stack.
 
 See the link:https://azure.microsoft.com/en-in/updates/introducing-azure-devops/[announcement] Microsoft made last year about the introduction of the service for details.
 
-.Introducing Azure DevOps
-....
+[quote, Azure DevOps Newsletter]
+____
+Introducing Azure DevOps
 
 Posted on 10 September 2018
 
 The single service that was Visual Studio Team Services (VSTS) is now becoming a new set of Azure DevOps services. Throughout our documentation and websites, and in the product, you'll start to notice new icons and names for Azure DevOps and each of the services within it:
 
-    Azure Pipelines to continuously build, test, and deploy to any platform and cloud.
-    Azure Boards for powerful work management.
-    Azure Artifacts for Maven, npm, and NuGet package feeds.
-    Azure Repos for unlimited cloud-hosted private Git repos.
-    Azure Test Plans for planned and exploratory testing.
-
-With the launch of Azure Pipelines, we've introduced a new app to the GitHub Marketplace, refreshed a number of the experiences to help you get started, and begun to offer unlimited CI/CD minutes and 10 parallel jobs for open-source projects.
-
-View the full release notes.
-....
+* Azure Pipelines to continuously build, test, and deploy to any platform and cloud.
+* Azure Boards for powerful work management.
+* Azure Artifacts for Maven, npm, and NuGet package feeds.
+* Azure Repos for unlimited cloud-hosted private Git repos.
+* Azure Test Plans for planned and exploratory testing.
+____
 
 == Specifying pipelines with YAML syntax
 
@@ -95,7 +94,7 @@ Multiple **Jobs** within a pipeline are a **Fan-Out** scenario as they get execu
 image::fan-out.png[Fan-Out scneario]
 
 .Example for a simple stage-less pipeline
-[source, yaml]
+[source, yaml, linenums]
 ....
 pool:
   vmImage: 'ubuntu-latest'
@@ -334,7 +333,7 @@ This is something link:https://docs.microsoft.com/en-us/azure/devops/pipelines/y
 Comparison of the two configurations shows only slight differences in the syntax and the fact that Travis auto-assumed `npm test` as a default command in Node.js environments
 
 .Travis CI configuration
-[source, yaml]
+[source, yaml, linenums]
 ....
 language: node_js
 node_js:
@@ -347,7 +346,7 @@ after_script: <1>
 <1> Travis uses `(before|after)_script` tags to separate a build in up to three steps, in this `after` step the code coverage results generated during `npm test` are uploaded to coveralls
 
 .Azure Pipelines configuration
-[source, yaml]
+[source, yaml, linenums]
 ....
 pool:
   vmImage: 'ubuntu-latest'
@@ -384,19 +383,19 @@ Here are some things that I learned over time and I hope will be fixed soon.
 
 As described in the FAQ of Pipelines a scheduled job only runs **ONCE** after the last person logs out (active session) the Azure DevOps UI.
 
-.My build didn't run. What happened?, link:https://docs.microsoft.com/en-us/azure/devops/pipelines/build/triggers?view=azure-devops&tabs=yaml#q--a[source]
-....
+[quote, Azure DevOps FAQ]
+____
+My build didn't run. What happened?
 
 Someone must view a page in your organization regularly for CI and scheduled builds to run. It can be any page, including, for example, Azure Pipelines.
 
 Your organization goes dormant five minutes after the last user signed out of Azure DevOps. After that, each of your build pipelines will run one more time. For example, while your organization is dormant:
 
-    A nightly build of code in your organization will run only one night until someone signs in again.
+* A nightly build of code in your organization will run only one night until someone signs in again.
+* CI builds of an Other Git repo will stop running until someone signs in again.
+____
 
-    CI builds of an Other Git repo will stop running until someone signs in again.
-....
-
-This is by far THE worst restriction that Azure Pipelines has in my opinion.
+This is by far the worst restriction that Azure Pipelines has in my opinion.
 It basically will not run nightly builds over the weekend.
 
 === By default pipeline executions are removed after 30 days

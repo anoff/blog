@@ -53,3 +53,27 @@ $footer-headline-color: #444;
         opacity: 0.25;
     }
 }
+
+// Hotfix link and code block styling
+
+.article .string .content {
+    padding: 0;
+}
+
+p {
+    a {
+        color: $highlight-color !important;
+    }
+    a:hover {
+        color: inherit !important;
+    }
+}
+
+.article .content .doc-section li {
+    a {
+        color: $highlight-color !important;
+    }
+    a:hover {
+        color: inherit !important;
+    }
+}
