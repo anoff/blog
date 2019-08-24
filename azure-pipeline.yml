@@ -1,15 +1,10 @@
-# Build hugo website and publish to GitHub Pages
-#   requires the following Community Plugins
-#     https://marketplace.visualstudio.com/items?itemName=giuliovdev.hugo-extension
-#     https://marketplace.visualstudio.com/items?itemName=AccidentalFish.githubpages-publish
-
 trigger:
 - master
 
 variables:
 - group: integration
 pool:
-  vmImage: 'ubuntu-16.04'
+  vmImage: 'ubuntu-latest'
 
 steps:
 - checkout: self
@@ -19,22 +14,14 @@ steps:
 - task: Bash@3
   displayName: 'Hotfix theme'
   inputs:
-    targetType: 'inline'
-    script: |
-      cp -R theme_fixes/** themes/bilberry-hugo-theme
+    script: cp -R theme_fixes/** themes/bilberry-hugo-theme
 
 - task: Bash@3
   displayName: 'Build HTML'
   inputs:
-    targetType: 'inline'
     script: |
-      echo $PWD
-      ls -ahl .
-      echo $(Build.ArtifactStagingDirectory)
-      ls -ahl $(Build.ArtifactStagingDirectory)
       docker run --rm -v $PWD:/app anoff/hugo-asciidoctor hugo --gc --minify -d _site
       cp -R _site/* $(Build.ArtifactStagingDirectory)/
-      ls -ahl $(Build.ArtifactStagingDirectory)
 
 - task: PublishPipelineArtifact@0
   displayName: 'Publish artifact'
@@ -44,7 +31,6 @@ steps:
 
 - task: Bash@3
   inputs:
-    targetType: 'inline'
     script: |
       git clone https://anoff:$(github_token)@github.com/anoff/blog.git --branch=gh-pages ./ghpages
       cd ./ghpages
@@ -52,7 +38,7 @@ steps:
       git config user.email ""
       git config user.name "CI Joe"
       rm -rf *
-      cp -R $(Build.ArtifactStagingDirectory)/* . # hardcode directory because pipeline vars are windows
+      cp -R $(Build.ArtifactStagingDirectory)/* .
       echo blog.anoff.io > CNAME
       git add .
       git commit --allow-empty -m 'Automated build #$(Build.BuildNumber)'
