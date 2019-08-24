@@ -7,6 +7,7 @@ resizeImages: true
 draft: true
 ---
 :imagesdir: /assets/
+:coderay-linenums-mode: table
 
 Beginning of the year I switched my blogs build chain from Travis CI to link:https://drone.io/[drone CI].
 Due to some tasks with Azure DevOps at work I wanted to test how good it fits my private projects.
@@ -347,7 +348,59 @@ The necessary steps for this migration were:
 .CI steps in the new Azure Pipeline
 image::azure-pipelines/pipelines-step.png[Step overview]
 
-== Things I hope Azure Pipelines will improve in the future 🐞
+== Migrating from Travis CI
+
+Another project I migrated was a simple Node.js project link:https://github.com/anoff/azure-keyvault-secretstore/commit/e2f262f2aae4390c6042fe93eef6c2e2fa325bb2[azure-keyvault-secretstore].
+Previously the build was done via Travis CI and only used the default Node.js behavior of Travis; doing an `npm ci` (install dependencies) and `npm test` to run any tests.
+However this one used a build matrix to execute tests on multiple Node.js versions in parallel.
+This is something link:https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=schema#job[Azure Pipelines] supports as well with the `strategy:matrix` property.
+
+Comparison of the two configurations shows only slight differences in the syntax and the fact that Travis auto-assumed `npm test` as a default command in Node.js environments
+
+.Travis CI configuration
+[source, yaml]
+....
+language: node_js
+node_js:
+  - '8'
+  - '10'
+  - '12'
+after_script: <1>
+- 'cat coverage/lcov.info | ./node_modules/.bin/coveralls' 
+....
+<1> Travis uses `(before|after)_script` tags to separate a build in up to three steps, in this `after` step the code coverage results generated during `npm test` are uploaded to coveralls
+
+.Azure Pipelines configuration
+[source, yaml]
+....
+pool:
+  vmImage: 'ubuntu-latest'
+strategy:
+  matrix:
+    node_8:
+      node_version: '8'
+    node_10:
+      node_version: '10'
+    node_12:
+      node_version: '12'
+
+steps:
+- task: NodeTool@0 
+  inputs:
+    versionSpec: $(node_version) <1>
+- bash: npm ci <2>
+- bash: npm test <3>
+- bash: 'cat coverage/lcov.info | ./node_modules/.bin/coveralls' <4>
+....
+<1> set an explicit Node.js version on the agent
+<2> install dependencies
+<3> run unit tests and generate code coverage
+<4> upload code coverage results, this step still fails 🐞 because the `coveralls` module for Node.js does not yet support Azure Pipelines as runtime environment
+
+Besides steps being made explicitly the Azure Pipelines config is very similar to the Travis CI configuration.
+Migration is merely setting up an account and getting into the Azure Pipelines YAML syntax.
+
+== Some things to look out for when using Azure Pipelines 🐞
 
 Here are some things that I learned over time and I hope will be fixed soon.
 
