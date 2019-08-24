@@ -1,13 +1,15 @@
 ---
 title: Migrating to Azure Pipelines
-date: 2019-08-23
+date: 2019-08-24
 tags: [CI/CD]
 author: anoff
 resizeImages: true
-draft: true
+draft: false
+featuredImage: /assets/azure-pipelines/title.png
 ---
-:imagesdir: /assets/
-:coderay-linenums-mode: table
+:imagesdir: /assets/azure-pipelines/
+:imagesoutdir: _site/assets/azure-pipelines/
+:plantuml-server-url: http://plantuml.com/plantuml
 
 Beginning of the year I switched my blogs build chain from Travis CI to link:https://drone.io/[drone CI].
 Due to some tasks with Azure DevOps at work I wanted to test how good it fits my private projects.
@@ -27,9 +29,9 @@ Similar to the Atlassian stack (Jira + BitBucket + Bamboo) or the GitLab stack.
 *) worst name ever
 ....
 
-See the announcement Microsoft made last year about the introduction of the service for details.
+See the link:https://azure.microsoft.com/en-in/updates/introducing-azure-devops/[announcement] Microsoft made last year about the introduction of the service for details.
 
-.link:https://azure.microsoft.com/en-in/updates/introducing-azure-devops/[Introducing Azure DevOps] - announcement
+.Introducing Azure DevOps
 ....
 
 Posted on 10 September 2018
@@ -54,7 +56,7 @@ This way you can to configure (almost) your entire build behavior versioned with
 The YAML syntax also allows multi-stage builds.
 
 .Azure Pipelines hierarchy
-[plantuml, png]
+[plantuml]
 ....
 !includeurl https://gist.githubusercontent.com/anoff/d8f48105ac4d3c7b14ca8c34d6d54938/raw/7381f13a14e048bbd3cb4ecc70369e913908151a/anoff.plantuml
 node Pipeline
@@ -90,7 +92,7 @@ If one step in a job fails the job will stop executing but other jobs will conti
 
 Multiple **Jobs** within a pipeline are a **Fan-Out** scenario as they get executed in parallel.
 
-image::azure-pipelines/fan-out.png[Fan-Out scneario]
+image::fan-out.png[Fan-Out scneario]
 
 .Example for a simple stage-less pipeline
 [source, yaml]
@@ -110,7 +112,7 @@ jobs:
 ....
 
 .Pipeline execution without stage
-[plantuml, png]
+[plantuml]
 ....
 !includeurl https://gist.githubusercontent.com/anoff/d8f48105ac4d3c7b14ca8c34d6d54938/raw/7381f13a14e048bbd3cb4ecc70369e913908151a/anoff.plantuml
 node Pipeline
@@ -135,13 +137,13 @@ Step2.2 --> Step2.3
 By specifying **Stages** you can execute fan-out and fan-in multiple times within your pipeline.
 Each **Stage** represents a fan-in operation where all defined jobs need to finish before the next stage is triggered which can fan-out again.
 
-image::azure-pipelines/fan-out-fan-in.png[Fan-Out Fan-In with stages]
+image::fan-out-fan-in.png[Fan-Out Fan-In with stages]
 
 Looking back at the hierarchies existing the YAML file the actual execution pattern can be described with the state machine below.
 Only one stage is executing at a time; if possible all jobs within this stage are executed in parallel.
 
 .Pipeline with two stages
-[plantuml, png]
+[plantuml]
 ....
 @startuml
 !includeurl https://gist.githubusercontent.com/anoff/d8f48105ac4d3c7b14ca8c34d6d54938/raw/7381f13a14e048bbd3cb4ecc70369e913908151a/anoff.plantuml
@@ -197,7 +199,7 @@ The first CI/CD workload I moved to Azure Pipelines was this blog.
 As you can see in the image below, this is a very simple pipeline with just a few steps and no fan-in/fan-out behavior.
 
 .CI steps in the existing drone pipeline
-image::azure-pipelines/drone-steps.png[Step overview]
+image::drone-steps.png[Step overview]
 
 The drone pipeline was already relying on a link:https://hub.docker.com/r/anoff/hugo-asciidoctor[custom docker image] as described link:https://blog.anoff.io/2019-02-17-hugo-render-asciidoc/[in this previous blog post about rendering asciidoc in hugo].
 That made the migration quite easy as there is not a lot of customization to the build agent necessary.
@@ -206,24 +208,7 @@ All required tools to run the pipeline are encapsuled in that docker image.
 I played around with various plugins available on the DevOps marketplace for Docker, Hugo and GitHub pages deploy but they either did not support the use case I have or ran outdated versions of the tools and did not let me update.
 Now let's compare the actual pipeline definition.
 
-.Azure pipelines vs drone spec
-[cols="1,3a,3a"]
-|===
-|Step | Azure Pipelines YAML | drone.io YAML
-| Bootstrap |
-[source, yaml, linenums]
-....
-trigger:
-- master
-
-variables:
-- group: integration
-pool:
-  vmImage: 'ubuntu-16.04'
-
-steps:
-....
-|
+.drone pipeline config
 [source, yaml, linenums]
 ....
 kind: pipeline
@@ -233,94 +218,25 @@ clone:
   depth: 50
 
 steps:
-....
 
-| Clone repo |
-[source, yaml, linenums]
-....
-- checkout: self
-  displayName: 'Git checkout'
-  submodules: true
-....
-|
-[source, yaml, linenums]
-....
-- name: submodules
+- name: submodules <1>
   image: docker:git
   commands:
   - git submodule update --init --recursive --remote
-....
 
-| Hotfix some files |
-[source, yaml, linenums]
-....
-- task: Bash@3
-  displayName: 'Hotfix theme'
-  inputs:
-    targetType: 'inline'
-    script: \|
-      cp -R theme_fixes/** themes/bilberry-hugo-theme
-....
-|
-[source, yaml, linenums]
-....
-- name: hotfix 
+- name: hotfix <2>
   image: anoff/hugo-asciidoctor
   commands:
   - cp -R theme_fixes/** themes/bilberry-hugo-theme
   - cp -R theme_fixes/** themes/bilberry-hugo-theme-fork
-....
 
-| Build HTML content via hugo |
-[source, yaml, linenums]
-....
-- task: Bash@3
-  displayName: 'Build HTML'
-  inputs:
-    targetType: 'inline'
-    script: \|
-      docker run --rm -v $PWD:/app anoff/hugo-asciidoctor hugo --gc --minify -d _site
-      cp -R _site/* $(Build.ArtifactStagingDirectory)/
-- task: PublishPipelineArtifact@0
-  displayName: 'Publish artifact'
-  inputs:
-    artifactName: 'blog'
-    targetPath: '$(Build.ArtifactStagingDirectory)'
-....
-|
-[source, yaml, linenums]
-....
-- name: build
+- name: build <3>
   image: anoff/hugo-asciidoctor
   commands:
   - hugo --gc --minify -d _site --baseURL https://blog.anoff.io
   - touch _site/.nojekyll
-....
 
-| Publish to GitHub pages |
-[source, yaml, linenums]
-....
-- task: Bash@3
-  inputs:
-    targetType: 'inline'
-    script: \|
-      git clone https://anoff:$(github_token)@github.com/anoff/blog.git --branch=gh-pages ./ghpages
-      cd ./ghpages
-      git config core.autocrlf false
-      git config user.email ""
-      git config user.name "CI Joe"
-      rm -rf *
-      cp -R $(Build.ArtifactStagingDirectory)/* . # hardcode directory because pipeline vars are windows
-      echo blog.anoff.io > CNAME
-      git add .
-      git commit --allow-empty -m 'Automated build #$(Build.BuildNumber)'
-      git push
-  displayName: 'Publish to gh-pages'
-....
-|
-[source, yaml, linenums]
-....
-- name: publish  
+- name: publish <4>
   image: plugins/gh-pages
   settings:
     username:
@@ -332,7 +248,67 @@ steps:
     branch:
     - master
 ....
-|===
+<1> Clone the repository content
+<2> Hotfix something in the hugo theme by copying over files
+<3> Create HTML content by running Hugo
+<4> Publish HTML
+
+.drone pipeline config
+[source, yaml, linenums]
+....
+trigger:
+- master
+
+variables:
+- group: integration
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- checkout: self <1>
+  displayName: 'Git checkout'
+  submodules: true
+
+- task: Bash@3 <2>
+  displayName: 'Hotfix theme'
+  inputs:
+    targetType: 'inline'
+    script: cp -R theme_fixes/** themes/bilberry-hugo-theme
+- task: Bash@3 <3>
+  displayName: 'Build HTML'
+  inputs:
+    targetType: 'inline'
+    script: |
+      docker run --rm -v $PWD:/app anoff/hugo-asciidoctor hugo --gc --minify -d _site
+      cp -R _site/* $(Build.ArtifactStagingDirectory)/
+
+- task: PublishPipelineArtifact@0 <3>
+  displayName: 'Publish artifact'
+  inputs:
+    artifactName: 'blog'
+    targetPath: '$(Build.ArtifactStagingDirectory)'
+
+- task: Bash@3 <4>
+  inputs:
+    targetType: 'inline'
+    script: |
+      git clone https://anoff:$(github_token)@github.com/anoff/blog.git --branch=gh-pages ./ghpages
+      cd ./ghpages
+      git config core.autocrlf false
+      git config user.email ""
+      git config user.name "CI Joe"
+      rm -rf *
+      cp -R $(Build.ArtifactStagingDirectory)/* .
+      echo blog.anoff.io > CNAME
+      git add .
+      git commit --allow-empty -m 'Automated build #$(Build.BuildNumber)'
+      git push
+  displayName: 'Publish to gh-pages'
+....
+<1> Clone the repository content
+<2> Hotfix something in the hugo theme by copying over files
+<3> Create HTML content by running Hugo
+<4> Publish HTML
 
 You can find the link:https://github.com/anoff/blog/blob/764493af186955eab28a30a2eb7e87de1a3e38dd/.drone.yml[drone CI definition] and link:https://github.com/anoff/blog/blob/dfe198ca9bbc3737fcc5a1c4e773ca5e5e80fe3c/azure-pipeline.yml[Azure Pipelines YAML] in my GitHub repo.
 
@@ -343,10 +319,10 @@ The necessary steps for this migration were:
 . Create a link:https://docs.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=azure-devops&tabs=yaml[variables group] containing the secrets for the GitHub repo (to push `gh-pages` branch)
 . Set up a link:https://docs.microsoft.com/en-us/azure/devops/pipelines/create-first-pipeline?view=azure-devops&tabs=tfs-2018-2[new pipeline] referencing my YAML
 . Switch off the drone CI service for the repo
-. Change CI badge in README to `[![Build Status](https://anoff.visualstudio.com/anoff.io/_apis/build/status/anoff.blog?branchName=master)](https://anoff.visualstudio.com/anoff.io/_build/latest?definitionId=1&branchName=master)` ✅
+. Change CI badge in README to _[![Build Status](https://anoff.visualstudio.com/anoff.io/_apis/build/status/anoff.blog?branchName=master)](https://anoff.visualstudio.com/anoff.io/_build/latest?definitionId=1&branchName=master)_ ✅
 
 .CI steps in the new Azure Pipeline
-image::azure-pipelines/pipelines-step.png[Step overview]
+image::pipelines-step.png[Step overview]
 
 == Migrating from Travis CI
 
@@ -430,7 +406,7 @@ You can actually set this value to as high as 2 years.
 So I do not understand why the default is just a month.
 
 .Configure pipeline retention in the project settings
-image::azure-pipelines/configure-retention.png[Configure pipeline retention]
+image::configure-retention.png[Configure pipeline retention]
 
 The worst thing is that _Keeping a run_ not only means keeping the logs but actually after those 30 days Pipelines does not even know there ever was a run.
 The image below was taken today, where the last commit - and pipeline execution - was more than 30 days old.
@@ -439,7 +415,7 @@ It seems like the pipeline never ran at all.
 I wish they just deleted the logs but kept the meta-data like date, run result and related commit ID.
 
 .All past pipeline executions are completely gone
-image::azure-pipelines/no-executions.png[Azure Pipelines showing no executions after 30 days]
+image::no-executions.png[Azure Pipelines showing no executions after 30 days]
 
 === YAML spec seems over-complicated
 
@@ -452,8 +428,17 @@ In Azure DevOps you can have a project that has multiple repositories and multip
 There is no 1:1 relationship between repos and pipelines.
 Multiple projects are grouped into an organization.
 
+.Azure DevOps project overview
+image::org.png[Screenshot of dev.azure.com]
+
+.Azure Pipelines overview for a given project
+image::project.png[Screenshot of dev.azure.com]
+
 This was new at first because most CI services out there just create one project/pipeline per repository.
 Even after several weeks I do not really get familiar with this additional _layer_ that the project represents.
+
+.drone.io repositories overview
+image::drone-repos.png[Screenshot of cloud.drone.io]
 
 == Summary
 
