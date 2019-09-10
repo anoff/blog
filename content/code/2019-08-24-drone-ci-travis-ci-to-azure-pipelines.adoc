@@ -1,7 +1,7 @@
 ---
 title: Migrating to Azure Pipelines
 date: 2019-08-24
-tags: [CI/CD]
+tags: [CI/CD, docker]
 author: anoff
 resizeImages: true
 draft: false

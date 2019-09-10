@@ -1,7 +1,7 @@
 ---
 title: Get Hugo to render (nice) Asciidocs
 date: 2019-02-17
-tags: [development, docs, web]
+tags: [development, docs, web, docker]
 author: anoff
 resizeImages: true
 featuredImage: /assets/hugo-asciidoc/vladimir-kramer-145-unsplash.jpg

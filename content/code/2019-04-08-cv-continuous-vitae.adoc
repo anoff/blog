@@ -1,7 +1,7 @@
 ---
 title: Continuous Vitae - Auto built and git versioned CV
 date: 2019-04-08
-tags: [recruiting, CI/CD, drone]
+tags: [recruiting, CI/CD, drone, docker]
 author: anoff
 draft: false
 featuredImage: /assets/continuous-cv/logo.png

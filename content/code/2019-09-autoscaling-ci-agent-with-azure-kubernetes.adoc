@@ -1,0 +1,44 @@
+---
+title: Building on-demand scaling CI infrastructure with Azure Kubernetes
+date: 2019-09-10
+tags: [CI/CD, azure, docker]
+author: anoff
+resizeImages: true
+draft: true
+featuredImage: /assets/scaling-agents-aks/title.png
+---
+:imagesdir: /assets/scaling-agents-aks/
+:imagesoutdir: _site/assets/scaling-agents-aks/
+:plantuml-server-url: http://plantuml.com/plantuml
+:source-highlighter: coderay
+:sectlinks:
+
+In my previous blog post link:/2019-08-24-drone-ci-travis-ci-to-azure-pipelines/[Migrating to Azure Pipelines] I gave an introduction to the Azure CI/CD service from a user perspective.
+With this post I want to share my experience while setting up a dedicated CI runner infrastructure with the Azure + Pipelines ecosystem.
+Basic knowledge of `Docker`, `Virtual Machines`, `Kubernetes`, `bash` might be required - should be enough if you know **what** these are.
+
+== Why build auto scaling CI infrastructure
+
+You might ask yourself - or me - _Why do you want to build a custom solution for auto-scaling CI infrastructure? There is already X out there_.
+
+The easy answer: _To learn how things work_
+
+The real answer: Using state of the art CI/CD solutions in an enterprise context is hard.
+Many SaaS offerings are forbidden and I could not find a CI system that fulfills all my requirements.
+What I need the CI infrastructure to be capable of:
+
+. support Linux and Windows agents
+. run on specific VMs with special hardware requirements
+. share specific volumes between all runners e.g. cache files
+. scale up to 20+ of agents
+. scale down to as little agents as possible to reduce costs
+. minimal responsibility for maintaining the CI master as well as the agents
+
+== The black box solution
+
+With the goal of not managing everything myself I chose Azure Pipelines as CI environment.
+It also supports the requirements 1-4 because as laid out in my link:/2019-08-24-drone-ci-travis-ci-to-azure-pipelines/[previous post] you can easily run arbitrary scripts in a pipeline job.
+
+Given the list of requirements the solution can be described with the following picture.
+
+image::blackbox.png[A new job triggers the creation of a new CI agent]
