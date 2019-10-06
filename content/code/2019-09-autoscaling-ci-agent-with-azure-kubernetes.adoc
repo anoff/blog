@@ -15,7 +15,7 @@ featuredImage: /assets/scaling-agents-aks/title.png
 
 In my previous blog post link:/2019-08-24-drone-ci-travis-ci-to-azure-pipelines/[Migrating to Azure Pipelines] I gave an introduction to the Azure CI/CD service from a user perspective.
 With this post I want to share my experience while setting up a dedicated CI runner infrastructure with the Azure + Pipelines ecosystem.
-Basic knowledge of `Docker`, `Virtual Machines`, `Kubernetes`, `bash` might be required - should be enough if you know **what** these are.
+Basic knowledge of `Docker`, `Kubernetes`, `bash` might be required - should be enough if you know **what** these are.
 
 == Why build auto scaling CI infrastructure
 
@@ -23,16 +23,17 @@ You might ask yourself - or me - _Why do you want to build a custom solution for
 
 The easy answer: _To learn how things work_
 
-The real answer: Using state of the art CI/CD solutions in an enterprise context is hard.
-Many SaaS offerings are forbidden and I could not find a CI system that fulfills all my requirements.
+The real answer: I could not find a CI system that fulfills all my requirements.
 What I need the CI infrastructure to be capable of:
 
 . support Linux and Windows agents
-. run on specific VMs with special hardware requirements
+. run on specific VMs with special hardware requirements (CPU, GPU, disks)
 . share specific volumes between all runners e.g. cache files
 . scale up to 20+ of agents
+. everything as code
+. state of the art UI with active directory authentication
 . scale down to as little agents as possible to reduce costs
-. minimal responsibility for maintaining the CI master as well as the agents
+. minimal responsibility; as little code and operational efforts as possible
 
 == The black box solution
 

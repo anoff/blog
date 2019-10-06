@@ -1,0 +1,213 @@
+---
+title: Migrating to vuetify 2.1
+date: 2019-10-06
+tags: [web, development]
+author: anoff
+resizeImages: true
+draft: false
+featuredImage: /assets/vuetify-2/title.png
+---
+:imagesdir: /assets/vuetify-2/
+:imagesoutdir: _site/assets/vuetify-2/
+:plantuml-server-url: http://plantuml.com/plantuml
+:source-highlighter: coderay
+:sectlinks:
+
+I just migrated the link:https://github.com/anoff/devradar/tree/master/editor[code] for the link://editor.devradar.io[devradar editor] to the latest major version of vuetify.
+There is an officiel link:https://vuetifyjs.com/en/getting-started/releases-and-migrations[migration guide] that helped me solve 70% of the issues but here is a quick overview of the biggest issues I encountered and what actually changed.
+
+> 🚨 This was written for a migration from `vuetify 1.5.14` to `vuetify 2.1.1`
+  Also all code samples are typescript, but should also work for Javascript projects
+
+== Bootstrapping
+
+Looking at the new link:https://vuetifyjs.com/en/getting-started/quick-start#quick-start[Quick start section] of vuetify 2.x you will notice that the way vuetify is added to Vue.js has changed.
+Previously vuetify was just included via `Vue.use()` now it also needs to be instantiated.
+
+.main.ts (vuetify 1.5)
+[source, typescript]
+....
+import Vue from 'vue'
+import App from './App.vue'
+import '~vuetify/src/stylus/main' <1>
+import Vuetify from 'vuetify' <1>
+
+Vue.use(Vuetify, { <1>
+  theme: appConfig.theme
+})
+
+/* eslint-disable no-new */
+new Vue({
+  el: '#app',
+  components: { App },
+  render: h => h(App),
+  template: '<App/>'
+})
+....
+<1> These modifications should be removed when migrating
+
+The new setup would look like this
+
+.main.ts (vuetify 2)
+[source, typescript]
+....
+import Vue from 'vue'
+import Vuetify from 'vuetify/lib' <1>
+import App from './App.vue'
+import 'vuetify/dist/vuetify.min.css' <2>
+
+Vue.use(Vuetify) <3>
+
+const vuetifyOpts = { <4>
+  theme: appConfig.theme
+}
+
+/* eslint-disable no-new */
+new Vue({
+  el: '#app',
+  router,
+  store,
+  components: { App },
+  render: h => h(App),
+  template: '<App/>',
+  vuetify: new Vuetify(vuetifyOpts) <4>
+})
+....
+<1> Load vuetify
+<2> include the `css` instead of stylus sheet
+<3> Register vuetify with Vue.js
+<4> Configure and instantiate vuetify in the new vue instance
+
+== Loading styles
+
+This was already implicitly shown in the previous section but might be worth another mention.
+
+Whereas previously the vuetify styles were provided via a `styl(us)` file they are now precompiled `css`.
+
+[source, typescript]
+....
+// vuetify 1.5
+import 'vuetify/src/stylus/main.styl'
+
+// vuetify 2.x
+import 'vuetify/dist/vuetify.min.css'
+....
+
+Also note that the npm module **sass** is required and **node-sass** no longer works.
+You may need to swap by running
+
+[source, bash]
+....
+npm uninstall node-sass
+npm install --save-dev sass
+....
+
+== Adding vuetify types to typescript config
+
+If you get a compile error from typescript stating that `Argument of type '{..}' is not assignable to parameter of type 'ComponentOptions<..>'` or `Object literal may only specify known properties, and 'vuetify' does not exist in type` you need to register the vuetify types with typescript.
+This was something I had not done before and may only be necessary with the change to vuetify 2.
+
+image::vuetify-ts-error.png[Vuetify error message]
+
+.tsconfig.json
+[source, javascript]
+....
+{
+  "compilerOptions": {
+    "types": [
+      "webpack-env",
+      "node",
+      "vuetify" <1>
+    ]
+  }
+}
+....
+<1> add vuetify to the types property
+
+== Theme options
+
+If you are using a custom theme you might need to adapt to the new object structure that supports **light and dark mode** for your app.
+It is mostly moving the color specification of the theme into another nested layer.
+
+.vuetify 2 theme options structure
+[plantuml]
+....
+!includeurl https://gist.githubusercontent.com/anoff/d8f48105ac4d3c7b14ca8c34d6d54938/raw/7381f13a14e048bbd3cb4ecc70369e913908151a/anoff.plantuml
+class theme {
+  dark: boolean
+  themes: Object
+}
+
+class themes {
+  light: ColorSpec
+  dark: ColorSpec
+}
+
+class ColorSpec {
+  primary:\t colorcode as string
+  secondary:\t colorcode as string
+  accent:\t colorcode as string
+  error:\t colorcode as string
+  warning:\t colorcode as string
+  info:\t\t colorcode as string
+  success:\t colorcode as string
+}
+
+theme -- themes
+themes -- ColorSpec
+....
+
+== Add MDI font
+
+Vuetify now uses the material design icons for default icons like the hamburger navigation menu.
+Install it as a dev dependency if you have not done so yet.
+Alternatively you could configure Vuetify to use another icon font, see the official getting started docs for infos on that.
+
+[source, bash]
+....
+npm install --save-dev @mdi/font
+....
+
+Then add it to your `main.ts`
+
+[source, typescript]
+....
+import '@mdi/font/css/materialdesignicons.css'
+....
+
+== Component changes
+
+With the above changes your app should build correctly, however there will still be a lot of errors in the browser as many components have breaking changes.
+Below are the main changes I had to fix in my link:https://devradar.io[devradar] link:https://editor.devradar.io[editor application].
+
+=== Application Toolbar
+
+There is a new component `v-app-bar` that should be used for application wide navigation toolbars.
+
+[source, typescript]
+....
+// vuetify 1.5
+<v-toolbar
+    app dense scroll-off-screen
+    color="accent"
+    >
+
+// vuetify 2
+<v-app-bar
+  scroll-off-screen
+  dense
+  color="accent"
+  >
+....
+
+=== List view
+
+All components in the list category have been renamed from `list-tile-xyz` to `list-item-xyz`.
+Best just run a replace all operation and see if it broke anything 😉
+
+== Done
+
+These changes made my application compile and render the home app component without issues.
+Various components changed and you may need to consult the migration docs for specific cases -- or just look at the new API docs directly as they are way more detailed.
+
+If you stumbled upon this post, I hope it helped you. If it did not I would love to hear what you are missing in the comments or via link:https://twitter.com/anoff_io[Twitter DM] 👋
