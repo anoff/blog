@@ -1,5 +1,5 @@
 ---
-title: Building on-demand scaling CI infrastructure with Azure Kubernetes
+title: Building autoscaling CI infrastructure with Azure Kubernetes
 date: 2019-09-10
 tags: [CI/CD, azure, docker]
 author: anoff
@@ -13,13 +13,13 @@ featuredImage: /assets/scaling-agents-aks/title.png
 :source-highlighter: coderay
 :sectlinks:
 
-In my previous blog post link:/2019-08-24-drone-ci-travis-ci-to-azure-pipelines/[Migrating to Azure Pipelines] I gave an introduction to the Azure CI/CD service from a user perspective.
+In a previous blog post link:/2019-08-24-drone-ci-travis-ci-to-azure-pipelines/[Migrating to Azure Pipelines] I gave an introduction to the Azure CI/CD service from a user perspective.
 With this post I want to share my experience while setting up a dedicated CI runner infrastructure with the Azure + Pipelines ecosystem.
-Basic knowledge of `Docker`, `Kubernetes`, `bash` might be required - should be enough if you know **what** these are.
+Basic knowledge of `Docker`, `Kubernetes`, `bash` will help - but it should be enough if you know **what** these are.
 
 == Why build auto scaling CI infrastructure
 
-You might ask yourself - or me - _Why do you want to build a custom solution for auto-scaling CI infrastructure? There is already X out there_.
+You might ask _Why do you want to build a custom solution for auto-scaling CI infrastructure? There is already X out there_.
 
 The easy answer: _To learn how things work_
 
@@ -38,8 +38,38 @@ What I need the CI infrastructure to be capable of:
 == The black box solution
 
 With the goal of not managing everything myself I chose Azure Pipelines as CI environment.
-It also supports the requirements 1-4 because as laid out in my link:/2019-08-24-drone-ci-travis-ci-to-azure-pipelines/[previous post] you can easily run arbitrary scripts in a pipeline job.
+It also supports the requirements 1-4 by running arbitrary bash scripts within a pipeline as described in my link:/2019-08-24-drone-ci-travis-ci-to-azure-pipelines/[previous post].
 
 Given the list of requirements the solution can be described with the following picture.
 
 image::blackbox.png[A new job triggers the creation of a new CI agent]
+
+With Azure Pipelines as the CI system in place the open variables are knowing how many agents to host, manage their lifecycle and how to host them.
+
+== Hosting the Azure agent
+
+There are two ways to host your own agents for Azure Pipelines.
+One is getting the client code and put it on your virtual machine which is described in link:https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/v2-linux?view=azure-devops["Self-hosted Linux agents"] article in the azure documentation.
+The alternative is running it within a link:https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/docker?view=azure-devops[docker container].
+Running a build agent inside docker generally comes with the problem of _sooner or later_ having to solve **docker in docker** issues, meaning a build step will require to run its own docker container inside the agent that is a docker container on its own.
+
+[plantuml]
+....
+!includeurl https://gist.githubusercontent.com/anoff/d8f48105ac4d3c7b14ca8c34d6d54938/raw/7381f13a14e048bbd3cb4ecc70369e913908151a/anoff.plantuml
+!define ICONURL https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/v2.1.0
+!includeurl ICONURL/common.puml
+!includeurl ICONURL/dev2/docker.puml
+
+node "Virtual Machine" as vm {
+  DEV2_DOCKER(outer, "Docker daeomon", artifact)
+  node "Build Agent [docker]" as agent{
+    card inner [
+      execute another
+      docker action
+      inside here
+    ]
+  }
+}
+
+outer -- agent
+....
