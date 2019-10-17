@@ -1,10 +1,10 @@
 ---
 title: Building autoscaling CI infrastructure with Azure Kubernetes
-date: 2019-09-10
+date: 2019-10-17
 tags: [CI/CD, azure, docker]
 author: anoff
 resizeImages: true
-draft: true
+draft: false
 featuredImage: /assets/scaling-agents-aks/title.png
 ---
 :imagesdir: /assets/scaling-agents-aks/
@@ -15,7 +15,7 @@ featuredImage: /assets/scaling-agents-aks/title.png
 
 In a previous blog post link:/2019-08-24-drone-ci-travis-ci-to-azure-pipelines/[Migrating to Azure Pipelines] I gave an introduction to the Azure CI/CD service from a user perspective.
 With this post I want to share my experience while setting up a dedicated CI runner infrastructure with the Azure + Pipelines ecosystem.
-Basic knowledge of `Docker`, `Kubernetes`, `bash` will help - but it should be enough if you know **what** these are.
+Basic knowledge of `Docker` and `Kubernetes` should exists - you should know what they are.
 
 == Why build auto scaling CI infrastructure
 
@@ -26,9 +26,9 @@ The easy answer: _To learn how things work_
 The real answer: I could not find a CI system that fulfills all my requirements.
 What I need the CI infrastructure to be capable of:
 
-. provide real _pay per use_ where idle time is reduced
+. provide real _pay per use_
 . support Linux and Windows agents
-. run on specific VMs with special hardware requirements (CPU, GPU, disks)
+. run on specific VMs with special hardware requirements (CPU, GPU, Memory, disks)
 . share specific volumes between all runners e.g. cache files
 . scale up to 20+ of agents
 . everything as code
@@ -94,27 +94,27 @@ To actually run this dockerized build agent there are multiple options available
 |===
 |Solution | Description | Challenge | Advantage
 
-|Virtual Machine
+|link:https://azure.microsoft.com/en-us/services/virtual-machines/[Virtual Machine]
 |Using a simple virtual machine with the docker engine installed agents can be started
-|Scaling the VMs up and down
+|Scaling the VMs up and down; operational effort
 |very simple solution
 
-|Virtual Machine Scale Set (VMSS)
+|link:https://azure.microsoft.com/en-us/services/virtual-machine-scale-sets/[Virtual Machine Scale Set (VMSS)]
 |VMSS allows creating multiple identical machines via an easy API e.g. count=4
 |when scaling down, Azure might pick a VM that is still actively running an agent/job
 |solves the scaling issue that VMs have
 
-|Azure Kubernetes Service (AKS)
+|link:https://azure.microsoft.com/en-us/services/kubernetes-service/[Azure Kubernetes Service (AKS)]
 |a managed Kubernetes environment for running docker containers
 |need to orchestrate agent in Kubernetes
 |little operation responsibility and full control over hardware spec
 
-|Azure WebApp for Containers
+|link:https://azure.microsoft.com/en-us/services/app-service/containers/[Azure WebApp for Containers]
 |run docker containers on a previously specified VM type without interacting with the VM directly
 |same as VMSS
 |abstracts VM and thereby reduces operational responsibility
 
-|Azure Container Instances (ACI)
+|link:https://azure.microsoft.com/en-us/services/container-instances/[Azure Container Instances (ACI)]
 |run a docker container inside a fully managed docker environment
 |does not allow to specify VM type (only CPU count)
 |least operational responsibility
@@ -193,7 +193,7 @@ endif
 @enduml
 ....
 
-Another reason I chose the AKS solution is the fact that I am a little familiar with Kubernetes and Helm charts as ways of describing the system in code.
+Another reason I chose the AKS solution is the fact that I am a bit familiar with Kubernetes and Helm charts as ways of describing the system in code.
 With **automation** being another high level requirement I was worried that container instances and web apps might be a bit difficult to orchestrate throughout their lifecycle.
 Using AKS as a runtime for the agent fulfills the following requirements:
 
@@ -271,5 +271,81 @@ Luckily there is a `--once` flag when staring an Azure Pipelines agent that term
 This means that the number of `active jobs` just needs to be identical to the number of **Batch Jobs** inside the AKS cluster.
 After the build jobs are done the pod is automatically removed from the cluster and the **Cluster Autoscaler** will take care of removing the underlying hardware (VMSS) after it has been idling long enough.
 This scale-down scenario is really nice because it requires no state handling from the outside regarding the lifecycle of individual agents.
+Instead all agents share an identical, ephemeral, short lifecycle:
 
-> All agents are treated the same; they are started, they run a job, they stop, they get terminated.
+> All agents are treated the same; they start, they run a single job, they stop, they get terminated.
+
+.Pipeline agent lifecycle
+[plantuml, pod-lifecycle, png]
+....
+@startuml
+!includeurl https://gist.githubusercontent.com/anoff/d8f48105ac4d3c7b14ca8c34d6d54938/raw/19261678934da0ab38a728f7edc1995ac22780ea/anoff.plantuml
+start
+:➕ kubernetes schedules a new
+agent pod as BatchJob;
+:🚀 agent container started
+in kubernets cluster;
+:✍️ agent registers with
+Azure Pipelines agent pool;
+:🤗 agent fetches next
+task in queue;
+:🏋️‍ agent executes a single task;
+:☠️ agent shuts down;
+:🧹 kubernetes removes the pod;
+stop
+@enduml
+....
+
+To trigger the creation of new pipeline agents via the kubernets **BatchJob** API I wrote a small python script that identifies the number of `active jobs` and compares it with the number of agent pods running in AKS.
+For any additional job a new **BatchJob** is started via `Helm`.
+The script itself is running inside Kubernetes in a **CronJob** that gets executed once per minute.
+
+.Kubernetes setup
+[plantuml, kubernetes-scaler, png]
+....
+@startuml
+!includeurl https://gist.githubusercontent.com/anoff/d8f48105ac4d3c7b14ca8c34d6d54938/raw/19261678934da0ab38a728f7edc1995ac22780ea/anoff.plantuml
+frame "AKS" as aks {
+  node "CronJob" as cron {
+    component "scaler.py" as scaler
+  }
+  node "BatchJob" as b1 {
+    component "docker:agent" as a1
+  }
+  node "BatchJob" as b2 {
+    component "docker:agent" as a2
+  }
+}
+frame "Azure Pipelines" as pipeline {
+  card "Project X" as project {
+    artifact "build1"
+    artifact "build2"
+  }
+}
+
+scaler --> project: check number of active builds
+scaler --> b2: create new BatchJob for agent
+
+b1 .. build1
+b2 .. build2
+@enduml
+....
+
+== Putting it all together
+
+All parts of the puzzle seemed to be solved.
+The above sections describe how to
+
+. host a dockerized Azure Pipelines agent
+. identify how many agents are needed
+. automatically scale the underlying infrastructure (= cost)
+. deal with the lifecycle problem of the agents
+
+In addition all initial requirements are fulfilled.
+The solution I cam up with is pictured below
+
+.Overview of the solution
+image::solution.png[Overview of the solution]
+
+In a follow up blog post I will provide some implementation details.
+If you are interested in any specific parts please leave a comment or contact me via link:https://twitter.com/anoff_io[Twitter] 👋
