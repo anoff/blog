@@ -16,6 +16,7 @@ featuredImage: /assets/scaling-agents-aks/title.png
 In a previous blog post link:/2019-08-24-drone-ci-travis-ci-to-azure-pipelines/[Migrating to Azure Pipelines] I gave an introduction to the Azure CI/CD service from a user perspective.
 With this post I want to share my experience while setting up a dedicated CI runner infrastructure with the Azure + Pipelines ecosystem.
 Basic knowledge of `Docker` and `Kubernetes` should exists - you should know what they are.
+The main features of the solution are ephemeral build agents, docker based environments, minimal operation responsible and strong pay-per-use billing concepts.
 
 == Why build auto scaling CI infrastructure
 
@@ -276,7 +277,7 @@ Instead all agents share an identical, ephemeral, short lifecycle:
 > All agents are treated the same; they start, they run a single job, they stop, they get terminated.
 
 .Pipeline agent lifecycle
-[plantuml, pod-lifecycle, png]
+[plantuml, pod-lifecycle, svg]
 ....
 @startuml
 !includeurl https://gist.githubusercontent.com/anoff/d8f48105ac4d3c7b14ca8c34d6d54938/raw/19261678934da0ab38a728f7edc1995ac22780ea/anoff.plantuml
