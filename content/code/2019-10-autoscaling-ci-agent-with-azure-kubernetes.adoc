@@ -3,7 +3,6 @@ title: Building autoscaling CI infrastructure with Azure Kubernetes
 date: 2019-10-17
 tags: [CI/CD, azure, docker]
 author: anoff
-resizeImages: true
 draft: false
 featuredImage: /assets/scaling-agents-aks/title.png
 ---
@@ -13,10 +12,13 @@ featuredImage: /assets/scaling-agents-aks/title.png
 :source-highlighter: coderay
 :sectlinks:
 
-In a previous blog post link:/2019-08-24-drone-ci-travis-ci-to-azure-pipelines/[Migrating to Azure Pipelines] I gave an introduction to the Azure CI/CD service from a user perspective.
-With this post I want to share my experience while setting up a dedicated CI runner infrastructure with the Azure + Pipelines ecosystem.
+Ever wanted to create a build agent factory where you do not have to care about how many build agents you need at a given point?
+With this post I want to share my experience setting up a dedicated CI runner infrastructure with the Azure + Pipelines ecosystem.
+The main features of the solution are automated scaling, ephemeral build agents, docker based environments, minimal operation responsible and strong pay-per-use billing concepts.
 Basic knowledge of `Docker` and `Kubernetes` should exists - you should know what they are.
-The main features of the solution are ephemeral build agents, docker based environments, minimal operation responsible and strong pay-per-use billing concepts.
+
+In a previous blog post link:/2019-08-24-drone-ci-travis-ci-to-azure-pipelines/[Migrating to Azure Pipelines] I gave an introduction to the Azure CI/CD service from a user perspective.
+This time I will focus on operational aspects when using Azure Pipelines.
 
 == Why build auto scaling CI infrastructure
 
