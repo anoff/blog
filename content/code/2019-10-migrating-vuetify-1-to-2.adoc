@@ -13,10 +13,13 @@ featuredImage: /assets/vuetify-2/title.png
 :source-highlighter: coderay
 :sectlinks:
 
+
 I just migrated the link:https://github.com/anoff/devradar/tree/master/editor[code] for the link://editor.devradar.io[devradar editor] to the latest major version of vuetify.
 There is an officiel link:https://vuetifyjs.com/en/getting-started/releases-and-migrations[migration guide] that helped me solve 70% of the issues but here is a quick overview of the biggest issues I encountered and what actually changed.
 
-> 🚨 This was written for a migration from `vuetify 1.5.14` to `vuetify 2.1.1`
+NOTE: This post has been updated on 2019-11-01 with a chapter on the new grid system `v-flex ➡️ v-col`
+
+CAUTION: 🚨 This was written for a migration from `vuetify 1.5.14` to `vuetify 2.1.1`
   Also all code samples are typescript, but should also work for Javascript projects
 
 == Bootstrapping
@@ -204,6 +207,89 @@ There is a new component `v-app-bar` that should be used for application wide na
 
 All components in the list category have been renamed from `list-tile-xyz` to `list-item-xyz`.
 Best just run a replace all operation and see if it broke anything 😉
+
+== Grid System
+
+The grid system also got a major overhaul with Vuetify 2.x.
+There are two significant changes
+
+. the elements of a grid layout now have different tags
+. responsive viewport breakpoints and visibility properties have also changed (the old `xs8 lg4` syntax)
+
+Let's start with the actual layout of a grid in Vuetify 2.x
+
+[source, typescript]
+....
+// vuetify 1.5
+<v-container>
+  <v-layout row>
+    <v-flex>
+      <span>some text</span>
+    </v-flex>
+  </v-layout>
+</v-container>
+
+// vuetify 2.0
+<v-container>
+  <v-row>
+    <v-col>
+      <span>some text</span>
+    </v-col>
+  </v-row>
+</v-container>
+....
+
+As you can see the `<v-container>` remains the same but the inner tags have been renamed to better reflect what they actually represent - rows and columns.
+Therefore `<v-layout row> ➡️ <v-row>` and `<v-flex> ➡️ <v-row>`.
+Remember if you change these to also rename the closing tags.
+
+Another thing you need to refactor in your grids is the responsive breakpoints on the `<v-col>` (or previously v-flex) tags.
+
+[source, typescript]
+....
+// vuetify 1.5
+    <v-flex xs12 lg6>
+      <span>Some text that is shown in full width on small displays and half screen on larger displays</span>
+    </v-flex>
+    <v-flex hidden-md-and-down lg6>
+      <span>A second text is only shown on large displays</span>
+    </v-flex>
+
+// vuetify 2.0
+    <v-col cols="12" lg="6">
+      <span>Some text that is shown in full width on small displays and half screen on larger displays</span>
+    </v-col>
+    <v-col cols="6" class="d-none d-lg-flex">
+      <span>A second text is only shown on large displays</span>
+    </v-col>
+....
+
+Notice here that:
+
+. There is no `xs` property any more, instead the `cols` properties is used to define the horizontal dimension of a column that can be link:https://vuetifyjs.com/en/components/grids#examples[further detailed with breakpoint properties] `sm`, `md`, `lg`, `xl`
+. These column size props have to be assigned a value `lg=6` where in Vuetify 1.5 they were shorthanded to `lg6`
+. The link:https://vuetifyjs.com/en/styles/display[visibility properties] have been changed from `hidden-<breakpoint>-<condition>` to a combination of classes that affect the elements `display` style
+
+The new **Visibility properties** can do exactly the same as previously but there logic changed.
+Let me explain how to think of them with Vuetify 2.x.
+
+Instead of one property you now assign multiple classes.
+You assign it the class that represents the display value you want the element to have on extra small (xs) screens.
+So let's say you have information you only want to show on larger screens, you now add `class="d-none"` which gives the element the `display: none;` style value.
+Going from largest viewport (xs) to biggest (xl) you pick the breakpoints you want this display value to change and just assign the respective property e.g. `class="d-lg-inline"` to switch to an inline display for large screens (and above).
+
+Some examples:
+
+[source, typescript]
+....
+
+// vuetify 2.0
+<v-col class="d-none d-md-flex"> .. </v-col> // invisible on xs, sm and becomes a flex display element for md, lg, xl screens
+
+<v-col class="d-flex d-lg-none"> .. </v-col> // starts off as a flex element on xs screens and becomes invisible for larger screens (lg, xl)
+
+<v-col class="d-none d-md-flex d-xl-none"> .. </v-col> // invisible for xs, sm screens, visible as flex element for medium and large screens, again invisible on extra-large screens
+....
 
 == Done
 
