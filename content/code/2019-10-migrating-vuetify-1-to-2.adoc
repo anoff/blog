@@ -240,28 +240,28 @@ Let's start with the actual layout of a grid in Vuetify 2.x
 ....
 
 As you can see the `<v-container>` remains the same but the inner tags have been renamed to better reflect what they actually represent - rows and columns.
-Therefore `<v-layout row> ➡️ <v-row>` and `<v-flex> ➡️ <v-row>`.
+Therefore `<v-layout row> ➡️ <v-row>` and `<v-flex> ➡️ <v-col>`.
 Remember if you change these to also rename the closing tags.
 
 Another thing you need to refactor in your grids is the responsive breakpoints on the `<v-col>` (or previously v-flex) tags.
 
-[source, typescript]
+[source, html]
 ....
 // vuetify 1.5
-    <v-flex xs12 lg6>
-      <span>Some text that is shown in full width on small displays and half screen on larger displays</span>
-    </v-flex>
-    <v-flex hidden-md-and-down lg6>
-      <span>A second text is only shown on large displays</span>
-    </v-flex>
+<v-flex xs12 lg6>
+  <span>Some text that is shown in full width on small displays and half screen on larger displays</span>
+</v-flex>
+<v-flex hidden-md-and-down lg6>
+  <span>A second text is only shown on large displays</span>
+</v-flex>
 
 // vuetify 2.0
-    <v-col cols="12" lg="6">
-      <span>Some text that is shown in full width on small displays and half screen on larger displays</span>
-    </v-col>
-    <v-col cols="6" class="d-none d-lg-flex">
-      <span>A second text is only shown on large displays</span>
-    </v-col>
+<v-col cols="12" lg="6">
+  <span>Some text that is shown in full width on small displays and half screen on larger displays</span>
+</v-col>
+<v-col cols="6" class="d-none d-lg-flex">
+  <span>A second text is only shown on large displays</span>
+</v-col>
 ....
 
 Notice here that:
@@ -280,7 +280,7 @@ Going from largest viewport (xs) to biggest (xl) you pick the breakpoints you wa
 
 Some examples:
 
-[source, typescript]
+[source, html]
 ....
 
 // vuetify 2.0
