@@ -15,7 +15,11 @@ steps:
   displayName: 'Hotfix theme'
   inputs:
     targetType: 'inline'
-    script: cp -R theme_fixes/** themes/bilberry-hugo-theme
+    script: |
+      cp -R theme_fixes/** themes/bilberry-hugo-theme
+      cd themes/bilberry-hugo-theme
+      npm install
+      npm run prod
 
 - task: Bash@3
   displayName: 'Build HTML'

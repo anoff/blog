@@ -1,15 +1,13 @@
-{{ $fonts := "dist/fonts/" | absURL }}
-$fonts-folder: '{{ .Site.Params.CustomFontsURL | default $fonts }}';
-
-// Set the with of the main content area
+// Set the width of the main content area
 // Notice that the actual content's width is $site-width - 100px
-$site-width: {{ .Site.Params.SiteWidth | default "800px" }};
+$site-width: 800px;
 
-// Define your fonts.
-// If you want to import new fonts, set them in /src/css/fonts.css
-$headline-font: 'Comfortaa', sans-serif;
-$content-font: 'Open Sans', sans-serif;
-$article-footer-font: 'Roboto Mono', monospace;
+$headline-font: 'Comfortaa',
+sans-serif;
+$content-font: 'Open Sans',
+sans-serif;
+$article-footer-font: 'Fira Code',
+monospace;
 
 // main colors
 $page-background-color: #fff;
@@ -75,5 +73,17 @@ p {
     }
     a:hover {
         color: inherit !important;
+    }
+}
+
+@mixin featuredImage() {
+    .featured-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 5;
+        opacity: 0.25;
     }
 }
