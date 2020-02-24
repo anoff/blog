@@ -11,7 +11,7 @@ I have been wanting to write this post for months. Lately I have been using Plan
 
 # PlantUML Basics 👨‍🎨
 
-For those that do not know [PlatUML](http://plantuml.com/): It is an open source tool that allows you to define UML diagrams with plain text. There are different [diagram types](http://plantuml.com/sitemap-language-specification) available being described with custom syntax but following a common scheme. This post will not go into the details of each of those diagram types because the PlantUML website does a pretty good job at describing [sequence](http://plantuml.com/sequence-diagram), [component](http://plantuml.com/component-diagram), [activity](http://plantuml.com/activity-diagram-beta) and the other diagram types.
+For those that do not know [PlantUML](http://plantuml.com/): It is an open source tool that allows you to define UML diagrams with plain text. There are different [diagram types](http://plantuml.com/sitemap-language-specification) available being described with custom syntax but following a common scheme. This post will not go into the details of each of those diagram types because the PlantUML website does a pretty good job at describing [sequence](http://plantuml.com/sequence-diagram), [component](http://plantuml.com/component-diagram), [activity](http://plantuml.com/activity-diagram-beta) and the other diagram types.
 
 A basic component diagram showing data flow can be built using the following markup:
 
