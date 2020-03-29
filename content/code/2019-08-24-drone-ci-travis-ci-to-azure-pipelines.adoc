@@ -379,7 +379,9 @@ Migration is merely setting up an account and getting into the Azure Pipelines Y
 
 Here are some things that I learned over time and I hope will be fixed soon.
 
-=== Scheduled jobs only run when people use the UI
+=== FIXED: Scheduled jobs only run when people use the UI
+
+NOTE: Update 2020-03-29: This issue seems fixed by now. Scheduled jobs run regardless of user interaction on the UI.
 
 As described in the FAQ of Pipelines a scheduled job only runs **ONCE** after the last person logs out (active session) the Azure DevOps UI.
 
