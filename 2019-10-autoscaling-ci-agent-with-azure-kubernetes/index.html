@@ -1,6 +1,6 @@
 <!doctype html><html class=no-js lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=author content="Andreas Offenhaeuser"><meta name=description content="Andreas' personal blog"><meta name=keywords content=blog,personal,software,architecture,node,markdown,plantuml,developer><meta name=generator content="Hugo 0.55.6"><title>Building autoscaling CI infrastructure with Azure Kubernetes | Andreas&#39; Blog</title><meta name=description content="Building autoscaling CI infrastructure with Azure Kubernetes - Andreas' personal blog"><meta itemprop=name content="Building autoscaling CI infrastructure with Azure Kubernetes"><meta itemprop=description content="Building autoscaling CI infrastructure with Azure Kubernetes - Andreas' personal blog"><meta property=og:title content="Building autoscaling CI infrastructure with Azure Kubernetes"><meta property=og:description content="Building autoscaling CI infrastructure with Azure Kubernetes - Andreas' personal blog"><meta property=og:image content=//blog.anoff.io/assets/scaling-agents-aks/title.png><meta property=og:url content=//blog.anoff.io/2019-10-autoscaling-ci-agent-with-azure-kubernetes/><meta property=og:site_name content="Andreas' Blog"><meta property=og:type content=article><link href=/2019-10-autoscaling-ci-agent-with-azure-kubernetes/ rel=alternate type=application/rss+xml title="Andreas' Blog"><link href=/2019-10-autoscaling-ci-agent-with-azure-kubernetes/ rel=feed type=application/rss+xml title="Andreas' Blog"><link rel=stylesheet href=//blog.anoff.io/theme.css><link rel=stylesheet href=//blog.anoff.io/adoc.css><link rel=stylesheet href=//blog.anoff.io/overwrites.css><link rel=stylesheet href=//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css></head><body class=bilberry-hugo-theme><nav class=permanentTopNav><div class=container><ul class=topnav><li><a href=//anoff.io/ target=_self>About me</a></li><li><a href=/ target=_self>Blog</a></li><li><a href=//anoff.io/project/ target=_self>Projects</a></li><li><a href=/tags target=_self>by Tags</a></li><li><a href=//radar.anoff.io target=_blank>Tech skills</a></li><li><a href=//anoff.github.io/legal/ target=_blank>Legal</a></li></ul></div></nav><header><div class=container><div class=logo><a id=siteBaseUrl href=//blog.anoff.io/ class=logo><img src=/avatar.png alt>
 <span class=overlay><i class="fa fa-child"></i></span></a></div><div class=titles><h3 class=title><a href=//blog.anoff.io/>Andreas&#39; Blog</a></h3><span class=subtitle>Adventures of a software engineer/architect</span></div><div class="toggler permanentTopNav"><i class="fa fa-bars" aria-hidden=true></i></div></div></header><div class="main container"><div class="article-wrapper u-cf single"><a class=bubble href=//blog.anoff.io/2019-10-autoscaling-ci-agent-with-azure-kubernetes/><i class="fas fa-fw fa-code"></i></a><article class="default article"><div class=featured-image><a href=//blog.anoff.io/2019-10-autoscaling-ci-agent-with-azure-kubernetes/><img src=/assets/scaling-agents-aks/title.png alt></a></div><div class=content><h1 class=article-title><a href=//blog.anoff.io/2019-10-autoscaling-ci-agent-with-azure-kubernetes/>Building autoscaling CI infrastructure with Azure Kubernetes</a></h1><div class=meta><span class="date moment">2019-10-17</span>
-<span class=readingTime>9 min read</span>
+<span class=readingTime>10 min read</span>
 <span class=author><a href=/author/anoff>anoff</a></span></div><p>Ever wanted to create a build agent factory where you do not have to care about how many build agents you need at a given point?
 With this post I want to share my experience setting up a dedicated CI runner infrastructure with the Azure + Pipelines ecosystem.
 The main features of the solution are automated scaling, ephemeral build agents, docker based environments, minimal operation responsible and strong pay-per-use billing concepts.
@@ -43,7 +43,53 @@ The key feature to achieve this is <a href=https://docs.microsoft.com/en-us/azur
 Using Virtual Machine Scale Sets (VMSS) for the Kubernetes nodes this feature checks if there are enough resources in the cluster to host all pods.</p><aside class="admonition-block note" role=note><h6 class="block-title label-only"><span class=title-label>Note:</span></h6><p>A pod in Kubernetes is a group of Docker containers that are run together on the same host</p></aside><p>If necessary the cluster autoscaler adds additional virtual machines to the Kubernetes cluster or removes them if they are idle for too long (~10minutes).
 In the following scenario each build agent is run in a separate pod.
 Each pod occupies so many resources as a single VM can provide.
-Thus if a new build agent is needed, one new VM will be needed.</p><figure class=image-block><img src=/assets/scaling-agents-aks/cluster-autoscaler-comp.png alt="cluster autoscaler comp" width=624 height=280><figcaption>Figure 1. Components involved in the Cluster Autoscaler</figcaption></figure><figure class=image-block><img src=/assets/scaling-agents-aks/cluster-autoscaler-seq.png alt="cluster autoscaler seq" width=687 height=854><figcaption>Figure 2. How the cluster autoscaler works</figcaption></figure><p>Another reason I chose the AKS solution is the fact that I am a bit familiar with Kubernetes and Helm charts as ways of describing the system in code.
+Thus if a new build agent is needed, one new VM will be needed.</p><figure class=listing-block><figcaption>Components involved in the Cluster Autoscaler</figcaption><pre>Failed to generate image: 301 "Moved Permanently"
+@startuml
+!includeurl https://gist.githubusercontent.com/anoff/d8f48105ac4d3c7b14ca8c34d6d54938/raw/19261678934da0ab38a728f7edc1995ac22780ea/anoff.plantuml
+component "Cluster Autoscaler" as scaler
+frame "AKS" as aks {
+  node "pod" as p1
+  node "pod" as p2
+}
+frame "Virtual Machine\nScale set" as vmss {
+  node "VM" as vm1
+  node "VM" as vm2
+}
+p1 .. vm1
+p2 .. vm2
+aks -down- vmss
+
+scaler -&gt; aks: check if all pods can be deployed
+scaler -&gt; vmss: add/remove VMs into the set
+@enduml</pre></figure><figure class=listing-block><figcaption>How the cluster autoscaler works</figcaption><pre>Failed to generate image: 301 "Moved Permanently"
+@startuml
+!includeurl https://gist.githubusercontent.com/anoff/d8f48105ac4d3c7b14ca8c34d6d54938/raw/19261678934da0ab38a728f7edc1995ac22780ea/anoff.plantuml
+|Cluster Autoscaler|
+start
+:check if pods in Kubernetes
+need additional resources
+to be deployed;
+if (resources\nneeded) then (yes)
+  :trigger scale up of VMSS;
+  |Virtual Machine\nScale Set|
+  :start a new virtual machine;
+  :register VM in the scale set;
+  |AKS|
+  :register the new VM as
+  node in the Kubernetes cluster;
+endif
+|Cluster Autoscaler|
+:check if nodes in Kubernetes
+are not running any pods;
+if (idling pods) then (yes)
+  :trigger scale down;
+  |AKS|
+  :remove the node from
+  the cluster;
+  |Virtual Machine\nScale Set|
+  :stop and delete the VM;
+endif
+@enduml</pre></figure><p>Another reason I chose the AKS solution is the fact that I am a bit familiar with Kubernetes and Helm charts as ways of describing the system in code.
 With <strong>automation</strong> being another high level requirement I was worried that container instances and web apps might be a bit difficult to orchestrate throughout their lifecycle.
 Using AKS as a runtime for the agent fulfills the following requirements:</p><div class="olist arabic"><ol class=arabic><li>✅ provide real <em>pay per use</em> where idle time is reduced</li><li>⚠️ support Linux and Windows agents: <em>Would require a separate node pool running <a href=https://docs.microsoft.com/en-us/azure/aks/windows-node-limitations>Windows nodes</a></em></li><li>✅ run on specific VMs with special hardware requirements (CPU, GPU, disks)</li><li>⚠️ share specific volumes between all runners e.g. cache files: <em>depending on the Helm configuration this is possible</em></li><li>✅ scale up to 20+ of agents</li><li>✅ everything as code</li><li>✅ state of the art UI with active directory authentication: <em>achieved by choosing Azure Pipelines as CI orchestrator</em></li><li>✅ scale down to as little agents as possible to reduce costs</li><li>✅ minimal responsibility; as little code and operational efforts as possible</li></ol></div><aside class="admonition-block note" role=note><h6 class="block-title label-only"><span class=title-label>Note:</span></h6><p>The exact implementation in Kubernetes will be part of a follow-up blog post</p></aside></section><section class="doc-section level-1"><h2 id=_identifying_agent_demand><a class=link href=#_identifying_agent_demand>Identifying agent demand</a></h2><p>To know how many build agents need to be running in the cluster we need to get information from Azure Pipelines about the number of <code>active jobs</code>.
 Active is defined as:</p><div class=example-block><div class=example><p>active jobs = running jobs (already using an agent) + pending jobs (waiting for an agent to be assigned)</p></div></div><p>Sadly there are no webhooks available in Azure Pipelines that trigger when a new build job is being started.
@@ -68,11 +114,53 @@ Luckily there is a <code>--once</code> flag when staring an Azure Pipelines agen
 This means that the number of <code>active jobs</code> just needs to be identical to the number of <strong>Batch Jobs</strong> inside the AKS cluster.
 After the build jobs are done the pod is automatically removed from the cluster and the <strong>Cluster Autoscaler</strong> will take care of removing the underlying hardware (VMSS) after it has been idling long enough.
 This scale-down scenario is really nice because it requires no state handling from the outside regarding the lifecycle of individual agents.
-Instead all agents share an identical, ephemeral, short lifecycle:</p><div class=quote-block><blockquote><p>All agents are treated the same; they start, they run a single job, they stop, they get terminated.</p></blockquote></div><figure class=image-block><img src=/assets/scaling-agents-aks/pod-lifecycle.svg alt="pod lifecycle" width=234 height=527><figcaption>Figure 3. Pipeline agent lifecycle</figcaption></figure><p>To trigger the creation of new pipeline agents via the kubernets <strong>BatchJob</strong> API I wrote a small python script that identifies the number of <code>active jobs</code> and compares it with the number of agent pods running in AKS.
+Instead all agents share an identical, ephemeral, short lifecycle:</p><div class=quote-block><blockquote><p>All agents are treated the same; they start, they run a single job, they stop, they get terminated.</p></blockquote></div><figure class=listing-block><figcaption>Pipeline agent lifecycle</figcaption><pre>Failed to generate image: 301 "Moved Permanently"
+@startuml
+!includeurl https://gist.githubusercontent.com/anoff/d8f48105ac4d3c7b14ca8c34d6d54938/raw/19261678934da0ab38a728f7edc1995ac22780ea/anoff.plantuml
+start
+:➕ kubernetes schedules a new
+agent pod as BatchJob;
+:🚀 agent container started
+in kubernets cluster;
+:✍️ agent registers with
+Azure Pipelines agent pool;
+:🤗 agent fetches next
+task in queue;
+:🏋️‍ agent executes a single task;
+:☠️ agent shuts down;
+:🧹 kubernetes removes the pod;
+stop
+@enduml</pre></figure><p>To trigger the creation of new pipeline agents via the kubernets <strong>BatchJob</strong> API I wrote a small python script that identifies the number of <code>active jobs</code> and compares it with the number of agent pods running in AKS.
 For any additional job a new <strong>BatchJob</strong> is started via <code>Helm</code>.
-The script itself is running inside Kubernetes in a <strong>CronJob</strong> that gets executed once per minute.</p><figure class=image-block><img src=/assets/scaling-agents-aks/kubernetes-scaler.png alt="kubernetes scaler" width=543 height=499><figcaption>Figure 4. Kubernetes setup</figcaption></figure></section><section class="doc-section level-1"><h2 id=_putting_it_all_together><a class=link href=#_putting_it_all_together>Putting it all together</a></h2><p>All parts of the puzzle seemed to be solved.
+The script itself is running inside Kubernetes in a <strong>CronJob</strong> that gets executed once per minute.</p><figure class=listing-block><figcaption>Kubernetes setup</figcaption><pre>Failed to generate image: 301 "Moved Permanently"
+@startuml
+!includeurl https://gist.githubusercontent.com/anoff/d8f48105ac4d3c7b14ca8c34d6d54938/raw/19261678934da0ab38a728f7edc1995ac22780ea/anoff.plantuml
+frame "AKS" as aks {
+  node "CronJob" as cron {
+    component "scaler.py" as scaler
+  }
+  node "BatchJob" as b1 {
+    component "docker:agent" as a1
+  }
+  node "BatchJob" as b2 {
+    component "docker:agent" as a2
+  }
+}
+frame "Azure Pipelines" as pipeline {
+  card "Project X" as project {
+    artifact "build1"
+    artifact "build2"
+  }
+}
+
+scaler --&gt; project: check number of active builds
+scaler --&gt; b2: create new BatchJob for agent
+
+b1 .. build1
+b2 .. build2
+@enduml</pre></figure></section><section class="doc-section level-1"><h2 id=_putting_it_all_together><a class=link href=#_putting_it_all_together>Putting it all together</a></h2><p>All parts of the puzzle seemed to be solved.
 The above sections describe how to</p><div class="olist arabic"><ol class=arabic><li>host a dockerized Azure Pipelines agent</li><li>identify how many agents are needed</li><li>automatically scale the underlying infrastructure (= cost)</li><li>deal with the lifecycle problem of the agents</li></ol></div><p>In addition all initial requirements are fulfilled.
-The solution I cam up with is pictured below</p><figure class=image-block><img src=/assets/scaling-agents-aks/solution.png alt="Overview of the solution"><figcaption>Figure 5. Overview of the solution</figcaption></figure><p>In a follow up blog post I will provide some implementation details.
+The solution I cam up with is pictured below</p><figure class=image-block><img src=/assets/scaling-agents-aks/solution.png alt="Overview of the solution"><figcaption>Figure 1. Overview of the solution</figcaption></figure><p>In a follow up blog post I will provide some implementation details.
 If you are interested in any specific parts please leave a comment or contact me via <a href=https://twitter.com/anoff_io>Twitter</a> 👋</p></section></div><div class=footer><div class=tags><i class="fa fa-tags"></i><div class=links><a href=/tags/ci/cd>CI/CD</a>
 <a href=/tags/azure>azure</a>
 <a href=/tags/docker>docker</a></div></div></div></article></div><div id=disqus_thread></div><script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return;}
