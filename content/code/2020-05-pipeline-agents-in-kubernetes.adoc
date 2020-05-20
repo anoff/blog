@@ -1,0 +1,51 @@
+---
+title: Running Azure DevOps Pipeline agents on-demand within Kubernetes
+date: 2020-05-xx
+tags: [CI/CD, azure, docker]
+author: anoff
+draft: true
+featuredImage: /assets/scaling-agents-aks/title_code.png
+---
+:imagesdir: /assets/scaling-agents-aks/
+:imagesoutdir: _site/assets/scaling-agents-aks/
+:plantuml-server-url: http://plantuml.com/plantuml
+:source-highlighter: coderay
+:sectlinks:
+
+This is the followup to my link:/2019-10-autoscaling-ci-agent-with-azure-kubernetes/[Building autoscaling CI infrastructure with Azure Kubernetes] post.
+The first post described the problem and how the solution was designed.
+In this post I will cover the technical details how to actually set it up.
+You will learn how to create an auto-scaling system with a few lines of python code that glues together the Azure DevOps and Kubernetes API to spawn pipelines agent on demand.
+You should have basic knowledge of Kubernetes and Python if you want to understand everything.
+I will provide references to more advanced Kubernets features to read up on.
+
+== A quick look back at what we are building
+
+The goal is to use highly customized (cloud based) CI agents with Azure DevOps.
+In this case it means running agents on VMs that you specify yourself.
+So the underlying hardware and OS needs to fulfill the following requirements:
+
+. support Linux and Windows agents
+. run on specific VMs with special hardware requirements (CPU, GPU, Memory, disks)
+. share specific volumes between all runners e.g. cache files
+
+But on the other hand the solution itself should have a minimal Ops footprint and best cost optimized.
+To minimze costs we only want to pay for agents when we need them.
+But when we need them we want scalability.
+
+. provide real _pay per use_
+. scale up to 20+ of agents
+. everything as code
+. state of the art UI with active directory authentication
+. scale down to as little agents as possible to reduce costs
+. minimal responsibility; as little code and operational efforts as possible
+
+.Autoscaling CI agents with Azure Kubernetes
+image::solution.png[Overview of the solution]
+
+== The code base
+
+
+
+
+If you are interested in any specific parts please leave a comment or contact me via link:https://twitter.com/anoff_io[Twitter] 👋
