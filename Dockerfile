@@ -1,9 +1,9 @@
-FROM asciidoctor/docker-asciidoctor
+FROM asciidoctor/docker-asciidoctor:latest
 LABEL maintainer="offenhaeuser@gmail.com"
 
-ENV HUGO_VERSION 0.55.6
+ENV HUGO_VERSION 0.74.2
 ENV HUGO_BINARY hugo_extended_${HUGO_VERSION}_Linux-64bit.tar.gz
-ENV GLIBC_VERSION 2.29-r0
+ENV GLIBC_VERSION 2.31-r0
 
 RUN set -x && \
   apk update && \
@@ -12,8 +12,10 @@ RUN set -x && \
 # add asciidoctor libs
 RUN gem install --no-document \
   asciidoctor-html5s \
-  asciidoctor-diagram \
   coderay
+
+RUN gem install --no-document \
+  asciidoctor-diagram -v 2.0.1
 
 # add glibc, see https://github.com/gohugoio/hugo/issues/4961 and https://github.com/sgerrand/alpine-pkg-glibc
 RUN wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub \
