@@ -1,163 +1,161 @@
-<!doctype html><html class=no-js lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=author content="Andreas Offenhaeuser"><meta name=description content="Andreas' personal blog"><meta name=keywords content=blog,personal,software,architecture,node,markdown,plantuml,developer><meta name=generator content="Hugo 0.55.6"><title>Building realtime apps with Vue and nodeJS | Andreas&#39; Blog</title><meta name=description content="Building realtime apps with Vue and nodeJS - Andreas' personal blog"><meta itemprop=name content="Building realtime apps with Vue and nodeJS"><meta itemprop=description content="Building realtime apps with Vue and nodeJS - Andreas' personal blog"><meta property=og:title content="Building realtime apps with Vue and nodeJS"><meta property=og:description content="Building realtime apps with Vue and nodeJS - Andreas' personal blog"><meta property=og:image content="https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?size=200"><meta property=og:url content=//blog.anoff.io/2018-04-18-node-vue-websockets/><meta property=og:site_name content="Andreas' Blog"><meta property=og:type content=article><link href=/2018-04-18-node-vue-websockets/ rel=alternate type=application/rss+xml title="Andreas' Blog"><link href=/2018-04-18-node-vue-websockets/ rel=feed type=application/rss+xml title="Andreas' Blog"><link rel=stylesheet href=//blog.anoff.io/theme.css><link rel=stylesheet href=//blog.anoff.io/adoc.css><link rel=stylesheet href=//blog.anoff.io/overwrites.css><link rel=stylesheet href=//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css></head><body class=bilberry-hugo-theme><nav class=permanentTopNav><div class=container><ul class=topnav><li><a href=//anoff.io/ target=_self>About me</a></li><li><a href=/ target=_self>Blog</a></li><li><a href=//anoff.io/project/ target=_self>Projects</a></li><li><a href=/tags target=_self>by Tags</a></li><li><a href=//radar.anoff.io target=_blank>Tech skills</a></li><li><a href=//anoff.github.io/legal/ target=_blank>Legal</a></li></ul></div></nav><header><div class=container><div class=logo><a id=siteBaseUrl href=//blog.anoff.io/ class=logo><img src=/avatar.png alt>
-<span class=overlay><i class="fa fa-child"></i></span></a></div><div class=titles><h3 class=title><a href=//blog.anoff.io/>Andreas&#39; Blog</a></h3><span class=subtitle>Adventures of a software engineer/architect</span></div><div class="toggler permanentTopNav"><i class="fa fa-bars" aria-hidden=true></i></div></div></header><div class="main container"><div class="article-wrapper u-cf single"><a class=bubble href=//blog.anoff.io/2018-04-18-node-vue-websockets/><i class="fas fa-fw fa-code"></i></a><article class="default article"><div class=content><h1 class=article-title><a href=//blog.anoff.io/2018-04-18-node-vue-websockets/>Building realtime apps with Vue and nodeJS</a></h1><div class=meta><span class="date moment">2018-04-18</span>
+<!doctype html><html class=no-js lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=author content="Andreas Offenhaeuser"><meta name=description content="Andreas' personal blog"><meta name=keywords content="blog,personal,software,architecture,node,markdown,plantuml,developer"><meta name=generator content="Hugo 0.74.2"><title>Building realtime apps with Vue and nodeJS | Andreas' Blog</title><meta name=description content="Building realtime apps with Vue and nodeJS - Andreas' personal blog"><meta itemprop=name content="Building realtime apps with Vue and nodeJS"><meta itemprop=description content="Building realtime apps with Vue and nodeJS - Andreas' personal blog"><meta property="og:title" content="Building realtime apps with Vue and nodeJS"><meta property="og:description" content="Building realtime apps with Vue and nodeJS - Andreas' personal blog"><meta property="og:image" content="https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?size=200"><meta property="og:url" content="//blog.anoff.io/2018-04-18-node-vue-websockets/"><meta property="og:site_name" content="Andreas' Blog"><meta property="og:type" content="article"><link href=/2018-04-18-node-vue-websockets/ rel=alternate type=application/rss+xml title="Andreas' Blog"><link href=/2018-04-18-node-vue-websockets/ rel=feed type=application/rss+xml title="Andreas' Blog"><link rel=stylesheet href=//blog.anoff.io/theme.css><link rel=stylesheet href=//blog.anoff.io/adoc.css><link rel=stylesheet href=//blog.anoff.io/overwrites.css><link rel=stylesheet href=//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css></head><body class=bilberry-hugo-theme><nav class=permanentTopNav><div class=container><ul class=topnav><li><a href=//anoff.io/ target=_self>About me</a></li><li><a href=/ target=_self>Blog</a></li><li><a href=//anoff.io/project/ target=_self>Projects</a></li><li><a href=/tags target=_self>by Tags</a></li><li><a href=//radar.anoff.io target=_blank>Tech skills</a></li><li><a href=//anoff.github.io/legal/ target=_blank>Legal</a></li></ul></div></nav><header><div class=container><div class=logo><a id=siteBaseUrl href=//blog.anoff.io/ class=logo><img src=/avatar.png alt>
+<span class=overlay><i class="fa fa-child"></i></span></a></div><div class=titles><h3 class=title><a href=//blog.anoff.io/>Andreas' Blog</a></h3><span class=subtitle>Adventures of a software engineer/architect</span></div><div class="toggler permanentTopNav"><i class="fa fa-bars" aria-hidden=true></i></div></div></header><div class="main container"><div class="article-wrapper u-cf single"><a class=bubble href=//blog.anoff.io/2018-04-18-node-vue-websockets/><i class="fas fa-fw fa-code"></i></a><article class="default article"><div class=content><h1 class=article-title><a href=//blog.anoff.io/2018-04-18-node-vue-websockets/>Building realtime apps with Vue and nodeJS</a></h1><div class=meta><span class="date moment">2018-04-18</span>
 <span class=readingTime>7 min read</span>
-<span class=author><a href=/author/anoff>anoff</a></span></div><p>Wanting to build a simple <a href=https://en.wikipedia.org/wiki/Single-page_application>SPA</a> as a side project I struggled with things that might annoy a lot of newcomers that do not want to go full vanilla. Which <em>web framework</em>, which <em>style library</em>, which <em>server framework</em> - and more importantly how does it all work together?</p><p>In this post we will put together a bunch of great tools out there to build a realtime web app with a few single lines of code. A quick introduction into the tools that will be used:</p><ul><li><a href=https://nodejs.org/en/>Node.js</a>: Javascript runtime to build server applications</li><li><a href=https://vuejs.org/>Vue.js</a>: A webapp framework</li><li><a href=https://material.io/>Material Design</a>: Set of styled web components by Google using the <a href=https://vuematerial.io/>vue-material</a> library</li><li><a href=https://socket.io/>socket.io</a>: Client &amp; server library for websockets</li><li><a href=https://serverjs.io/>servers.js</a>: An opinionated server framework for Node.js based on <a href=http://expressjs.com/>express</a></li></ul><h2 id=set-up-a-basic-node-js-server>Set up a basic Node.js server</h2><p><img src=/assets/node-vue-websockets/hello.png alt="Hello World Node.js"></p><p>The first thing we&rsquo;ll do is set up a node server to provide a backend. Using the <a href=https://serverjs.io/>servers.js</a> library a basic API service can be build with a few lines of code.</p><pre><code class=language-sh># in any empty directory
-npm init # initialize npm project
+<span class=author><a href=/author/anoff>anoff</a></span></div><p>Wanting to build a simple <a href=https://en.wikipedia.org/wiki/Single-page_application>SPA</a> as a side project I struggled with things that might annoy a lot of newcomers that do not want to go full vanilla. Which <em>web framework</em>, which <em>style library</em>, which <em>server framework</em> - and more importantly how does it all work together?</p><p>In this post we will put together a bunch of great tools out there to build a realtime web app with a few single lines of code. A quick introduction into the tools that will be used:</p><ul><li><a href=https://nodejs.org/en/>Node.js</a>: Javascript runtime to build server applications</li><li><a href=https://vuejs.org/>Vue.js</a>: A webapp framework</li><li><a href=https://material.io/>Material Design</a>: Set of styled web components by Google using the <a href=https://vuematerial.io/>vue-material</a> library</li><li><a href=https://socket.io/>socket.io</a>: Client & server library for websockets</li><li><a href=https://serverjs.io/>servers.js</a>: An opinionated server framework for Node.js based on <a href=http://expressjs.com/>express</a></li></ul><h2 id=set-up-a-basic-nodejs-server>Set up a basic Node.js server</h2><p><img src=/assets/node-vue-websockets/hello.png alt="Hello World Node.js"></p><p>The first thing we&rsquo;ll do is set up a node server to provide a backend. Using the <a href=https://serverjs.io/>servers.js</a> library a basic API service can be build with a few lines of code.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=color:#75715e># in any empty directory</span>
+npm init <span style=color:#75715e># initialize npm project</span>
 npm install server
-</code></pre><p>Creating a <em>Hello World</em> example:</p><pre><code class=language-javascript>// server.js
-// load the server resource and route GET method
-const server = require('server')
-const { get } = require('server/router')
+</code></pre></div><p>Creating a <em>Hello World</em> example:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#75715e>// server.js
+</span><span style=color:#75715e>// load the server resource and route GET method
+</span><span style=color:#75715e></span><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>server</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>require</span>(<span style=color:#e6db74>&#39;server&#39;</span>)
+<span style=color:#66d9ef>const</span> { <span style=color:#a6e22e>get</span> } <span style=color:#f92672>=</span> <span style=color:#a6e22e>require</span>(<span style=color:#e6db74>&#39;server/router&#39;</span>)
 
-// get server port from environment or default to 3000
-const port = process.env.PORT || 3000
+<span style=color:#75715e>// get server port from environment or default to 3000
+</span><span style=color:#75715e></span><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>port</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>process</span>.<span style=color:#a6e22e>env</span>.<span style=color:#a6e22e>PORT</span> <span style=color:#f92672>||</span> <span style=color:#ae81ff>3000</span>
 
-server({ port }, [
-  get('/', ctx =&gt; '&lt;h1&gt;Hello you!&lt;/h1&gt;')
+<span style=color:#a6e22e>server</span>({ <span style=color:#a6e22e>port</span> }, [
+  <span style=color:#a6e22e>get</span>(<span style=color:#e6db74>&#39;/&#39;</span>, <span style=color:#a6e22e>ctx</span> =&gt; <span style=color:#e6db74>&#39;&lt;h1&gt;Hello you!&lt;/h1&gt;&#39;</span>)
 ])
-  .then(() =&gt; console.log(`Server running at http://localhost:${port}`))
-</code></pre><p>Running the code with <code>node server</code> gives the following output and the website showing <em>Hello World!</em> will be reachable at <a href=http://localhost:3000>localhost:3000</a></p><pre><code class=language-sh>Server running at http://localhost:3000
-</code></pre><p>For easier development install <code>npm install nodemon</code> in the project and change the start command to:</p><pre><code class=language-javascript>// package.json
-&quot;scripts&quot;: {
-  &quot;start&quot;: &quot;nodemon -i myapp/ server.js&quot;
+  .<span style=color:#a6e22e>then</span>(() =&gt; <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#e6db74>`Server running at http://localhost:</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>port</span><span style=color:#e6db74>}</span><span style=color:#e6db74>`</span>))
+</code></pre></div><p>Running the code with <code>node server</code> gives the following output and the website showing <em>Hello World!</em> will be reachable at <a href=http://localhost:3000>localhost:3000</a></p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>Server running at http://localhost:3000
+</code></pre></div><p>For easier development install <code>npm install nodemon</code> in the project and change the start command to:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#75715e>// package.json
+</span><span style=color:#75715e></span><span style=color:#e6db74>&#34;scripts&#34;</span><span style=color:#f92672>:</span> {
+  <span style=color:#e6db74>&#34;start&#34;</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;nodemon -i myapp/ server.js&#34;</span>
 },
-</code></pre><p>💡 If you&rsquo;re struggling take a look at this <a href=https://github.com/anoff/node-vue-websockets/tree/4dc36fc8fac8ee3d179379c0286ee2dfe58f4261>code</a> for reference</p><h2 id=initialize-vue-js-project>Initialize Vue.js project</h2><p>The easiest way to set up a vue project is to use the <code>vue</code>-CLI which is available via <code>npm install -g vue-cli</code>. To initialize a project using <code>webpack</code> as a bundler run</p><pre><code class=language-sh>vue init webpack myapp
-</code></pre><p>Answer the questionnaire with the default question or disable tests you do not want to implement. I chose not to install any test frameworks for this tutorial.</p><p>Webpack comes with it&rsquo;s own development server with <em>hotreloading</em> functionality so you see changes in the browser right away. Try it out by starting the server with <code>npm run dev</code> (in the <code>myapp/</code> directory) and opening the Vue.js template at <a href=http://localhost:8080>localhost:8080</a></p><p><img src=/assets/node-vue-websockets/vue.png alt="Vue.js template project">
-&gt; output of the webpack dev server <code>npm run dev</code></p><p><img src=/assets/node-vue-websockets/vue-template.png alt="Vue.js template project">
-&gt; Template Vue.js project at <a href=http://localhost:8080>http://localhost:8080</a></p><p>When modifying the Vue.js components the web page will automatically reload</p><pre><code class=language-javascript>// myapp/src/components/HelloWorld.vue
-
-// chnage the script content to
-...
-&lt;script&gt;
-export default {
-  name: 'HelloWorld',
-  data () {
-    return {
-      msg: 'Welcome to MY first Vue.js App'
+</code></pre></div><p>💡 If you&rsquo;re struggling take a look at this <a href=https://github.com/anoff/node-vue-websockets/tree/4dc36fc8fac8ee3d179379c0286ee2dfe58f4261>code</a> for reference</p><h2 id=initialize-vuejs-project>Initialize Vue.js project</h2><p>The easiest way to set up a vue project is to use the <code>vue</code>-CLI which is available via <code>npm install -g vue-cli</code>. To initialize a project using <code>webpack</code> as a bundler run</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>vue init webpack myapp
+</code></pre></div><p>Answer the questionnaire with the default question or disable tests you do not want to implement. I chose not to install any test frameworks for this tutorial.</p><p>Webpack comes with it&rsquo;s own development server with <em>hotreloading</em> functionality so you see changes in the browser right away. Try it out by starting the server with <code>npm run dev</code> (in the <code>myapp/</code> directory) and opening the Vue.js template at <a href=http://localhost:8080>localhost:8080</a></p><p><img src=/assets/node-vue-websockets/vue.png alt="Vue.js template project"></p><blockquote><p>output of the webpack dev server <code>npm run dev</code></p></blockquote><p><img src=/assets/node-vue-websockets/vue-template.png alt="Vue.js template project"></p><blockquote><p>Template Vue.js project at http://localhost:8080</p></blockquote><p>When modifying the Vue.js components the web page will automatically reload</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#75715e>// myapp/src/components/HelloWorld.vue
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>// chnage the script content to
+</span><span style=color:#75715e></span>...
+<span style=color:#f92672>&lt;</span><span style=color:#a6e22e>script</span><span style=color:#f92672>&gt;</span>
+<span style=color:#66d9ef>export</span> <span style=color:#66d9ef>default</span> {
+  <span style=color:#a6e22e>name</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;HelloWorld&#39;</span>,
+  <span style=color:#a6e22e>data</span> () {
+    <span style=color:#66d9ef>return</span> {
+      <span style=color:#a6e22e>msg</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;Welcome to MY first Vue.js App&#39;</span>
     }
   }
 }
-&lt;/script&gt;
+<span style=color:#f92672>&lt;</span><span style=color:#960050;background-color:#1e0010>/script&gt;</span>
 ...
-</code></pre><p>By simply saving the file the development server will propagate the changes to any open browser window which will automatically reload to</p><p><img src=/assets/node-vue-websockets/vue-template2.png alt="modified Vue.js template project"></p><blockquote><p>Modified template with custom message</p></blockquote><p>💡 If you&rsquo;re struggling take a look at this <a href=https://github.com/anoff/node-vue-websockets/tree/3e19ae3fd902d719251cf42721ccc83fa27fb394>code</a> for reference</p><h2 id=adding-material-design-library>Adding Material Design library</h2><p>To install <code>vue-material</code> run the following command in the Vue.js directory <code>myapp/</code></p><pre><code class=language-sh>npm install vue-material@beta --save
-</code></pre><p>Add the following lines to <code>myapp/src/main.js</code> to load the <code>vue-material</code> components into the app.</p><pre><code class=language-javascript>import VueMaterial from 'vue-material'
-import 'vue-material/dist/vue-material.css'
-import 'vue-material/dist/theme/black-green-light.css'
+</code></pre></div><p>By simply saving the file the development server will propagate the changes to any open browser window which will automatically reload to</p><p><img src=/assets/node-vue-websockets/vue-template2.png alt="modified Vue.js template project"></p><blockquote><p>Modified template with custom message</p></blockquote><p>💡 If you&rsquo;re struggling take a look at this <a href=https://github.com/anoff/node-vue-websockets/tree/3e19ae3fd902d719251cf42721ccc83fa27fb394>code</a> for reference</p><h2 id=adding-material-design-library>Adding Material Design library</h2><p>To install <code>vue-material</code> run the following command in the Vue.js directory <code>myapp/</code></p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>npm install vue-material@beta --save
+</code></pre></div><p>Add the following lines to <code>myapp/src/main.js</code> to load the <code>vue-material</code> components into the app.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>import</span> <span style=color:#a6e22e>VueMaterial</span> <span style=color:#a6e22e>from</span> <span style=color:#e6db74>&#39;vue-material&#39;</span>
+<span style=color:#66d9ef>import</span> <span style=color:#e6db74>&#39;vue-material/dist/vue-material.css&#39;</span>
+<span style=color:#66d9ef>import</span> <span style=color:#e6db74>&#39;vue-material/dist/theme/black-green-light.css&#39;</span>
 
-Vue.use(VueMaterial)
-</code></pre><p>ℹ️ You might have to restart the dev server for this new plugin to take effect</p><p>Create a new Vue.js component making use of several <code>vue-bootstrap</code> components like the <a href=https://vuematerial.io/components/app>app</a> container.</p><pre><code class=language-html>&lt;!-- myapp/src/components/Chat.vue--&gt;
-&lt;template&gt;
-&lt;div class=&quot;page-container&quot;&gt;
-    &lt;md-app&gt;
-      &lt;md-app-toolbar class=&quot;md-primary&quot;&gt;
-        &lt;div class=&quot;md-toolbar-row&quot;&gt;
-          &lt;span class=&quot;md-title&quot;&gt;My Chat App&lt;/span&gt;
-        &lt;/div&gt;
-      &lt;/md-app-toolbar&gt;
-      &lt;md-app-content&gt;
-        &lt;md-field :class=&quot;messageClass&quot;&gt;
-          &lt;label&gt;Messages&lt;/label&gt;
-          &lt;md-textarea v-model=&quot;textarea&quot; disabled&gt;&lt;/md-textarea&gt;
-        &lt;/md-field&gt;
-        &lt;md-field&gt;
-          &lt;label&gt;Your message&lt;/label&gt;
-          &lt;md-input v-model=&quot;message&quot;&gt;&lt;/md-input&gt;
-          &lt;md-button class=&quot;md-primary md-raised&quot;&gt;Submit&lt;/md-button&gt;
-        &lt;/md-field&gt;
-      &lt;/md-app-content&gt;
-    &lt;/md-app&gt;
-  &lt;/div&gt;
-&lt;/template&gt;
+<span style=color:#a6e22e>Vue</span>.<span style=color:#a6e22e>use</span>(<span style=color:#a6e22e>VueMaterial</span>)
+</code></pre></div><p>ℹ️ You might have to restart the dev server for this new plugin to take effect</p><p>Create a new Vue.js component making use of several <code>vue-bootstrap</code> components like the <a href=https://vuematerial.io/components/app>app</a> container.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=color:#75715e>&lt;!-- myapp/src/components/Chat.vue--&gt;</span>
+&lt;<span style=color:#f92672>template</span>&gt;
+&lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;page-container&#34;</span>&gt;
+    &lt;<span style=color:#f92672>md-app</span>&gt;
+      &lt;<span style=color:#f92672>md-app-toolbar</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;md-primary&#34;</span>&gt;
+        &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;md-toolbar-row&#34;</span>&gt;
+          &lt;<span style=color:#f92672>span</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;md-title&#34;</span>&gt;My Chat App&lt;/<span style=color:#f92672>span</span>&gt;
+        &lt;/<span style=color:#f92672>div</span>&gt;
+      &lt;/<span style=color:#f92672>md-app-toolbar</span>&gt;
+      &lt;<span style=color:#f92672>md-app-content</span>&gt;
+        &lt;<span style=color:#f92672>md-field</span> <span style=color:#a6e22e>:class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;messageClass&#34;</span>&gt;
+          &lt;<span style=color:#f92672>label</span>&gt;Messages&lt;/<span style=color:#f92672>label</span>&gt;
+          &lt;<span style=color:#f92672>md-textarea</span> <span style=color:#a6e22e>v-model</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;textarea&#34;</span> <span style=color:#a6e22e>disabled</span>&gt;&lt;/<span style=color:#f92672>md-textarea</span>&gt;
+        &lt;/<span style=color:#f92672>md-field</span>&gt;
+        &lt;<span style=color:#f92672>md-field</span>&gt;
+          &lt;<span style=color:#f92672>label</span>&gt;Your message&lt;/<span style=color:#f92672>label</span>&gt;
+          &lt;<span style=color:#f92672>md-input</span> <span style=color:#a6e22e>v-model</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;message&#34;</span>&gt;&lt;/<span style=color:#f92672>md-input</span>&gt;
+          &lt;<span style=color:#f92672>md-button</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;md-primary md-raised&#34;</span>&gt;Submit&lt;/<span style=color:#f92672>md-button</span>&gt;
+        &lt;/<span style=color:#f92672>md-field</span>&gt;
+      &lt;/<span style=color:#f92672>md-app-content</span>&gt;
+    &lt;/<span style=color:#f92672>md-app</span>&gt;
+  &lt;/<span style=color:#f92672>div</span>&gt;
+&lt;/<span style=color:#f92672>template</span>&gt;
 
-&lt;script&gt;
-export default {
-  name: 'HelloWorld',
-  data () {
-    return {
-      textarea: &quot;dummy text\nblup\ndummy text&quot;
+&lt;<span style=color:#f92672>script</span>&gt;
+<span style=color:#66d9ef>export</span> <span style=color:#66d9ef>default</span> {
+  <span style=color:#a6e22e>name</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;HelloWorld&#39;</span>,
+  <span style=color:#a6e22e>data</span> () {
+    <span style=color:#66d9ef>return</span> {
+      <span style=color:#a6e22e>textarea</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;dummy text\nblup\ndummy text&#34;</span>
     }
   }
 }
-&lt;/script&gt;
+&lt;/<span style=color:#f92672>script</span>&gt;
 
-&lt;!-- Add &quot;scoped&quot; attribute to limit CSS to this component only --&gt;
-&lt;style scoped&gt;
-.md-app {
-  height: 800px;
-  border: 1px solid rgba(#000, .12);
+<span style=color:#75715e>&lt;!-- Add &#34;scoped&#34; attribute to limit CSS to this component only --&gt;</span>
+&lt;<span style=color:#f92672>style</span> <span style=color:#a6e22e>scoped</span>&gt;
+.<span style=color:#a6e22e>md-app</span> {
+  <span style=color:#66d9ef>height</span>: <span style=color:#ae81ff>800</span><span style=color:#66d9ef>px</span>;
+  <span style=color:#66d9ef>border</span>: <span style=color:#ae81ff>1</span><span style=color:#66d9ef>px</span> <span style=color:#66d9ef>solid</span> rgba(<span style=color:#ae81ff>#000</span>, <span style=color:#ae81ff>.12</span>);
 }
-.md-textarea {
-  height: 300px;
+.<span style=color:#a6e22e>md-textarea</span> {
+  <span style=color:#66d9ef>height</span>: <span style=color:#ae81ff>300</span><span style=color:#66d9ef>px</span>;
 }
-&lt;/style&gt;
-</code></pre><p>To load the new component modify the router at <code>myApp/src/router/index.js</code></p><pre><code class=language-javascript>// change HelloWorld -&gt; Chat
-import Vue from 'vue'
-import Router from 'vue-router'
-import Chat from '@/components/Chat'
+&lt;/<span style=color:#f92672>style</span>&gt;
+</code></pre></div><p>To load the new component modify the router at <code>myApp/src/router/index.js</code></p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#75715e>// change HelloWorld -&gt; Chat
+</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> <span style=color:#a6e22e>Vue</span> <span style=color:#a6e22e>from</span> <span style=color:#e6db74>&#39;vue&#39;</span>
+<span style=color:#66d9ef>import</span> <span style=color:#a6e22e>Router</span> <span style=color:#a6e22e>from</span> <span style=color:#e6db74>&#39;vue-router&#39;</span>
+<span style=color:#66d9ef>import</span> <span style=color:#a6e22e>Chat</span> <span style=color:#a6e22e>from</span> <span style=color:#e6db74>&#39;@/components/Chat&#39;</span>
 
-Vue.use(Router)
+<span style=color:#a6e22e>Vue</span>.<span style=color:#a6e22e>use</span>(<span style=color:#a6e22e>Router</span>)
 
-export default new Router({
-  routes: [
+<span style=color:#66d9ef>export</span> <span style=color:#66d9ef>default</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Router</span>({
+  <span style=color:#a6e22e>routes</span><span style=color:#f92672>:</span> [
     {
-      path: '/',
-      name: 'Chat',
-      component: Chat
+      <span style=color:#a6e22e>path</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;/&#39;</span>,
+      <span style=color:#a6e22e>name</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;Chat&#39;</span>,
+      <span style=color:#a6e22e>component</span><span style=color:#f92672>:</span> <span style=color:#a6e22e>Chat</span>
     }
   ]
 })
-</code></pre><p><img src=/assets/node-vue-websockets/chat.png alt="Basic chat app"></p><p>💡 If you&rsquo;re struggling take a look at this <a href=https://github.com/anoff/node-vue-websockets/tree/99fa39d4761ddaa779192a7f9751820ab7952356>code</a> for reference</p><h2 id=bring-in-websockets>Bring in websockets</h2><p>For the following development the web application will consume from two different endpoints. The <code>webpack-dev-server</code> sends the web app sources (HTML, CSS, Javascript) and the node server will supply the <code>socket-io</code> endpoint. This is typically not something you want to do in production but since we want both the node server and Vue frontend to be hot reloaded we need two systems - webpack and nodemon.</p><p><img src=https://www.plantuml.com/plantuml/png/NP0z3i8m34PtdyBgn58KYGKn8JX9sXWef77b12A4k3ik3RzBfBpdptQoZibAElSU0Zl2AbCpsFQ4ZYuOIIua5Tg8hUyef58pyVanue5ZUle95Ty8PmKLG1SIoSwsX8Ua8pxN72E07bWxpg5-vSUg5oeZeNJ3kfwDiHKEB0aNnfWVDKQBMvgbWNZgmc35zdW3n76nZRvhBtmERikU1Q_aFMULLhJFn1glHOhUc_w7VDVJZsTn9D_XEwmfEFtH1m00 alt="development setup"></p><h3 id=frontend-vue-socket-io>frontend: vue-socket.io</h3><p>For the Vue app to communicate with the websocket backend the socket.io library needs to be installed into <code>cd myApp/</code></p><pre><code class=language-sh>npm install vue-socket.io
-</code></pre><p>With the node backend running on port <code>3000</code> modify your vue application in <code>myApp/src/main.js</code> to connect to the backend</p><pre><code class=language-javascript>import VueSocketIO from 'vue-socket.io'
+</code></pre></div><p><img src=/assets/node-vue-websockets/chat.png alt="Basic chat app"></p><p>💡 If you&rsquo;re struggling take a look at this <a href=https://github.com/anoff/node-vue-websockets/tree/99fa39d4761ddaa779192a7f9751820ab7952356>code</a> for reference</p><h2 id=bring-in-websockets>Bring in websockets</h2><p>For the following development the web application will consume from two different endpoints. The <code>webpack-dev-server</code> sends the web app sources (HTML, CSS, Javascript) and the node server will supply the <code>socket-io</code> endpoint. This is typically not something you want to do in production but since we want both the node server and Vue frontend to be hot reloaded we need two systems - webpack and nodemon.</p><p><img src=https://www.plantuml.com/plantuml/png/NP0z3i8m34PtdyBgn58KYGKn8JX9sXWef77b12A4k3ik3RzBfBpdptQoZibAElSU0Zl2AbCpsFQ4ZYuOIIua5Tg8hUyef58pyVanue5ZUle95Ty8PmKLG1SIoSwsX8Ua8pxN72E07bWxpg5-vSUg5oeZeNJ3kfwDiHKEB0aNnfWVDKQBMvgbWNZgmc35zdW3n76nZRvhBtmERikU1Q_aFMULLhJFn1glHOhUc_w7VDVJZsTn9D_XEwmfEFtH1m00 alt="development setup"></p><h3 id=frontend-vue-socketio>frontend: vue-socket.io</h3><p>For the Vue app to communicate with the websocket backend the socket.io library needs to be installed into <code>cd myApp/</code></p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>npm install vue-socket.io
+</code></pre></div><p>With the node backend running on port <code>3000</code> modify your vue application in <code>myApp/src/main.js</code> to connect to the backend</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>import</span> <span style=color:#a6e22e>VueSocketIO</span> <span style=color:#a6e22e>from</span> <span style=color:#e6db74>&#39;vue-socket.io&#39;</span>
 
-Vue.use(VueSocketIO, 'http://localhost:3000')
-</code></pre><p>To bring some very basic functionality into the app we will show messages that were send from other instances in a list and add the ability to send messages.
-For sending messages we need to give the <code>Submit</code> button an action once it is triggered by adding a <code>v-on:click</code> method</p><pre><code class=language-html>&lt;md-button class=&quot;md-primary md-raised&quot; v-on:click=&quot;sendMessage()&quot;&gt;Submit&lt;/md-button&gt;
-</code></pre><p>The <code>sendMessage()</code> function and the socket interactions are specified in the <code>&lt;script&gt;</code> tag</p><pre><code class=language-javascript>&lt;script&gt;
-export default {
-  name: 'Chat',
-  data () {
-    return {
-      textarea: '',
-      message: '',
-      count: 0
+<span style=color:#a6e22e>Vue</span>.<span style=color:#a6e22e>use</span>(<span style=color:#a6e22e>VueSocketIO</span>, <span style=color:#e6db74>&#39;http://localhost:3000&#39;</span>)
+</code></pre></div><p>To bring some very basic functionality into the app we will show messages that were send from other instances in a list and add the ability to send messages.
+For sending messages we need to give the <code>Submit</code> button an action once it is triggered by adding a <code>v-on:click</code> method</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html>&lt;<span style=color:#f92672>md-button</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;md-primary md-raised&#34;</span> <span style=color:#a6e22e>v-on:click</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;sendMessage()&#34;</span>&gt;Submit&lt;/<span style=color:#f92672>md-button</span>&gt;
+</code></pre></div><p>The <code>sendMessage()</code> function and the socket interactions are specified in the <code>&lt;script></code> tag</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#f92672>&lt;</span><span style=color:#a6e22e>script</span><span style=color:#f92672>&gt;</span>
+<span style=color:#66d9ef>export</span> <span style=color:#66d9ef>default</span> {
+  <span style=color:#a6e22e>name</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;Chat&#39;</span>,
+  <span style=color:#a6e22e>data</span> () {
+    <span style=color:#66d9ef>return</span> {
+      <span style=color:#a6e22e>textarea</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;&#39;</span>,
+      <span style=color:#a6e22e>message</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;&#39;</span>,
+      <span style=color:#a6e22e>count</span><span style=color:#f92672>:</span> <span style=color:#ae81ff>0</span>
     }
-  }, sockets:{
-    connect () {
-      console.log('connected to chat server')
+  }, <span style=color:#a6e22e>sockets</span><span style=color:#f92672>:</span>{
+    <span style=color:#a6e22e>connect</span> () {
+      <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#e6db74>&#39;connected to chat server&#39;</span>)
     },
-    count (val) {
-      this.count = val.count
+    <span style=color:#a6e22e>count</span> (<span style=color:#a6e22e>val</span>) {
+      <span style=color:#66d9ef>this</span>.<span style=color:#a6e22e>count</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>val</span>.<span style=color:#a6e22e>count</span>
     },
-    message (data) { // this function gets triggered once a socket event of `message` is received
-      this.textarea += data + '\n' // append each new message to the textarea and add a line break
-    }
-  }, methods: {
-    sendMessage () {
-      // this will emit a socket event of type `function`
-      this.$socket.emit('message', this.message) // send the content of the message bar to the server
-      this.message = '' // empty the message bar
-    }
+    <span style=color:#a6e22e>message</span> (<span style=color:#a6e22e>data</span>) { <span style=color:#75715e>// this function gets triggered once a socket event of `message` is received
+</span><span style=color:#75715e></span>      <span style=color:#66d9ef>this</span>.<span style=color:#a6e22e>textarea</span> <span style=color:#f92672>+=</span> <span style=color:#a6e22e>data</span> <span style=color:#f92672>+</span> <span style=color:#e6db74>&#39;\n&#39;</span> <span style=color:#75715e>// append each new message to the textarea and add a line break
+</span><span style=color:#75715e></span>    }
+  }, <span style=color:#a6e22e>methods</span><span style=color:#f92672>:</span> {
+    <span style=color:#a6e22e>sendMessage</span> () {
+      <span style=color:#75715e>// this will emit a socket event of type `function`
+</span><span style=color:#75715e></span>      <span style=color:#66d9ef>this</span>.<span style=color:#a6e22e>$socket</span>.<span style=color:#a6e22e>emit</span>(<span style=color:#e6db74>&#39;message&#39;</span>, <span style=color:#66d9ef>this</span>.<span style=color:#a6e22e>message</span>) <span style=color:#75715e>// send the content of the message bar to the server
+</span><span style=color:#75715e></span>      <span style=color:#66d9ef>this</span>.<span style=color:#a6e22e>message</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;&#39;</span> <span style=color:#75715e>// empty the message bar
+</span><span style=color:#75715e></span>    }
   }
 }
-&lt;/script&gt;
-</code></pre><h3 id=backend-socket-io-server-js>backend: socket-io / server.js</h3><p>Server.js already comems with socket-io bundled into it. The only thing to do in the backend to enable a basic chat operation is to react to a <code>message</code> event sent from the UI and propagate this to all connected sockets.</p><pre><code class=language-javascript>// modify server.js to include the socket methods
-const { get, socket } = require('server/router')
+<span style=color:#f92672>&lt;</span><span style=color:#960050;background-color:#1e0010>/script&gt;</span>
+</code></pre></div><h3 id=backend-socket-io--serverjs>backend: socket-io / server.js</h3><p>Server.js already comems with socket-io bundled into it. The only thing to do in the backend to enable a basic chat operation is to react to a <code>message</code> event sent from the UI and propagate this to all connected sockets.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#75715e>// modify server.js to include the socket methods
+</span><span style=color:#75715e></span><span style=color:#66d9ef>const</span> { <span style=color:#a6e22e>get</span>, <span style=color:#a6e22e>socket</span> } <span style=color:#f92672>=</span> <span style=color:#a6e22e>require</span>(<span style=color:#e6db74>&#39;server/router&#39;</span>)
 
 ...
 
-server({ port }, [
-  get('/', ctx =&gt; '&lt;h1&gt;Hello you!&lt;/h1&gt;'),
-  socket('message', ctx =&gt; {
-    // Send the message to every socket
-    ctx.io.emit('message', ctx.data)
+<span style=color:#a6e22e>server</span>({ <span style=color:#a6e22e>port</span> }, [
+  <span style=color:#a6e22e>get</span>(<span style=color:#e6db74>&#39;/&#39;</span>, <span style=color:#a6e22e>ctx</span> =&gt; <span style=color:#e6db74>&#39;&lt;h1&gt;Hello you!&lt;/h1&gt;&#39;</span>),
+  <span style=color:#a6e22e>socket</span>(<span style=color:#e6db74>&#39;message&#39;</span>, <span style=color:#a6e22e>ctx</span> =&gt; {
+    <span style=color:#75715e>// Send the message to every socket
+</span><span style=color:#75715e></span>    <span style=color:#a6e22e>ctx</span>.<span style=color:#a6e22e>io</span>.<span style=color:#a6e22e>emit</span>(<span style=color:#e6db74>&#39;message&#39;</span>, <span style=color:#a6e22e>ctx</span>.<span style=color:#a6e22e>data</span>)
   }),
-  socket('connect', ctx =&gt; {
-    console.log('client connected', Object.keys(ctx.io.sockets.sockets))
-    ctx.io.emit('count', {msg: 'HI U', count: Object.keys(ctx.io.sockets.sockets).length})
+  <span style=color:#a6e22e>socket</span>(<span style=color:#e6db74>&#39;connect&#39;</span>, <span style=color:#a6e22e>ctx</span> =&gt; {
+    <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#e6db74>&#39;client connected&#39;</span>, Object.<span style=color:#a6e22e>keys</span>(<span style=color:#a6e22e>ctx</span>.<span style=color:#a6e22e>io</span>.<span style=color:#a6e22e>sockets</span>.<span style=color:#a6e22e>sockets</span>))
+    <span style=color:#a6e22e>ctx</span>.<span style=color:#a6e22e>io</span>.<span style=color:#a6e22e>emit</span>(<span style=color:#e6db74>&#39;count&#39;</span>, {<span style=color:#a6e22e>msg</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;HI U&#39;</span>, <span style=color:#a6e22e>count</span><span style=color:#f92672>:</span> Object.<span style=color:#a6e22e>keys</span>(<span style=color:#a6e22e>ctx</span>.<span style=color:#a6e22e>io</span>.<span style=color:#a6e22e>sockets</span>.<span style=color:#a6e22e>sockets</span>).<span style=color:#a6e22e>length</span>})
   })
 ])
-  .then(() =&gt; console.log(`Server running at http://localhost:${port}`))
-</code></pre><p>After running <code>npm start</code> in the server directory the server will now create logs for every web page that gets opened. It logs the list of currently open sockets.</p><blockquote><p>Note there is no disconnect event registered yet in this tutorial so the <code>count</code> event will only be emitted when a new website connects.</p></blockquote><p><img src=/assets/node-vue-websockets/clients.png alt="Server logs for connecting clients"></p><h2 id=showtime>Showtime 🍿</h2><p>Running the demo in two browsers/separate devices in the same network will look like this. It is a very, very, very basic but totally anonymous chat system.</p><p><img src=/assets/node-vue-websockets/2chats.gif alt="Very basic chat system"></p><p>You can find a <a href=https://github.com/anoff/node-vue-websockets/commits/master>repository on github</a> containing this demo code.</p><p>I hope this blog helped you:</p><ol><li>set up an easy node server</li><li>bootstrap a Vue project with <code>vue-cli</code></li><li>get fancy UI elements in Vue using material design</li><li>integrate websockets to provide realtime communication</li></ol><p>What to do next:</p><ul><li>add tests to backend/frontend</li><li>store state/sessions in frontend</li><li>possibly add authentication</li><li>improve UI (e.g. register enter button on message bar)</li></ul><p>Feel free to leave a comment or reach out on twitter 🐦</p></div><div class=footer><div class=tags><i class="fa fa-tags"></i><div class=links><a href=/tags/development>development</a>
+  .<span style=color:#a6e22e>then</span>(() =&gt; <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#e6db74>`Server running at http://localhost:</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>port</span><span style=color:#e6db74>}</span><span style=color:#e6db74>`</span>))
+</code></pre></div><p>After running <code>npm start</code> in the server directory the server will now create logs for every web page that gets opened. It logs the list of currently open sockets.</p><blockquote><p>Note there is no disconnect event registered yet in this tutorial so the <code>count</code> event will only be emitted when a new website connects.</p></blockquote><p><img src=/assets/node-vue-websockets/clients.png alt="Server logs for connecting clients"></p><h2 id=showtime->Showtime 🍿</h2><p>Running the demo in two browsers/separate devices in the same network will look like this. It is a very, very, very basic but totally anonymous chat system.</p><p><img src=/assets/node-vue-websockets/2chats.gif alt="Very basic chat system"></p><p>You can find a <a href=https://github.com/anoff/node-vue-websockets/commits/master>repository on github</a> containing this demo code.</p><p>I hope this blog helped you:</p><ol><li>set up an easy node server</li><li>bootstrap a Vue project with <code>vue-cli</code></li><li>get fancy UI elements in Vue using material design</li><li>integrate websockets to provide realtime communication</li></ol><p>What to do next:</p><ul><li>add tests to backend/frontend</li><li>store state/sessions in frontend</li><li>possibly add authentication</li><li>improve UI (e.g. register enter button on message bar)</li></ul><p>Feel free to leave a comment or reach out on twitter 🐦</p></div><div class=footer><div class=tags><i class="fa fa-tags"></i><div class=links><a href=/tags/development>development</a>
 <a href=/tags/web>web</a>
 <a href=/tags/node>node</a></div></div></div></article></div><div id=disqus_thread></div><script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return;}
 var d=document,s=d.createElement('script');s.async=true;s.src='//'+"anoff-io"+'.disqus.com/embed.js';s.setAttribute('data-timestamp',+new Date());(d.head||d.body).appendChild(s);})();</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div><footer><div class=container><div class=right><div class=external-profiles><strong>Social media</strong>
