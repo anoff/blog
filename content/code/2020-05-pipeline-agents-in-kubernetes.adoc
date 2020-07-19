@@ -45,6 +45,8 @@ image::solution.png[Overview of the solution]
 
 == The code base
 
+As this solution consists of a couple of files I decided to put them in a GitHub repository: link:https://github.com/anoff/autoscaling-ci-agents-on-aks[anoff/autoscaling-ci-agents-on-aks].
+
 
 
 
