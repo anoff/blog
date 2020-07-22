@@ -55,30 +55,7 @@ This was something I had not done before and may only be necessary with the chan
     ]
   }
 }</code></pre><ol class="callout-list arabic"><li>add vuetify to the types property</li></ol></figure></section><section class="doc-section level-1"><h2 id=_theme_options><a class=link href=#_theme_options>Theme options</a></h2><p>If you are using a custom theme you might need to adapt to the new object structure that supports <strong>light and dark mode</strong> for your app.
-It is mostly moving the color specification of the theme into another nested layer.</p><figure class=listing-block><figcaption>vuetify 2 theme options structure</figcaption><pre>Failed to generate image: 301 "Moved Permanently"
-!includeurl https://gist.githubusercontent.com/anoff/d8f48105ac4d3c7b14ca8c34d6d54938/raw/7381f13a14e048bbd3cb4ecc70369e913908151a/anoff.plantuml
-class theme {
-  dark: boolean
-  themes: Object
-}
-
-class themes {
-  light: ColorSpec
-  dark: ColorSpec
-}
-
-class ColorSpec {
-  primary:\t colorcode as string
-  secondary:\t colorcode as string
-  accent:\t colorcode as string
-  error:\t colorcode as string
-  warning:\t colorcode as string
-  info:\t\t colorcode as string
-  success:\t colorcode as string
-}
-
-theme -- themes
-themes -- ColorSpec</pre></figure></section><section class="doc-section level-1"><h2 id=_add_mdi_font><a class=link href=#_add_mdi_font>Add MDI font</a></h2><p>Vuetify now uses the material design icons for default icons like the hamburger navigation menu.
+It is mostly moving the color specification of the theme into another nested layer.</p><figure class=image-block><img src=/assets/vuetify-2/diag-b2b5b5f39492a3b7e4799ff6d343e49b.png alt="diag b2b5b5f39492a3b7e4799ff6d343e49b" width=786 height=282><figcaption>Figure 1. vuetify 2 theme options structure</figcaption></figure></section><section class="doc-section level-1"><h2 id=_add_mdi_font><a class=link href=#_add_mdi_font>Add MDI font</a></h2><p>Vuetify now uses the material design icons for default icons like the hamburger navigation menu.
 Install it as a dev dependency if you have not done so yet.
 Alternatively you could configure Vuetify to use another icon font, see the official getting started docs for infos on that.</p><div class=listing-block><pre class="CodeRay highlight"><code data-lang=bash>npm install --save-dev @mdi/font</code></pre></div><p>Then add it to your <code>main.ts</code></p><div class=listing-block><pre class="CodeRay highlight"><code data-lang=typescript>import '@mdi/font/css/materialdesignicons.css'</code></pre></div></section><section class="doc-section level-1"><h2 id=_component_changes><a class=link href=#_component_changes>Component changes</a></h2><p>With the above changes your app should build correctly, however there will still be a lot of errors in the browser as many components have breaking changes.
 Below are the main changes I had to fix in my <a href=https://devradar.io>devradar</a> <a href=https://editor.devradar.io>editor application</a>.</p><section class="doc-section level-2"><h3 id=_application_toolbar><a class=link href=#_application_toolbar>Application Toolbar</a></h3><p>There is a new component <code>v-app-bar</code> that should be used for application wide navigation toolbars.</p><div class=listing-block><pre class="CodeRay highlight"><code data-lang=typescript>// vuetify 1.5
