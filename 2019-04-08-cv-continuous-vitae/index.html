@@ -26,46 +26,8 @@ build: verify-git-clean inject-git-version pdf clean commit</code></pre><ol clas
 To make sure the replace operation matches only this one place I also added the surrounding curly braces to the matching string.
 If your LaTeX file has a different setup you may need to modify the regular expression in the <code>Makefile</code>.</p><figure class=listing-block><figcaption>cv-anoff.tex</figcaption><pre class=highlight><code class=language-latex data-lang=latex>\begin{document}
 
-\header{andreas}{of\/fenhaeuser}{software engineer/architect}{git:COMMITID}</code></pre></figure><p>Finally rendered you will see something like this</p><figure class=image-block><img src=/assets/continuous-cv/git-version.png alt="git SHA in PDF"><figcaption>Figure 1. git SHA as CV version</figcaption></figure><p>The complete workflow to update the CV:</p><figure class=listing-block><figcaption>Manual CV generation</figcaption><pre>Failed to generate image: 301 "Moved Permanently"
-@startuml
-skinparam monochrome true
-|Local (git)|
-start
-:modify LaTeX file;
-:commit changes;
-:run &lt;i&gt;Makefile;
-:commit updated PDF;
-:push changes;
-|Build pipeline|
-:generate static web page
-treating CV (PDF) as an artifact;
-:upload static web page;
-|Web Server|
-:provide web page;
-|Viewer|
-:enjoy my CV;
-stop
-@enduml</pre></figure></section><section class="doc-section level-1"><h2 id=_the_issues>The Issues</h2><p>There are a number of things that I did not like about my old setup:</p><section class="olist arabic"><h6 class=block-title>Annoyances to get rid off</h6><ol class=arabic><li>need to commit twice to make a change</li><li>artifacts are checked into <code>git</code></li></ol></section><p>But also some things I really like about it:</p><section class="olist arabic"><h6 class=block-title>Features to keep</h6><ol class=arabic><li>PDF can be previewed locally</li><li>exact version of a CV can easily be viewed on GitHub</li></ol></section></section><section class="doc-section level-1"><h2 id=_the_goal>The Goal</h2><p>Given the pros and cons I was aiming for a workflow that generates artifacts on the server but allows me to preview them locally as much as possible.
-My ideal workflow for the web hosted CV is the following:</p><figure class=listing-block><figcaption>Continuous Vitae generation</figcaption><pre>Failed to generate image: 301 "Moved Permanently"
-@startuml
-skinparam monochrome true
-|Local (git)|
-start
-:modify LaTeX file;
-:commit changes;
-:push changes;
-|Build pipeline|
-:inject git version;
-:generate PDF;
-:generate static web page
-treating CV (PDF) as an artifact;
-:upload static web page;
-|Web Server|
-:provide web page;
-|Viewer|
-:enjoy my CV;
-stop
-@enduml</pre></figure></section><section class="doc-section level-1"><h2 id=_the_solution>The Solution</h2><p>As with all my latest projects <a href=http://drone.io/>drone</a> is the continuous integration service of choice.
+\header{andreas}{of\/fenhaeuser}{software engineer/architect}{git:COMMITID}</code></pre></figure><p>Finally rendered you will see something like this</p><figure class=image-block><img src=/assets/continuous-cv/git-version.png alt="git SHA in PDF"><figcaption>Figure 1. git SHA as CV version</figcaption></figure><p>The complete workflow to update the CV:</p><figure class=image-block><img src=/assets/continuous-cv/cv-generation-manual.svg alt="cv generation manual" width=787 height=267><figcaption>Figure 2. Manual CV generation</figcaption></figure></section><section class="doc-section level-1"><h2 id=_the_issues>The Issues</h2><p>There are a number of things that I did not like about my old setup:</p><section class="olist arabic"><h6 class=block-title>Annoyances to get rid off</h6><ol class=arabic><li>need to commit twice to make a change</li><li>artifacts are checked into <code>git</code></li></ol></section><p>But also some things I really like about it:</p><section class="olist arabic"><h6 class=block-title>Features to keep</h6><ol class=arabic><li>PDF can be previewed locally</li><li>exact version of a CV can easily be viewed on GitHub</li></ol></section></section><section class="doc-section level-1"><h2 id=_the_goal>The Goal</h2><p>Given the pros and cons I was aiming for a workflow that generates artifacts on the server but allows me to preview them locally as much as possible.
+My ideal workflow for the web hosted CV is the following:</p><figure class=image-block><img src=/assets/continuous-cv/cv-generation-automatic.svg alt="cv generation automatic" width=787 height=267><figcaption>Figure 3. Continuous Vitae generation</figcaption></figure></section><section class="doc-section level-1"><h2 id=_the_solution>The Solution</h2><p>As with all my latest projects <a href=http://drone.io/>drone</a> is the continuous integration service of choice.
 The main challenge is to split the <code>Makefile</code> up into individual drone <a href=https://docs.drone.io/user-guide/pipeline/steps/>pipeline steps</a>.</p><section class="doc-section level-2"><h3 id=_get_the_git_commit_as_cv_version>Get the git commit as CV version</h3><p>With the old workflow the CV version is only updated whenever I ran the <code>Makefile</code> and take the current git commit SHA as a version.
 Using a continuous build approach this would be run for each commit.
 As the CV is versioned & built within my website this would result in a new CV version even if the CV was not updated.
@@ -97,7 +59,7 @@ The <em>build-cv</em> step uses <code>sed</code> to replace the version placehol
 Otherwise you may need an additional post processing step to move the file to an accessible location.</p></section><section class="doc-section level-2"><h3 id=_support_local_build>Support local build</h3><p>There are two easy ways to support the <em>create a local CV preview</em> feature.</p><p>The first being the original <code>Makefile</code> - it used to work and it still does work.
 You may want to remove the <code>git commit</code> step from the <code>Makefile</code> though and add the <code>.pdf</code> file itself onto <code>.gitignore</code> to make sure the preview stays local.
 Downside of this option is you may need to patch code at two different locations.</p><p>The second option is to use <strong>drone</strong> and its awesome <strong>drone CLI</strong> support to run parts of the pipeline locally.
-To achieve this install the <a href=https://docs.drone.io/cli/install/>drone CLI</a> and either copy&paste or put the following line into a script file.</p><figure class=listing-block><figcaption>local CV generation</figcaption><pre class=highlight><code class=language-bash data-lang=bash>drone exec --include fetch-version --include build-cv</code></pre></figure><figure class=image-block><img src=/assets/continuous-cv/drone-exec.png alt="CLI output"><figcaption>Figure 2. Drone CLI output for local execution</figcaption></figure></section></section><section class="doc-section level-1"><h2 id=_summary>Summary</h2><p>We started out with scripting <strong>git versioning</strong> a LaTeX based document.
+To achieve this install the <a href=https://docs.drone.io/cli/install/>drone CLI</a> and either copy&paste or put the following line into a script file.</p><figure class=listing-block><figcaption>local CV generation</figcaption><pre class=highlight><code class=language-bash data-lang=bash>drone exec --include fetch-version --include build-cv</code></pre></figure><figure class=image-block><img src=/assets/continuous-cv/drone-exec.png alt="CLI output"><figcaption>Figure 4. Drone CLI output for local execution</figcaption></figure></section></section><section class="doc-section level-1"><h2 id=_summary>Summary</h2><p>We started out with scripting <strong>git versioning</strong> a LaTeX based document.
 Then we used a <code>Makefile</code> to keep all the commands needed to automate the CV generation in one place.
 In the final step I we from scripted and manually executed to scripted and <strong>fully automated generation</strong> of the PDF using the Drone continuous integration service.</p><p>If you have any questions DM me on Twitter <a href=https://twitter.com/anoff_io>anoff_io</a> or leave a comment 👋</p></section></div><div class=footer><div class=tags><i class="fa fa-tags"></i><div class=links><a href=/tags/recruiting>recruiting</a>
 <a href=/tags/ci/cd>CI/CD</a>
