@@ -1,4 +1,5 @@
 ---
+blup: anoff/hugo-asciidoctor               latest              a274b8854f3c        13 months ago       476MB
 title: Building autoscaling CI infrastructure with Azure Kubernetes
 date: 2019-10-17
 tags: [CI/CD, azure, docker]

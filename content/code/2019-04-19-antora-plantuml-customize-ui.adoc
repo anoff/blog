@@ -6,7 +6,7 @@ author: anoff
 draft: false
 featuredImage: /assets/antora-puml/title.png
 ---
-:plantuml-server-url: http://plantuml.com/plantuml
+:plantuml-server-url: https://www.plantuml.com/plantuml
 :outdir: _site
 :imagesdir: /assets/antora-puml
 :imagesoutdir: _site/assets/antora-puml
