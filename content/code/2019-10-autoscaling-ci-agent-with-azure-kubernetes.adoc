@@ -9,7 +9,7 @@ featuredImage: /assets/scaling-agents-aks/title.png
 ---
 :imagesdir: /assets/scaling-agents-aks/
 :imagesoutdir: _site/assets/scaling-agents-aks/
-:plantuml-server-url: https://www.plantuml.com/plantuml
+:plantuml-server-url: http://www.plantuml.com/plantuml
 :source-highlighter: coderay
 :sectlinks:
 

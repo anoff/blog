@@ -6,7 +6,7 @@ author: anoff
 draft: false
 featuredImage: /assets/antora-arc42/title-3.png
 ---
-:plantuml-server-url: https://www.plantuml.com/plantuml
+:plantuml-server-url: http://www.plantuml.com/plantuml
 :outdir: _site
 :imagesoutdir: _site/assets/antora-arc42
 :imagesdir: /assets/
