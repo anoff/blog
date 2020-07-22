@@ -9,7 +9,7 @@ featuredImage: /assets/vuetify-2/title.png
 ---
 :imagesdir: /assets/vuetify-2/
 :imagesoutdir: _site/assets/vuetify-2/
-:plantuml-server-url: http://plantuml.com/plantuml
+:plantuml-server-url: https://www.plantuml.com/plantuml
 :source-highlighter: coderay
 :sectlinks:
 

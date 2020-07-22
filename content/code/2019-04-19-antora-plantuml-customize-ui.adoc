@@ -33,7 +33,7 @@ Sadly this needs to be set for every single adoc file - if you want to preview i
 
 [source, asciidoc]
 ----
-:plantuml-server-url: http://plantuml.com/plantuml
+:plantuml-server-url: https://www.plantuml.com/plantuml
 ----
 
 == Antora plantUML rendering
@@ -48,7 +48,7 @@ NOTE: If you have a different server defined in the page itself, this will overr
 ----
 asciidoc:
   attributes:
-    plantuml-server-url: http://www.plantuml.com/plantuml
+    :plantuml-server-url: https://www.plantuml.com/plantuml
   extensions:
   - asciidoctor-plantuml
 ----

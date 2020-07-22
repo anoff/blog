@@ -7,7 +7,7 @@ resizeImages: true
 draft: false
 featuredImage: /assets/gitea-drone/title.png
 ---
-:plantuml-server-url: http://plantuml.com/plantuml
+:plantuml-server-url: https://www.plantuml.com/plantuml
 :outdir: _site
 :imagesdir: /assets/gitea-drone/
 :imagesoutdir: _site/assets/gitea-drone/
