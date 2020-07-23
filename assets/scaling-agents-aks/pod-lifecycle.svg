@@ -1,249 +1,29 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="522px" preserveAspectRatio="none" style="width:258px;height:522px;" version="1.1" viewBox="0 0 258 522" width="258px" zoomAndPan="magnify"><defs/><g><rect fill="none" height="521.3564" style="stroke: #FFFFFF; stroke-width: 0.0;" width="257" x="0" y="0"/><ellipse cx="128.5" cy="20" fill="#000000" rx="10" ry="10" style="stroke: none; stroke-width: 1.0;"/><rect fill="#FFFFFF" height="47.1875" rx="12.5" ry="12.5" style="stroke: #CC0033; stroke-width: 1.0;" width="216" x="20.5" y="50"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="196" x="30.5" y="69.9902">➕ kubernetes schedules a new</text><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="147" x="55" y="83.584">agent pod as BatchJob</text><rect fill="#FFFFFF" height="47.1875" rx="12.5" ry="12.5" style="stroke: #CC0033; stroke-width: 1.0;" width="195" x="31" y="117.1875"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="175" x="41" y="137.1777">&#128640; agent container started</text><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="140" x="58.5" y="150.7715">in kubernets cluster</text><rect fill="#FFFFFF" height="47.1875" rx="12.5" ry="12.5" style="stroke: #CC0033; stroke-width: 1.0;" width="202" x="27.5" y="184.375"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="161" x="48" y="204.3652">✍️ agent registers with</text><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="182" x="37.5" y="217.959">Azure Pipelines agent pool</text><rect fill="#FFFFFF" height="47.1875" rx="12.5" ry="12.5" style="stroke: #CC0033; stroke-width: 1.0;" width="160" x="48.5" y="251.5625"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="140" x="58.5" y="271.5527">&#129303; agent fetches next</text><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="91" x="83" y="285.1465">task in queue</text><rect fill="#FFFFFF" height="33.5938" rx="12.5" ry="12.5" style="stroke: #CC0033; stroke-width: 1.0;" width="237" x="10" y="318.75"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="217" x="20" y="338.7402">&#127947;️‍ agent executes a single task</text><rect fill="#FFFFFF" height="33.5938" rx="12.5" ry="12.5" style="stroke: #CC0033; stroke-width: 1.0;" width="153" x="52" y="372.3438"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="133" x="62" y="392.334">☠️ agent shuts down</text><rect fill="#FFFFFF" height="33.5938" rx="12.5" ry="12.5" style="stroke: #CC0033; stroke-width: 1.0;" width="216" x="20.5" y="425.9375"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="196" x="30.5" y="445.9277">&#129529; kubernetes removes the pod</text><ellipse cx="128.5" cy="490.5313" fill="#FFFFFF" rx="11" ry="11" style="stroke: #000000; stroke-width: 1.0;"/><ellipse cx="128.5" cy="490.5313" fill="#000000" rx="6" ry="6" style="stroke: #7F7F7F; stroke-width: 1.0;"/><line style="stroke: #CC0033; stroke-width: 1.5;" x1="128.5" x2="128.5" y1="30" y2="50"/><polygon fill="#CC0033" points="124.5,40,128.5,50,132.5,40,128.5,44" style="stroke: #CC0033; stroke-width: 1.0;"/><line style="stroke: #CC0033; stroke-width: 1.5;" x1="128.5" x2="128.5" y1="97.1875" y2="117.1875"/><polygon fill="#CC0033" points="124.5,107.1875,128.5,117.1875,132.5,107.1875,128.5,111.1875" style="stroke: #CC0033; stroke-width: 1.0;"/><line style="stroke: #CC0033; stroke-width: 1.5;" x1="128.5" x2="128.5" y1="164.375" y2="184.375"/><polygon fill="#CC0033" points="124.5,174.375,128.5,184.375,132.5,174.375,128.5,178.375" style="stroke: #CC0033; stroke-width: 1.0;"/><line style="stroke: #CC0033; stroke-width: 1.5;" x1="128.5" x2="128.5" y1="231.5625" y2="251.5625"/><polygon fill="#CC0033" points="124.5,241.5625,128.5,251.5625,132.5,241.5625,128.5,245.5625" style="stroke: #CC0033; stroke-width: 1.0;"/><line style="stroke: #CC0033; stroke-width: 1.5;" x1="128.5" x2="128.5" y1="298.75" y2="318.75"/><polygon fill="#CC0033" points="124.5,308.75,128.5,318.75,132.5,308.75,128.5,312.75" style="stroke: #CC0033; stroke-width: 1.0;"/><line style="stroke: #CC0033; stroke-width: 1.5;" x1="128.5" x2="128.5" y1="352.3438" y2="372.3438"/><polygon fill="#CC0033" points="124.5,362.3438,128.5,372.3438,132.5,362.3438,128.5,366.3438" style="stroke: #CC0033; stroke-width: 1.0;"/><line style="stroke: #CC0033; stroke-width: 1.5;" x1="128.5" x2="128.5" y1="405.9375" y2="425.9375"/><polygon fill="#CC0033" points="124.5,415.9375,128.5,425.9375,132.5,415.9375,128.5,419.9375" style="stroke: #CC0033; stroke-width: 1.0;"/><line style="stroke: #CC0033; stroke-width: 1.5;" x1="128.5" x2="128.5" y1="459.5313" y2="479.5313"/><polygon fill="#CC0033" points="124.5,469.5313,128.5,479.5313,132.5,469.5313,128.5,473.5313" style="stroke: #CC0033; stroke-width: 1.0;"/><text fill="#333333" font-family="sans-serif" font-size="10" lengthAdjust="spacingAndGlyphs" textLength="144" x="14" y="508.8564">© Andreas Offenhaeuser &lt;</text><a href="https://anoff.io" target="_top" xlink:actuate="onRequest" xlink:show="new" xlink:title="https://anoff.io" xlink:type="simple"><text fill="#0000FF" font-family="sans-serif" font-size="10" lengthAdjust="spacingAndGlyphs" text-decoration="underline" textLength="48" x="158" y="508.8564">anoff.io</text></a><text fill="#333333" font-family="sans-serif" font-size="10" lengthAdjust="spacingAndGlyphs" textLength="36" x="206" y="508.8564">&gt; 2020</text><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="299px" preserveAspectRatio="none" style="width:787px;height:299px;" version="1.1" viewBox="0 0 787 299" width="787px" zoomAndPan="magnify"><defs/><g><rect fill="#DDDDDD" height="270.75" rx="5" ry="5" style="stroke: #000000; stroke-width: 1.0;" width="768" x="8" y="18"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="400" x="14" y="35.9951">The plugin you are using seems to generated a bad URL.</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="301" x="14" y="52.292">This URL does not look like DEFLATE data.</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="18" y="68.5889"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="217" x="14" y="84.8857">See https://plantuml.com/pte</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="18" y="101.1826"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="437" x="14" y="117.4795">You may contact the PlantUML team at plantuml@gmail.com</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="756" x="14" y="133.7764">But you should also probably contact the plugin authors you are currently using and send them this image</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="18" y="150.0732"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="235" x="14" y="166.3701">For the record, here is your data:</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="18" y="182.667"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="713" x="14" y="198.9639">0ATZBJTsMwFIb3PoW5QNMMbZx2U1iy4gqO_TKoqR08kIpV96jqCoEQAhZIXAGu0wvAEXhJy7Cy9Yb__9</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="691" x="14" y="215.2607">6_sI4b51cNOamVaLwEbxpaOdfaWRCUtXWjsnaVz70FI7RyoNxI6FXAlS6KQLIiYeF4wkUiY5HmYSI4E3</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="738" x="14" y="231.5576">Eip3KSZDELDO-CMIum4TRlGdb5mOcx42nEihSkCLMMd6MoZWPgB81R23A1EA1oZLZ_uqVLn4NR4MBSKy</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="688" x="14" y="247.8545">qQvsEfpwo6wktEoq2WlFt6xp2oznU-J7Ov54cNPTR7bl4rMHSQBElq9StpKZ5tHRjc2T9uP993xy0D_f</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="700" x="14" y="264.1514">lgLO0wAXJ67Q3Qi7qFBqUs_fHVzWD2enesFIAI2FewdsRxu6RodunBwzC3u0GH_WZ7nIY1CO-GY2ytyg</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="447" x="14" y="280.4482">Zov9Kj3L_8odjKI6fUnRo03j7-B2Jgpa_wdRX0McwxN92SBSiJIX4D</text><!--MD5=[70afe4756d2e8394291fa1b7bbe832d5]
 @startuml
+legend
+The plugin you are using seems to generated a bad URL.
+This URL does not look like DEFLATE data.
 
+See https://plantuml.com/pte
 
+You may contact the PlantUML team at plantuml@gmail.com
+But you should also probably contact the plugin authors you are currently using and send them this image
 
-skinparam ActivityBackgroundColor #ffffff
-skinparam ActivityBorderColor #c03
-skinparam ActivityBorderThickness 1
-skinparam ActivityDiamondBackgroundColor #ffffff
-skinparam ActivityDiamondBorderColor #c03
-skinparam ActivityDiamondFontColor #000000
-skinparam ActivityFontColor #000000
-skinparam ActorBackgroundColor #ffffff
-skinparam ActorBorderColor #c03
-skinparam ActorFontColor #000000
-skinparam ActorStereotypeFontColor #000000
-skinparam AgentBackgroundColor #ffffff
-skinparam AgentBorderColor #c03
-skinparam AgentBorderThickness 1
-skinparam AgentFontColor #000000
-skinparam AgentStereotypeFontColor #000000
-skinparam ArrowColor #c03
-skinparam ArrowFontColor #000000
-skinparam ArtifactBackgroundColor #ffffff
-skinparam ArtifactBorderColor #c03
-skinparam ArtifactFontColor #000000
-skinparam ArtifactStereotypeFontColor #000000
-skinparam BackgroundColor #ffffff
-skinparam BiddableBackgroundColor #ffffff
-skinparam BiddableBorderColor #c03
-skinparam BoundaryBackgroundColor #ffffff
-skinparam BoundaryBorderColor #c03
-skinparam BoundaryFontColor #000000
-skinparam BoundaryStereotypeFontColor #000000
-skinparam CaptionFontColor #000000
-skinparam CardBackgroundColor #ffffff
-skinparam CardBorderColor #c03
-skinparam CardBorderThickness 1
-skinparam CardFontColor #000000
-skinparam CardStereotypeFontColor #000000
-skinparam CircledCharacterFontColor #000000
-skinparam ClassAttributeFontColor #000000
-skinparam ClassBackgroundColor #ffffff
-skinparam ClassBorderColor #c03
-skinparam ClassBorderThickness 1
-skinparam ClassFontColor #000000
-skinparam ClassHeaderBackgroundColor #ffffff
-skinparam ClassStereotypeFontColor #000000
-skinparam CloudBackgroundColor #ffffff
-skinparam CloudBorderColor #c03
-skinparam CloudFontColor #000000
-skinparam CloudStereotypeFontColor #000000
-skinparam CollectionsBackgroundColor #ffffff
-skinparam CollectionsBorderColor #c03
-skinparam ComponentBackgroundColor #ffffff
-skinparam ComponentBorderColor #c03
-skinparam ComponentBorderThickness 1
-skinparam ComponentFontColor #000000
-skinparam ComponentStereotypeFontColor #000000
-skinparam ControlBackgroundColor #ffffff
-skinparam ControlBorderColor #c03
-skinparam ControlFontColor #000000
-skinparam ControlStereotypeFontColor #000000
-skinparam DatabaseBackgroundColor #ffffff
-skinparam DatabaseBorderColor #c03
-skinparam DatabaseFontColor #000000
-skinparam DatabaseStereotypeFontColor #000000
-skinparam DefaultFontColor #000000
-skinparam DefaultTextAlignment center
-skinparam DesignedBackgroundColor #ffffff
-skinparam DesignedBorderColor #c03
-skinparam DesignedDomainBorderThickness 1
-skinparam DesignedDomainFontColor #000000
-skinparam DesignedDomainStereotypeFontColor #000000
-skinparam DiagramBorderColor #ffffff
-skinparam DiagramBorderThickness 0
-skinparam DomainBackgroundColor #ffffff
-skinparam DomainBorderColor #c03
-skinparam DomainBorderThickness 1
-skinparam DomainFontColor #000000
-skinparam DomainStereotypeFontColor #000000
-skinparam EntityBackgroundColor #ffffff
-skinparam EntityBorderColor #c03
-skinparam EntityFontColor #000000
-skinparam EntityStereotypeFontColor #000000
-skinparam FileBackgroundColor #ffffff
-skinparam FileBorderColor #c03
-skinparam FileFontColor #000000
-skinparam FileStereotypeFontColor #000000
-skinparam FolderBackgroundColor #ffffff
-skinparam FolderBorderColor #c03
-skinparam FolderFontColor #000000
-skinparam FolderStereotypeFontColor #000000
-skinparam FooterFontColor #333
-skinparam FrameBackgroundColor #ffffff
-skinparam FrameBorderColor #c03
-skinparam FrameFontColor #000000
-skinparam FrameStereotypeFontColor #000000
-skinparam HeaderFontColor #000000
-skinparam IconPackageBackgroundColor #ffffff
-skinparam IconPrivateBackgroundColor #ffffff
-skinparam IconProtectedBackgroundColor #ffffff
-skinparam IconPublicBackgroundColor #ffffff
-skinparam InterfaceBackgroundColor #ffffff
-skinparam InterfaceBorderColor #c03
-skinparam InterfaceFontColor #000000
-skinparam InterfaceStereotypeFontColor #000000
-skinparam LegendBackgroundColor #ffffff
-skinparam LegendBorderColor #c03
-skinparam LegendBorderThickness 1
-skinparam LegendFontColor #000000
-skinparam LexicalBackgroundColor #ffffff
-skinparam LexicalBorderColor #c03
-skinparam MachineBackgroundColor #ffffff
-skinparam MachineBorderColor #c03
-skinparam MachineBorderThickness 1
-skinparam MachineFontColor #000000
-skinparam MachineStereotypeFontColor #000000
-skinparam NodeBackgroundColor #ffffff
-skinparam NodeBorderColor #c03
-skinparam NodeFontColor #000000
-skinparam NodeStereotypeFontColor #000000
-skinparam NoteBackgroundColor #ffffff
-skinparam NoteBorderColor #c03
-skinparam NoteBorderThickness 1
-skinparam NoteFontColor #000000
-skinparam ObjectAttributeFontColor #000000
-skinparam ObjectBackgroundColor #ffffff
-skinparam ObjectBorderColor #c03
-skinparam ObjectBorderThickness 1
-skinparam ObjectFontColor #000000
-skinparam ObjectStereotypeFontColor #000000
-skinparam PackageBackgroundColor #ffffff
-skinparam PackageBorderColor #c03
-skinparam PackageBorderThickness 1
-skinparam PackageFontColor #000000
-skinparam PackageStereotypeFontColor #000000
-skinparam PageBorderColor #c03
-skinparam ParticipantBackgroundColor #ffffff
-skinparam ParticipantBorderColor #c03
-skinparam ParticipantFontColor #000000
-skinparam PartitionBackgroundColor #ffffff
-skinparam PartitionBorderColor #c03
-skinparam PartitionBorderThickness 1
-skinparam PartitionFontColor #000000
-skinparam QueueBackgroundColor #ffffff
-skinparam QueueBorderColor #c03
-skinparam QueueFontColor #000000
-skinparam QueueStereotypeFontColor #000000
-skinparam RectangleBackgroundColor #ffffff
-skinparam RectangleBorderColor #c03
-skinparam RectangleBorderThickness 1
-skinparam RectangleFontColor #000000
-skinparam RectangleStereotypeFontColor #000000
-skinparam RequirementBackgroundColor #ffffff
-skinparam RequirementBorderColor #c03
-skinparam RequirementBorderThickness 1
-skinparam RequirementFontColor #000000
-skinparam RequirementStereotypeFontColor #000000
-skinparam RoundCorner 0
-skinparam SequenceActorBorderThickness 1
-skinparam SequenceBoxBackgroundColor #ffffff
-skinparam SequenceBoxBorderColor #c03
-skinparam SequenceBoxFontColor #000000
-skinparam SequenceDelayFontColor #000000
-skinparam SequenceDividerBackgroundColor #ffffff
-skinparam SequenceDividerBorderColor #c03
-skinparam SequenceDividerBorderThickness 1
-skinparam SequenceDividerFontColor #000000
-skinparam SequenceGroupBackgroundColor #ffffff
-skinparam SequenceGroupBodyBackgroundColor #ffffff
-skinparam SequenceGroupBorderColor #c03
-skinparam SequenceGroupBorderThickness 1
-skinparam SequenceGroupFontColor #000000
-skinparam SequenceGroupHeaderFontColor #000000
-skinparam SequenceLifeLineBackgroundColor #ffffff
-skinparam SequenceLifeLineBorderColor #c03
-skinparam SequenceLifeLineBorderThickness 1
-skinparam SequenceParticipantBorderThickness 1
-skinparam SequenceReferenceBackgroundColor #ffffff
-skinparam SequenceReferenceBorderColor #c03
-skinparam SequenceReferenceBorderThickness 1
-skinparam SequenceReferenceFontColor #000000
-skinparam SequenceReferenceHeaderBackgroundColor #ffffff
-skinparam SequenceStereotypeFontColor #000000
-skinparam SequenceTitleFontColor #000000
-skinparam Shadowing false
-skinparam StackBackgroundColor #ffffff
-skinparam StackBorderColor #c03
-skinparam StackFontColor #000000
-skinparam StackStereotypeFontColor #000000
-skinparam StateAttributeFontColor #000000
-skinparam StateBackgroundColor #ffffff
-skinparam StateBorderColor #c03
-skinparam StateFontColor #000000
-skinparam StereotypeABackgroundColor #ffffff
-skinparam StereotypeABorderColor #c03
-skinparam StereotypeCBackgroundColor #ffffff
-skinparam StereotypeCBorderColor #c03
-skinparam StereotypeEBackgroundColor #ffffff
-skinparam StereotypeEBorderColor #c03
-skinparam StereotypeIBackgroundColor #ffffff
-skinparam StereotypeIBorderColor #c03
-skinparam StereotypeNBackgroundColor #ffffff
-skinparam StereotypeNBorderColor #c03
-skinparam StorageBackgroundColor #ffffff
-skinparam StorageBorderColor #c03
-skinparam StorageFontColor #000000
-skinparam StorageStereotypeFontColor #000000
-skinparam SwimlaneBorderColor #c03
-skinparam SwimlaneBorderThickness 1
-skinparam SwimlaneTitleFontColor #000000
-skinparam TitleBackgroundColor #ffffff
-skinparam TitleBorderColor #ffffff
-skinparam TitleBorderRoundCorner 0
-skinparam TitleBorderThickness 1
-skinparam TitleFontColor #c03
-skinparam UsecaseBackgroundColor #ffffff
-skinparam UsecaseBorderColor #c03
-skinparam UsecaseBorderThickness 1
-skinparam UsecaseFontColor #000000
-skinparam UsecaseStereotypeFontColor #000000
+For the record, here is your data:
 
-center footer © Andreas Offenhaeuser <[[https://anoff.io anoff.io]]> 2020
-start
-:➕ kubernetes schedules a new
-agent pod as BatchJob;
-:🚀 agent container started
-in kubernets cluster;
-:✍️ agent registers with
-Azure Pipelines agent pool;
-:🤗 agent fetches next
-task in queue;
-:🏋️‍ agent executes a single task;
-:☠️ agent shuts down;
-:🧹 kubernetes removes the pod;
-stop
+0ATZBJTsMwFIb3PoW5QNMMbZx2U1iy4gqO_TKoqR08kIpV96jqCoEQAhZIXAGu0wvAEXhJy7Cy9Yb__9
+6_sI4b51cNOamVaLwEbxpaOdfaWRCUtXWjsnaVz70FI7RyoNxI6FXAlS6KQLIiYeF4wkUiY5HmYSI4E3
+Eip3KSZDELDO-CMIum4TRlGdb5mOcx42nEihSkCLMMd6MoZWPgB81R23A1EA1oZLZ_uqVLn4NR4MBSKy
+qQvsEfpwo6wktEoq2WlFt6xp2oznU-J7Ov54cNPTR7bl4rMHSQBElq9StpKZ5tHRjc2T9uP993xy0D_f
+lgLO0wAXJ67Q3Qi7qFBqUs_fHVzWD2enesFIAI2FewdsRxu6RodunBwzC3u0GH_WZ7nIY1CO-GY2ytyg
+Zov9Kj3L_8odjKI6fUnRo03j7-B2Jgpa_wdRX0McwxN92SBSiJIX4D
+endlegend
 @enduml
 
-PlantUML version 1.2019.06(Fri May 24 17:10:25 GMT 2019)
-(APACHE source distribution)
-Java Runtime: OpenJDK Runtime Environment
-JVM: OpenJDK 64-Bit Server VM
-Java Version: 1.8.0_212-b04
-Operating System: Linux
-OS Version: 4.19.76-linuxkit
+PlantUML version 1.2020.16beta7(Unknown compile time)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
 Default Encoding: UTF-8
 Language: en
 Country: US
