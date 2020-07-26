@@ -1,0 +1,34 @@
+name: deploy to gh-pages
+
+on:
+  push:
+    branches: [master]
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  publish:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 12
+    - name: Hotfix theme
+      run: |
+        cp -R theme_fixes/** themes/bilberry-hugo-theme
+        cd themes/bilberry-hugo-theme
+        npm install
+        npm run prod
+    - name: Build HTML
+      run: |
+        docker run --rm -v $PWD:/app anoff/hugo-asciidoctor hugo --gc --minify -d _site
+    - name: push to gh-pages
+      uses: JamesIves/github-pages-deploy-action@3.5.7
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        BRANCH: gh-pages
+        FOLDER: _site
