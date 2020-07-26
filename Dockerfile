@@ -15,7 +15,7 @@ RUN gem install --no-document \
   coderay
 
 RUN gem install --no-document \
-  asciidoctor-diagram -v 2.0.1
+  asciidoctor-diagram
 
 # add glibc, see https://github.com/gohugoio/hugo/issues/4961 and https://github.com/sgerrand/alpine-pkg-glibc
 RUN wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub \

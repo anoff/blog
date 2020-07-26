@@ -28,7 +28,7 @@ jobs:
         npm run prod
     - name: Build HTML
       run: |
-        docker run --rm -v $PWD:/app anoff/hugo-asciidoctor hugo --gc --minify -d _site
+        docker run --rm -v $PWD:/app anoff/hugo-asciidoctor:1.0 hugo --gc --minify -d _site
     - name: push to gh-pages
       uses: JamesIves/github-pages-deploy-action@3.5.7
       with:

@@ -6,7 +6,6 @@ draft: false
 author: anoff
 featuredImage: /assets/asciidoc-plantuml/title.png
 ---
-:plantuml-server-url: http://www.plantuml.com/plantuml
 :imagesdir: /assets/asciidoc-plantuml/
 :imagesoutdir: _site/assets/asciidoc-plantuml/
 

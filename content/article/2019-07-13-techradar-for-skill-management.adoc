@@ -5,7 +5,6 @@ tags: [recruiting, development]
 draft: true
 author: anoff
 ---
-:plantuml-server-url: http://www.plantuml.com/plantuml
 
 Over the last year I played around with the techradar approach for various situations in my professional life where I felt the need for new ways to deal with technical skills.
 In this post I will present these different applications where techradars can help you.

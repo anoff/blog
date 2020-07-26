@@ -9,7 +9,6 @@ featuredImage: /assets/azure-pipelines/title.png
 ---
 :imagesdir: /assets/azure-pipelines/
 :imagesoutdir: _site/assets/azure-pipelines/
-:plantuml-server-url: http://www.plantuml.com/plantuml
 :source-highlighter: coderay
 :sectlinks:
 

@@ -9,7 +9,6 @@ featuredImage: /assets/scaling-agents-aks/title.png
 ---
 :imagesdir: /assets/scaling-agents-aks/
 :imagesoutdir: _site/assets/scaling-agents-aks/
-:plantuml-server-url: http://www.plantuml.com/plantuml
 :source-highlighter: coderay
 :sectlinks:
 
@@ -211,20 +210,14 @@ Using AKS as a runtime for the agent fulfills the following requirements:
 . ✅ scale down to as little agents as possible to reduce costs
 . ✅ minimal responsibility; as little code and operational efforts as possible
 
-[NOTE]
-====
-The exact implementation in Kubernetes will be part of a follow-up blog post
-====
+NOTE: The exact implementation in Kubernetes will be part of a follow-up blog post
 
 == Identifying agent demand
 
 To know how many build agents need to be running in the cluster we need to get information from Azure Pipelines about the number of `active jobs`.
 Active is defined as:
 
-[INFO]
-====
-active jobs = running jobs (already using an agent) + pending jobs (waiting for an agent to be assigned)
-====
+INFO: active jobs = running jobs (already using an agent) + pending jobs (waiting for an agent to be assigned)
 
 Sadly there are no webhooks available in Azure Pipelines that trigger when a new build job is being started.
 That is why I resorted to polling the Azure Pipelines API to get information about the build status.
