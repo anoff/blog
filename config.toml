@@ -1,6 +1,6 @@
 title = "Andreas' Blog"
 # Add an trailing slash to ensure that all fonts render correctly.
-baseURL = "//blog.anoff.io/"
+baseURL = "https://blog.anoff.io/"
 theme = "bilberry-hugo-theme"
 
 enableRobotsTXT = true
