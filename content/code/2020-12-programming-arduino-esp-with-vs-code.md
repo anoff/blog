@@ -47,7 +47,7 @@ As you can see from the extension page it comes with most features that you need
 ## Configure your VS Code Setup
 
 After installing the extension you should see the following additional information in your VS Code status bar interface on the bottom.
-![Status bar showing Programmer, Board Type and COM Port](assets/code-arduino/status-bar.png)
+![Status bar showing Programmer, Board Type and COM Port](/assets/code-arduino/status-bar.png)
 
 ### Install ESP8266 drivers for Arduino IDE
 
@@ -68,22 +68,22 @@ Open your VS Code settings (`⌘+,`) and edit the `arduino.additionalUrls` setti
 
 Next we need to install this package, bring up the board manager using the command palette (`⌘+Shift+P`, `ctrl+Shift+P`) `> Arduino Board Manager`, search for ESP and click install on the `esp8266 by ESP8266 Community` package.
 
-![Arduino Board Manager](assets/code-arduino/board-manager.png)
+![Arduino Board Manager](/assets/code-arduino/board-manager.png)
 
 While the package is installed you might see the Arduino IDE splash screen pop up
 
-![Arduino IDE Splash Screen](assets/code-arduino/splash-screen.png)
+![Arduino IDE Splash Screen](/assets/code-arduino/splash-screen.png)
 
 The installation progress can be tracked in the VS Code output panel which should finally give you a success message after download & install.
 
-![VS Code showing installation progress](assets/code-arduino/board-install-progress.png)
+![VS Code showing installation progress](/assets/code-arduino/board-install-progress.png)
 
 ### Connecting your Board
 
 For the following steps make sure your Microcontroller board is connected to your computer.
 After connecting the board VS Code might automatically open up a list of examples to choose from and the Readme of the ESP8266 Arduino package.
 
-![VS Code showing Arduino Examples](assets/code-arduino/code-examples.png)
+![VS Code showing Arduino Examples](/assets/code-arduino/code-examples.png)
 
 You may choose the **Blink** example for testing your setup.
 
@@ -103,7 +103,7 @@ The extension also brings support for C++ syntax checks and auto completion.
 You may notice that VS Code already shows several errors if you open an example.
 This is because the Arduino IDE behaves a bit different - you might say more convenient for newcomers.
 
-![VS Code highlighting unknown keywords in arduino sketch](assets/code-arduino/code-errors.png)
+![VS Code highlighting unknown keywords in arduino sketch](/assets/code-arduino/code-errors.png)
 
 What you need to do to make the naive C++ compiler understand those commands is to add the Arduino header files in the beginning of your sketch.
 
@@ -117,7 +117,7 @@ To program your device simply click the Upload button or use the command palette
 
 > Note: The button is only visible if you have a `.ino` file open.
 
-![Button to upload sketch](assets/code-arduino/upload.png)
+![Button to upload sketch](/assets/code-arduino/upload.png)
 
 ## Preventing Arduino IDE splash screen showing up when uploading
 
