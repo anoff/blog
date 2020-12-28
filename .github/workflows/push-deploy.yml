@@ -30,7 +30,7 @@ jobs:
       run: |
         docker run --rm -v $PWD:/app anoff/hugo-asciidoctor:1.0 hugo --gc --minify -d _site
     - name: push to gh-pages
-      uses: JamesIves/github-pages-deploy-action@3.5.7
+      uses: JamesIves/github-pages-deploy-action@3.7.1
       with:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         BRANCH: gh-pages
