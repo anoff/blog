@@ -5,7 +5,7 @@ tags: [development, arduino, iot]
 author: anoff
 resizeImages: true
 draft: false
-featuredImage: /assets/arduino-code/title.png
+featuredImage: /assets/code-arduino/title.png
 ---
 
 If you are used to an IDE you want to use it as much as possible
