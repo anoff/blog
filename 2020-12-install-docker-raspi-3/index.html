@@ -1,0 +1,81 @@
+<!doctype html><html class=no-js lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=author content="Andreas Offenhaeuser"><meta name=description content="Andreas' personal blog"><meta name=keywords content=blog,personal,software,architecture,node,markdown,plantuml,developer><meta name=generator content="Hugo 0.55.6"><title>How to setup Raspberry Pi as home server with Docker support &vert; Andreas&#39; Blog</title><meta name=description content="How to setup Raspberry Pi as home server with Docker support - Andreas' personal blog"><meta itemprop=name content="How to setup Raspberry Pi as home server with Docker support"><meta itemprop=description content="How to setup Raspberry Pi as home server with Docker support - Andreas' personal blog"><meta property=og:title content="How to setup Raspberry Pi as home server with Docker support"><meta property=og:description content="How to setup Raspberry Pi as home server with Docker support - Andreas' personal blog"><meta property=og:image content=https://blog.anoff.io/assets/raspi-docker/title.png><meta property=og:url content=https://blog.anoff.io/2020-12-install-docker-raspi-3/><meta property=og:site_name content="Andreas' Blog"><meta property=og:type content=article><link href=/2020-12-install-docker-raspi-3/ rel=alternate type=application/rss+xml title="Andreas' Blog"><link href=/2020-12-install-docker-raspi-3/ rel=feed type=application/rss+xml title="Andreas' Blog"><link rel=stylesheet href=https://blog.anoff.io/theme.css><link rel=stylesheet href=https://blog.anoff.io/adoc.css><link rel=stylesheet href=https://blog.anoff.io/overwrites.css><link rel=stylesheet href=//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css></head><body class=bilberry-hugo-theme><nav class=permanentTopNav><div class=container><ul class=topnav><li><a href=//anoff.io/ target=_self>About me</a></li><li><a href=/ target=_self>Blog</a></li><li><a href=//anoff.io/project/ target=_self>Projects</a></li><li><a href=/tags target=_self>by Tags</a></li><li><a href=//radar.anoff.io target=_blank>Tech skills</a></li><li><a href=//anoff.github.io/legal/ target=_blank>Legal</a></li></ul></div></nav><header><div class=container><div class=logo><a id=siteBaseUrl href=/ class=logo><img src=/avatar.png alt>
+<span class=overlay><i class="fa fa-child"></i></span></a></div><div class=titles><h3 class=title><a href=/>Andreas&#39; Blog</a></h3><span class=subtitle>Adventures of a software engineer/architect</span></div><div class="toggler permanentTopNav"><i class="fa fa-bars" aria-hidden=true></i></div></div></header><div class="main container"><div class="article-wrapper u-cf single"><a class=bubble href=https://blog.anoff.io/2020-12-install-docker-raspi-3/><i class="fas fa-fw fa-code"></i></a><article class="default article"><div class=featured-image><a href=https://blog.anoff.io/2020-12-install-docker-raspi-3/><img src=/assets/raspi-docker/title.png alt></a></div><div class=content><h1 class=article-title><a href=https://blog.anoff.io/2020-12-install-docker-raspi-3/>How to setup Raspberry Pi as home server with Docker support</a></h1><div class=meta><span class="date moment">2020-12-29</span>
+<span class=readingTime>5 min read</span>
+<span class=author><a href=https://blog.anoff.io/author/anoff/>anoff</a></span></div><p>There are many reasons you might want to use Docker.
+This blog post will cover how to setup a Raspberry Pi with Docker support.
+It will also cover some basic steps that will make it easier to work with your RasPi later on.
+This setup will work completely without monitor/keyboard for your Raspberry but you need a LAN connection to it.</p><ul><li><a href=#installing-raspbian-os>Installing Raspbian OS</a></li><li><a href=#setting-up-ssh-access>Setting up SSH access</a><ul><li><a href=#enable-ssh-for-first-start>Enable SSH for first start</a></li><li><a href=#install-ssh-keyfile>Install SSH Keyfile</a></li><li><a href=#configuring-your-host-to-automatically-use-the-keyfile>Configuring your host to automatically use the Keyfile</a></li><li><a href=#permanently-enable-ssh-server>Permanently enable SSH server</a></li><li><a href=#change-ssh-port-hostname-and-disable-password-authentication>Change SSH port, hostname and disable password authentication</a></li></ul></li><li><a href=#additional-tweaks-to-your-pi>Additional tweaks to your Pi</a><ul><li><a href=#expand-filesystem>Expand Filesystem</a></li><li><a href=#disable-wifibluetooth>Disable WiFi/Bluetooth</a></li><li><a href=#set-default-locale>Set default locale</a></li><li><a href=#enable-automatic-upgrades>Enable automatic upgrades</a></li></ul></li><li><a href=#install-docker>Install Docker</a></li><li><a href=#install-docker-compose>Install docker-compose</a></li></ul><h2 id=installing-raspbian-os>Installing Raspbian OS</h2><p>The first thing you need to do is get an SD Card that runs your Raspberry Pi operating system.
+To install the OS grab the <a href=https://www.raspberrypi.org/software/>Raspberry Pi Imager</a> (available for Linux, Windows and Mac) and run it.
+If you only want to access your raspi remotely it is recommended to use the <strong>Raspberry Pi OS Lite</strong> from the imager menu.
+Do not put the card into your raspi just yet - read the next chapter.</p><h2 id=setting-up-ssh-access>Setting up SSH access</h2><p>It is super helpful to have SSH access on your raspi - especially if you want to place it somewhere you do not see it all the time.
+There are multiple ways to setup SSH, this one is the <em>SSH from the start</em> approach where we enable SSH (temporarily) right from the first boot and then use an initial SSH connection to enable it permanently.
+We will use SSH with public/private key authentication and prevent password authentication as a security measure.
+As an additional light security measure we will change the SSH port.
+This does not make your system more secure but it will make it less likely to be detected by bots sniffing for SSH servers and spare you some traffic.</p><h3 id=enable-ssh-for-first-start>Enable SSH for first start</h3><p>Before putting the newly formatted card into your Raspberry we need to create an empty file named <code>ssh</code> on the SD card.
+On MacOS you can do this via:</p><pre><code class=language-sh>touch /Volumes/boot/ssh`
+</code></pre><p>Next make sure the raspi has a LAN connection to your computer - either direct or via your home network.
+Then power the board up.</p><blockquote><p>If you are unable to connect via SSH just re-do this step by putting the SD card back into your computer.</p></blockquote><h3 id=install-ssh-keyfile>Install SSH Keyfile</h3><p>Create a private/public key pair and install the public key on the Raspberry.</p><pre><code class=language-sh># on your current computer
+cd ~/.ssh
+# create new key pair
+ssh-keygen -b 4096 -f id_pi -N '' -C 'raspberry pi login key'
+# add fingerprint to known hosts
+ssh-keyscan -H raspberrypi &gt;&gt; ~/.ssh/known_hosts
+# copy public key to pi
+ssh-copy-id -i id_pi.pub pi@raspberrypi
+# you need to enter the password for the pi user which by default is 'raspberry' (we'll fix this later)
+</code></pre><h3 id=configuring-your-host-to-automatically-use-the-keyfile>Configuring your host to automatically use the Keyfile</h3><p>You can configure your host computer to automatically use the newly created keyfile when connecting to your Raspberry.
+On your computer open <code>nano ~/.ssh/config</code> and add the following entry</p><pre><code class=language-text>Host raspberrypi
+  User              pi
+  IdentityFile      ~/.ssh/id_pi
+</code></pre><p>In case you change your hostname (later in this tutorial) you may want to change this config too.</p><h3 id=permanently-enable-ssh-server>Permanently enable SSH server</h3><p>To make sure you do not have to activate the SSH server manually every time you can activate it permanently using the following commands.</p><pre><code class=language-sh>sudo systemctl enable ssh
+sudo systemctl start ssh
+</code></pre><p>Now you are safe to reboot and still have a working SSH server.</p><h3 id=change-ssh-port-hostname-and-disable-password-authentication>Change SSH port, hostname and disable password authentication</h3><p>Again starting from your host system</p><pre><code class=language-sh># next we log onto the raspberry (without the need for a password)
+ssh -i ~/.ssh/id_pi pi@raspberrypi
+# change ssh port to 2221
+sudo sed -i 's/^#*Port .*/Port 2221/' /etc/ssh/sshd_config
+# disable password authentication on ssh (enforce use of private key)
+sudo sed -i 's|[#]*PasswordAuthentication yes|PasswordAuthentication no|g' /etc/ssh/sshd_config
+# restart ssh service
+sudo service ssh restart
+# change pi password
+passwd # &lt; interactive (make sure to pick a strong password and store it somewhere safe, this will be needed)
+# re logon
+exit
+ssh -i id_pi -p 2221 pi@raspberrypi
+# update packages
+sudo apt update &amp;&amp; apt upgrade
+# change hostname
+export NEW_HOSTNAME=mypi # set this to whatever you want to name your new raspberry pi
+sudo sed -i &quot;s|raspberrypi|$NEW_HOSTNAME|g&quot; /etc/hosts
+sudo sed -i &quot;s|raspberrypi|$NEW_HOSTNAME|g&quot; /etc/hostname
+</code></pre><p>🚨 From now on you need to connect to your Raspberry using <strong>port 2221</strong> and the new hostname.</p><h2 id=additional-tweaks-to-your-pi>Additional tweaks to your Pi</h2><h3 id=expand-filesystem>Expand Filesystem</h3><p>Make sure Raspbian OS can use the entire SD card.</p><pre><code class=language-sh>sudo raspi-config --expand-rootfs
+</code></pre><h3 id=disable-wifi-bluetooth>Disable WiFi/Bluetooth</h3><p>If you do not plan to use it, why not completely deactivate it.</p><pre><code class=language-sh>sudo sh -c 'echo &quot;dtoverlay=disable-wifi\ndtoverlay=pi3-disable-wifi\ndtoverlay=disable-bt\ndtoverlay=pi3-disable-bt&quot; &gt;&gt; /boot/config.txt'
+</code></pre><h3 id=set-default-locale>Set default locale</h3><p>Many tools rely on a configured localization, setting this will prevent annoying warnings.</p><pre><code class=language-sh># enable en_US as locale, change to your own if you want localize
+sudo sed -i 's|# en_US.UTF-8 UTF-8|en_US.UTF-8 UTF-8|' /etc/locale.gen
+sudo locale-gen
+# set defaults to en_US
+sudo sh -c 'echo &quot;LC_ALL=en_US.UTF-8\nLANGUAGE=en_US.UTF-8\nLANG=en_US.UTF-8\nLC_MESSAGES=en_US.UTF-8&quot; &gt; /etc/default/locale'
+</code></pre><h3 id=enable-automatic-upgrades>Enable automatic upgrades</h3><p>It is important to keep your system up to date.
+But we all know you will neglect this task, so just automate it.
+If you have any critical applications you may want to skip this solution and find a more elaborate approach.</p><p>Create the following file <code>sudo touch /etc/cron.weekly/autoupdate &amp;&amp; sudo chmod 755 /etc/cron.weekly/autoupdate &amp;&amp; sudo nano /etc/cron.weekly/autoupdate</code></p><pre><code class=language-sh>#!/bin/bash
+apt-get update
+apt-get upgrade -y
+apt-get autoclean
+</code></pre><h2 id=install-docker>Install Docker</h2><p>On your Rasperry executed the following commands</p><pre><code class=language-sh># download the install script
+curl -fsSL https://get.docker.com -o get-docker.sh
+# run the install script
+sh get-docker.sh
+# add 'pi' user to docker group to allow running containers
+sudo usermod -aG docker $(whoami)
+</code></pre><p>Now you need to logout (<code>exit</code>) and login again to get access to the docker group.
+Test if docker works correctly by running</p><pre><code class=language-sh>docker run hello-world
+</code></pre><h2 id=install-docker-compose>Install docker-compose</h2><p>docker-compose might be useful if you plan to run multiple containers.
+The default installation option for compose does not provide an ARM solution so we use the fallback via python.</p><pre><code class=language-sh>sudo apt-get -y install libffi-dev libssl-dev python3-dev python3 python3-pip
+sudo pip3 install docker-compose # needs sudo to put it into path correctly
+</code></pre><p>If any of this is outdated or does not work for you please leave a comment or reach out via <a href=https://twitter.com/anoff_io>Twitter</a>.
+Appreciate the feedback 👋</p></div><div class=footer><div class=tags><i class="fa fa-tags"></i><div class=links><a href=https://blog.anoff.io/tags/raspberry-pi/>raspberry-pi</a>
+<a href=https://blog.anoff.io/tags/iot/>iot</a>
+<a href=https://blog.anoff.io/tags/docker/>docker</a></div></div></div></article></div><div id=comments-container><div id=disqus_thread></div><script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return;}
+var d=document,s=d.createElement('script');s.async=true;s.src='//'+"anoff-io"+'.disqus.com/embed.js';s.setAttribute('data-timestamp',+new Date());(d.head||d.body).appendChild(s);})();</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div></div><footer><div class=container><div class=right><div class=external-profiles><strong>Social media</strong></div></div></div></footer><div class=credits><div class=container><div class=copyright><a href=//anoff.io target=_blank>&copy;
+2020
+by Andreas Offenhaeuser</a></div><div class=author><a href=//github.com/Lednerb/bilberry-hugo-theme target=_blank>Bilberry Hugo Theme</a></div></div></div><script type=application/javascript>var doNotTrack=false;if(!doNotTrack){window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;ga('create','UA-93890295-4','auto');ga('send','pageview');}</script><script async src=https://www.google-analytics.com/analytics.js></script><script type=text/javascript src=https://blog.anoff.io/theme.js></script><script src=https://blog.anoff.io/fix-adoc.js type=application/javascript></script><script src=//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js type=application/javascript></script><script src=https://blog.anoff.io/init-cookieconsent.js type=application/javascript></script></body></html>
