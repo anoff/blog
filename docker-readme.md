@@ -2,6 +2,8 @@
 
 For my blog I built a docker image that allows building a hugo site with asciidoctor content. There are a few [hacks](https://blog.anoff.io/2019-02-17-hugo-render-asciidoc/) I needed that are also baked into this image.
 
+Make sure git submodules are initialized `git submodule update --init`
+
 To write/live preview the content start hugo in dev mode and open [localhost:1313](http://localhost:1313)
 
 ```sh
