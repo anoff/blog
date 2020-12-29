@@ -8,10 +8,10 @@ draft: false
 featuredImage: /assets/raspi-docker/title.png
 ---
 
-There are many reasons you might want to use Docker.
 This blog post will cover how to setup a Raspberry Pi with Docker support.
 It will also cover some basic steps that will make it easier to work with your RasPi later on.
 This setup will work completely without monitor/keyboard for your Raspberry but you need a LAN connection to it.
+I wrote most commands so they are easily pastable and do not require too much interactive work - you should however carefully read what is going on with each of those commands before you fire them off!
 
 <!--more-->
 
@@ -55,7 +55,7 @@ Before putting the newly formatted card into your Raspberry we need to create an
 On MacOS you can do this via:
 
 ```sh
-touch /Volumes/boot/ssh`
+touch /Volumes/boot/ssh
 ```
 
 Next make sure the raspi has a LAN connection to your computer - either direct or via your home network.
@@ -97,6 +97,9 @@ In case you change your hostname (later in this tutorial) you may want to change
 To make sure you do not have to activate the SSH server manually every time you can activate it permanently using the following commands.
 
 ```sh
+# log onto your raspberry
+ssh -i ~/.ssh/id_pi pi@raspberrypi
+# enable ssh server via system controls
 sudo systemctl enable ssh
 sudo systemctl start ssh
 ```
@@ -109,7 +112,7 @@ Now you are safe to reboot and still have a working SSH server.
 Again starting from your host system
 
 ```sh
-# next we log onto the raspberry (without the need for a password)
+# log onto the raspberry
 ssh -i ~/.ssh/id_pi pi@raspberrypi
 # change ssh port to 2221
 sudo sed -i 's/^#*Port .*/Port 2221/' /etc/ssh/sshd_config
@@ -194,6 +197,10 @@ Now you need to logout (`exit`) and login again to get access to the docker grou
 Test if docker works correctly by running
 
 ```sh
+# exit ssh session
+exit
+# open a new one
+ssh -i id_pi -p 2221 pi@mypi
 docker run hello-world
 ```
 
