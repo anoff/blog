@@ -165,12 +165,14 @@ services:
       - INFLUXDB_ADMIN_PASSWORD=${INFLUXDB_PASSWORD} # sourced from .env
   telegraf:
     image: telegraf:latest
+    restart: always
     container_name: telegraf
     networks: [metrics]
     volumes:
       - $HOME/docker/influxdb/telegraf.conf:/etc/telegraf/telegraf.conf:ro
   chronograf:
     container_name: chronograf
+    restart: always
     image: chronograf:latest
     ports:
       - "127.0.0.1:8888:8888"
@@ -187,6 +189,8 @@ We also add chronograf as an Admin UI for influxdb into the container setup.
 However chronograf does not support any authentication so we allow it only to be accessed from the machine that runs docker directly i.e. our Raspberry Pi.
 So even though it looks odd please do not change `"127.0.0.1:8888:8888"` as this makes sure this port is only accessible from the localhost.
 Later on you will learn how to reach this from outside the Raspberry system though.
+
+Adding the `restart: always` to the service makes sure it gets started automatically after rebooting your Raspberry Pi.
 
 ### Insert user secrets into docker recipe
 
