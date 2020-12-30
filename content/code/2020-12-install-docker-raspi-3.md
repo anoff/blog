@@ -31,6 +31,7 @@ I wrote most commands so they are easily pastable and do not require too much in
   - [Enable automatic upgrades](#enable-automatic-upgrades)
 - [Install Docker](#install-docker)
 - [Install docker-compose](#install-docker-compose)
+- [add `ll` alias](#add-ll-alias)
 
 <!-- /TOC -->
 
@@ -212,6 +213,14 @@ The default installation option for compose does not provide an ARM solution so 
 ```sh
 sudo apt-get -y install libffi-dev libssl-dev python3-dev python3 python3-pip
 sudo pip3 install docker-compose # needs sudo to put it into path correctly
+```
+
+## add `ll` alias
+
+Looking through directories using `ll` as an alias for `ls -ahl` is way more convenient, so you can enable it by modifying the default `.bashrc` file.
+
+```sh
+sed -i 's/#*alias ll=.*$/alias ll="ls -ahl"/g' ~/.bashrc
 ```
 
 If any of this is outdated or does not work for you please leave a comment or reach out via [Twitter](https://twitter.com/anoff_io).
