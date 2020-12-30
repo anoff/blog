@@ -1,0 +1,25 @@
+@startuml service-setup
+skinparam monochrome true
+skinparam defaulttextalignment center
+
+frame "Home Network" as net {
+  interface "influx<i>:8086" as influx
+  frame "Raspberry Pi" as pi {
+    interface "chronograf UI<i>:8888" as chronograf
+    component Docker as docker1 {
+      artifact "influxdb:latest" as influxdb
+      artifact "telegraf:latest" as telegraf
+      artifact "chronograf:latest" as chrono
+    }
+  }
+  frame "Computer" as pc {
+    artifact "Shell session" as shell
+    artifact "Browser" as browser
+  }
+  influxdb -- influx
+  chrono -- chronograf
+  telegraf --(0 influxdb
+  chrono --(0 influxdb
+  shell --(0 pi
+}
+@enduml

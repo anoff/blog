@@ -1,0 +1,121 @@
+<!doctype html><html class=no-js lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=author content="Andreas Offenhaeuser"><meta name=description content="Andreas' personal blog"><meta name=keywords content=blog,personal,software,architecture,node,markdown,plantuml,developer><meta name=generator content="Hugo 0.55.6"><title>Running influxdb on Raspberry Pi using Docker compose &vert; Andreas&#39; Blog</title><meta name=description content="Running influxdb on Raspberry Pi using Docker compose - Andreas' personal blog"><meta itemprop=name content="Running influxdb on Raspberry Pi using Docker compose"><meta itemprop=description content="Running influxdb on Raspberry Pi using Docker compose - Andreas' personal blog"><meta property=og:title content="Running influxdb on Raspberry Pi using Docker compose"><meta property=og:description content="Running influxdb on Raspberry Pi using Docker compose - Andreas' personal blog"><meta property=og:image content=https://blog.anoff.io/assets/raspi-influx/title.png><meta property=og:url content=https://blog.anoff.io/2020-12-run-influx-on-raspi-docker-compose/><meta property=og:site_name content="Andreas' Blog"><meta property=og:type content=article><link href=/2020-12-run-influx-on-raspi-docker-compose/ rel=alternate type=application/rss+xml title="Andreas' Blog"><link href=/2020-12-run-influx-on-raspi-docker-compose/ rel=feed type=application/rss+xml title="Andreas' Blog"><link rel=stylesheet href=https://blog.anoff.io/theme.css><link rel=stylesheet href=https://blog.anoff.io/adoc.css><link rel=stylesheet href=https://blog.anoff.io/overwrites.css><link rel=stylesheet href=//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css></head><body class=bilberry-hugo-theme><nav class=permanentTopNav><div class=container><ul class=topnav><li><a href=//anoff.io/ target=_self>About me</a></li><li><a href=/ target=_self>Blog</a></li><li><a href=//anoff.io/project/ target=_self>Projects</a></li><li><a href=/tags target=_self>by Tags</a></li><li><a href=//radar.anoff.io target=_blank>Tech skills</a></li><li><a href=//anoff.github.io/legal/ target=_blank>Legal</a></li></ul></div></nav><header><div class=container><div class=logo><a id=siteBaseUrl href=/ class=logo><img src=/avatar.png alt>
+<span class=overlay><i class="fa fa-child"></i></span></a></div><div class=titles><h3 class=title><a href=/>Andreas&#39; Blog</a></h3><span class=subtitle>Adventures of a software engineer/architect</span></div><div class="toggler permanentTopNav"><i class="fa fa-bars" aria-hidden=true></i></div></div></header><div class="main container"><div class="article-wrapper u-cf single"><a class=bubble href=https://blog.anoff.io/2020-12-run-influx-on-raspi-docker-compose/><i class="fas fa-fw fa-code"></i></a><article class="default article"><div class=featured-image><a href=https://blog.anoff.io/2020-12-run-influx-on-raspi-docker-compose/><img src=/assets/raspi-influx/title.png alt></a></div><div class=content><h1 class=article-title><a href=https://blog.anoff.io/2020-12-run-influx-on-raspi-docker-compose/>Running influxdb on Raspberry Pi using Docker compose</a></h1><div class=meta><span class="date moment">2020-12-30</span>
+<span class=readingTime>7 min read</span>
+<span class=author><a href=https://blog.anoff.io/author/anoff/>anoff</a></span></div><p>This blog post will explain how you can setup influxdb (and the telegraf plugin) on your Raspberry Pi using docker-compose.
+We will use the config-as-code to create a reproducible setup.
+This is extremely helpful for hobby projects that you come back to every now-and-then because you can lookup exactly what you are running 😉</p><p>The individual steps we need to take:</p><ul><li><a href=#overview>Overview</a></li><li><a href=#prerequisites>Prerequisites</a></li><li><a href=#preparing-the-influxdb-working-directory>Preparing the influxdb working directory</a><ul><li><a href=#creating-folder-structure>Creating folder structure</a></li><li><a href=#create-influxdbconf-and-telegrafconf>Create influxdb.conf and telegraf.conf</a></li><li><a href=#create-init-script-for-telegraf-database--user>Create Init Script for Telegraf database &amp; user</a></li><li><a href=#create-docker-compose-specification>Create docker-compose specification</a></li><li><a href=#insert-user-secrets-into-docker-recipe>Insert user secrets into docker recipe</a></li></ul></li><li><a href=#start-influxdb-via-docker-compose>Start influxdb via docker-compose</a></li><li><a href=#access-your-influxdb-instance-via-shell>Access your influxdb instance via shell</a><ul><li><a href=#access-the-chronograf-web-ui>Access the chronograf web UI</a></li></ul></li><li><a href=#summary>Summary</a></li></ul><h2 id=overview>Overview</h2><p>A quick overview of the service architecture that will be built with this setup.</p><ul><li>InfluxDB exposing a port into your home network</li><li>Chronograf as Admin UI, only accessible from within your Raspberry Pi</li><li>Telegraf to ingest system metrics</li></ul><p><img src=/assets/raspi-influx/service-setup.svg alt="Docker Service Architecture"></p><h2 id=prerequisites>Prerequisites</h2><p>You will need to have a Raspberry Pi with Docker and docker-compose installed.
+See my previous blog post if you do not know how to do that <a href=/2020-12-install-docker-raspi-3>How to setup Raspberry Pi as home server with Docker support</a>.
+Your pi also needs to have an active internet connection and you need access it&rsquo;s terminal, either via SSH or direct keyboard.</p><h2 id=preparing-the-influxdb-working-directory>Preparing the influxdb working directory</h2><p>To persist data and configuration of your influxdb instance you need to create a directory on your Raspberry system that will be used by docker.</p><h3 id=creating-folder-structure>Creating folder structure</h3><p>I suggest creating this structure directly in your home directory.
+This way you will not have to worry about permissions too much.
+To keep things clean, put all your docker mounts into a common folder.</p><pre><code class=language-text>$HOME/docker/
+├── influxdb/
+│   ├── data/ # grafanadb working directory
+│   ├── init/ # some init scripts to bootstrap the instance
+│   ├── influxdb.conf # config for influxdb instance
+│   └── telegraf.conf # config for telegraf instance
+└── compose-files/
+    └── influxdb
+        ├── .env # file containing user secrets
+        └── docker-compose.yml # specification of docker containers to run
+</code></pre><p>Create the directories with these commands</p><pre><code class=language-sh># do this on your raspi
+mkdir -p $HOME/docker/influxdb/data
+mkdir -p $HOME/docker/influxdb/init
+mkdir -p $HOME/docker/compose-files/influxdb
+</code></pre><h3 id=create-influxdb-conf-and-telegraf-conf>Create influxdb.conf and telegraf.conf</h3><p>To create a default config for <strong>influxdb</strong> in the newly created working directory run the following command</p><pre><code class=language-sh>cd $HOME/docker/influxdb
+docker run --rm influxdb influxd config &gt; influxdb.conf
+# next do some modifications to the default config
+# enable HTTP auth
+sed -i 's/^  auth-enabled = false$/  auth-enabled = true/g' influxdb.conf
+# do any other changes you want, or replace with your own config entirely
+</code></pre><p>Next create the config file for <strong>telegraf</strong> and do some modifications.
+Please note <code>&lt;telegrafUSERpassword&gt;</code> and create your own password here.</p><pre><code class=language-sh>cd $HOME/docker/influxdb
+docker run --rm telegraf telegraf config &gt; telegraf.conf
+# now modify it to tell it how to authenticate against influxdb
+sed -i 's/^  # urls = \[&quot;http:\/\/127\.0\.0\.1:8086&quot;\]$/  urls = \[&quot;http:\/\/influxdb:8086&quot;\]/g' telegraf.conf
+sed -i 's/^  # database = &quot;telegraf&quot;$/  database = &quot;telegraf&quot;/' telegraf.conf
+sed -i 's/^  # username = &quot;telegraf&quot;$/  username = &quot;telegraf&quot;/' telegraf.conf
+sed -i 's/^  # password = &quot;metricsmetricsmetricsmetrics&quot;$/  password = &quot;&lt;telegrafUSERpassword&gt;&quot;/' telegraf.conf
+# as we run inside docker, the telegraf hostname is different from our Raspberry hostname, let's change it
+sed -i 's/^  hostname = &quot;&quot;$/  hostname = &quot;'${HOSTNAME}'&quot;/' telegraf.conf
+</code></pre><p>After those modifications your file should have the following (and a lot more) entries:</p><pre><code class=language-sh>[agent]
+  hostname = &quot;${PI_HOSTNAME}&quot;
+[[outputs.influxdb]]
+  urls = [&quot;http://influxdb:8086&quot;]
+  database = &quot;telegraf&quot;
+  ## HTTP Basic Auth
+  username = &quot;telegraf&quot;
+  password = &quot;&lt;telegrafUSERpassword&gt;&quot;
+</code></pre><h3 id=create-init-script-for-telegraf-database-user>Create Init Script for Telegraf database &amp; user</h3><p>As good security practice we do not want telegraf to operate with the admin account of influxdb, instead create a separate account.
+Making use of the init scripts feature of the influxdb docker container, we can create influxQL scripts in the <code>influxdb/init</code> folder that will be executed on first start of the container.</p><p>Create the following script at <code>$HOME/docker/influxdb/init/create-telegraf.iql</code>.
+This creates a database with 31 days retention - modify password and retention to your liking.</p><pre><code class=language-sql>CREATE DATABASE telegraf WITH DURATION 31d
+CREATE USER telegraf WITH PASSWORD '&lt;telegrafUSERpassword&gt;'
+GRANT WRITE ON telegraf to telegraf
+</code></pre><p>⚠️ Make sure to use the same password as in the <code>telegraf.conf</code>.</p><h3 id=create-docker-compose-specification>Create docker-compose specification</h3><p>Create the following file at <code>$HOME/docker/compose-files/influxdb/docker-compose.yml</code></p><pre><code class=language-yml>version: &quot;3&quot;
+
+networks:
+  metrics:
+    external: false
+
+services:
+  influxdb:
+    image: influxdb:latest
+    container_name: influxdb
+    restart: always
+    networks: [metrics]
+    ports:
+      - &quot;8086:8086&quot;
+    volumes:
+      - $HOME/docker/influxdb/data:/var/lib/influxdb
+      - $HOME/docker/influxdb/influxdb.conf:/etc/influxdb/influxdb.conf:ro
+      - $HOME/docker/influxdb/init:/docker-entrypoint-initdb.d
+    environment:
+      - INFLUXDB_ADMIN_USER=${INFLUXDB_USERNAME} # sourced from .env
+      - INFLUXDB_ADMIN_PASSWORD=${INFLUXDB_PASSWORD} # sourced from .env
+  telegraf:
+    image: telegraf:latest
+    container_name: telegraf
+    networks: [metrics]
+    volumes:
+      - $HOME/docker/influxdb/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+  chronograf:
+    container_name: chronograf
+    image: chronograf:latest
+    ports:
+      - &quot;127.0.0.1:8888:8888&quot;
+    depends_on:
+      - influxdb
+    networks: [metrics]
+    environment:
+      - INFLUXDB_URL=http://influxdb:8086 # needs to match container_name
+      - INFLUXDB_USERNAME=${INFLUXDB_USERNAME} # sourced from .env
+      - INFLUXDB_PASSWORD=${INFLUXDB_PASSWORD} # sourced from .env
+</code></pre><p>We also add chronograf as an Admin UI for influxdb into the container setup.
+However chronograf does not support any authentication so we allow it only to be accessed from the machine that runs docker directly i.e. our Raspberry Pi.
+So even though it looks odd please do not change <code>&quot;127.0.0.1:8888:8888&quot;</code> as this makes sure this port is only accessible from the localhost.
+Later on you will learn how to reach this from outside the Raspberry system though.</p><h3 id=insert-user-secrets-into-docker-recipe>Insert user secrets into docker recipe</h3><p>As you saw in the <code>docker-compose.yml</code> it does not contain the actual usernames and secrets.
+These will be read from a (hopefully secret) <code>.env</code> file that you need to place next to the yml at <code>$HOME/docker/compose-files/influxdb/.env</code></p><pre><code class=language-sh>INFLUXDB_USERNAME=admin
+INFLUXDB_PASSWORD=&lt;superSECRETinfluxPASSWORD&gt;
+</code></pre><h2 id=start-influxdb-via-docker-compose>Start influxdb via docker-compose</h2><p>Now it is finally time to startup all containers for the first time!</p><pre><code class=language-sh>cd $HOME/docker/compose-files/influxdb
+docker-compose up -d # -d will start the containers in &quot;detached&quot; mode so they continue running after you close the shell
+</code></pre><p>To check if everything is running fine you can run <code>docker ps</code> and see the following output</p><p><img src=/assets/raspi-influx/docker-ps.png alt="docker output"></p><h2 id=access-your-influxdb-instance-via-shell>Access your influxdb instance via shell</h2><p>With your docker container running you can use the following command to create an interactive <code>influx</code> shell</p><pre><code class=language-sh>docker exec -it influxdb influx
+</code></pre><p>Authenticate with the admin user (remember the <code>.env</code> file) in order to look at all users and databases).
+Then you can use the <code>SHOW USERS</code> and <code>SHOW DATABASES</code> commands.
+With my username and pi hostname it looks like this:</p><p><img src=/assets/raspi-influx/influx-shell.png alt="Screenshot of Influx Shell"></p><p>If anything up until this point did not correctly and you do not have the <code>telegaf</code> user and database I suggest cleaning up everything and restarting.</p><pre><code class=language-sh># 🚨 ONLY DO THIS if you have issues, this will delete your setup
+cd $HOME/docker/compose-files/influxdb
+docker-compose rm --stop --force # stop and delete all containers
+docker system prune --force
+sudo rm -rf $HOME/docker/influxdb/data/* # remove all files created by influx so far
+</code></pre><h3 id=access-the-chronograf-web-ui>Access the chronograf web UI</h3><p>As mentioned earlier the chronograf UI does not offer any application level authentication.
+This is why the application is secured on a network level by making it only accessible from the Raspberry itself.
+To be able to access the dashboard from outside the raspi you can do temporary port forwarding via SSH using the following command</p><pre><code class=language-sh># run this on your computer
+ssh pi@mypi -L 8888:localhost:8888 -N
+# now you can enjoy the chronograf UI on localhost:8888 on your computer as well
+# once you are done kill the SSH process to stop the port forwarding
+</code></pre><p>Try navigating to the <strong>Explore</strong> tab on the left and paste the following query to look at your CPU statistics that were reported by the telegraf container.</p><pre><code class=language-sql>SELECT mean(&quot;usage_system&quot;) AS &quot;mean_usage_system&quot;, mean(&quot;usage_user&quot;) AS &quot;mean_usage_user&quot;, mean(&quot;usage_iowait&quot;) AS &quot;mean_usage_iowait&quot;, mean(&quot;usage_idle&quot;) AS &quot;mean_usage_idle&quot; FROM &quot;telegraf&quot;.&quot;autogen&quot;.&quot;cpu&quot; WHERE time &gt; :dashboardTime: AND time &lt; :upperDashboardTime: AND &quot;cpu&quot;='cpu-total' GROUP BY time(:interval:) FILL(null)
+</code></pre><p><img src=/assets/raspi-influx/chronograf.png alt="Chronograf showing linechart of CPU usage"></p><h2 id=summary>Summary</h2><p>Looking back at the original architecture diagram, these are the main services we created.</p><p><img src=/assets/raspi-influx/service-setup.svg alt="Docker Service Architecture"></p><ol><li>influx endpoint is reachable from within your home network<ul><li>secured via basic auth</li></ul></li><li>telegraf is collecting system metrics<ul><li>reporting them to influx over the authenticated HTTP channel</li></ul></li><li>chronograf UI is running on your Raspberry Pi<ul><li>you learned how to port-forward the chronograf port to your computer and view the dashboard</li></ul></li><li>docker containers will autostart if you reboot your Raspberry Pi</li></ol><p>If any of this is outdated or does not work for you please leave a comment or reach out via <a href=https://twitter.com/anoff_io>Twitter</a>.
+Appreciate the feedback 👋</p></div><div class=footer><div class=tags><i class="fa fa-tags"></i><div class=links><a href=https://blog.anoff.io/tags/raspberry-pi/>raspberry-pi</a>
+<a href=https://blog.anoff.io/tags/iot/>iot</a>
+<a href=https://blog.anoff.io/tags/docker/>docker</a></div></div></div></article></div><div id=comments-container><div id=disqus_thread></div><script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return;}
+var d=document,s=d.createElement('script');s.async=true;s.src='//'+"anoff-io"+'.disqus.com/embed.js';s.setAttribute('data-timestamp',+new Date());(d.head||d.body).appendChild(s);})();</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div></div><footer><div class=container><div class=right><div class=external-profiles><strong>Social media</strong></div></div></div></footer><div class=credits><div class=container><div class=copyright><a href=//anoff.io target=_blank>&copy;
+2020
+by Andreas Offenhaeuser</a></div><div class=author><a href=//github.com/Lednerb/bilberry-hugo-theme target=_blank>Bilberry Hugo Theme</a></div></div></div><script type=application/javascript>var doNotTrack=false;if(!doNotTrack){window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;ga('create','UA-93890295-4','auto');ga('send','pageview');}</script><script async src=https://www.google-analytics.com/analytics.js></script><script type=text/javascript src=https://blog.anoff.io/theme.js></script><script src=https://blog.anoff.io/fix-adoc.js type=application/javascript></script><script src=//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js type=application/javascript></script><script src=https://blog.anoff.io/init-cookieconsent.js type=application/javascript></script></body></html>
