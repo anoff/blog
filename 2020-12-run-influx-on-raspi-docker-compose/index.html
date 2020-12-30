@@ -73,12 +73,14 @@ services:
       - INFLUXDB_ADMIN_PASSWORD=${INFLUXDB_PASSWORD} # sourced from .env
   telegraf:
     image: telegraf:latest
+    restart: always
     container_name: telegraf
     networks: [metrics]
     volumes:
       - $HOME/docker/influxdb/telegraf.conf:/etc/telegraf/telegraf.conf:ro
   chronograf:
     container_name: chronograf
+    restart: always
     image: chronograf:latest
     ports:
       - &quot;127.0.0.1:8888:8888&quot;
@@ -92,7 +94,7 @@ services:
 </code></pre><p>We also add chronograf as an Admin UI for influxdb into the container setup.
 However chronograf does not support any authentication so we allow it only to be accessed from the machine that runs docker directly i.e. our Raspberry Pi.
 So even though it looks odd please do not change <code>&quot;127.0.0.1:8888:8888&quot;</code> as this makes sure this port is only accessible from the localhost.
-Later on you will learn how to reach this from outside the Raspberry system though.</p><h3 id=insert-user-secrets-into-docker-recipe>Insert user secrets into docker recipe</h3><p>As you saw in the <code>docker-compose.yml</code> it does not contain the actual usernames and secrets.
+Later on you will learn how to reach this from outside the Raspberry system though.</p><p>Adding the <code>restart: always</code> to the service makes sure it gets started automatically after rebooting your Raspberry Pi.</p><h3 id=insert-user-secrets-into-docker-recipe>Insert user secrets into docker recipe</h3><p>As you saw in the <code>docker-compose.yml</code> it does not contain the actual usernames and secrets.
 These will be read from a (hopefully secret) <code>.env</code> file that you need to place next to the yml at <code>$HOME/docker/compose-files/influxdb/.env</code></p><pre><code class=language-sh>INFLUXDB_USERNAME=admin
 INFLUXDB_PASSWORD=&lt;superSECRETinfluxPASSWORD&gt;
 </code></pre><h2 id=start-influxdb-via-docker-compose>Start influxdb via docker-compose</h2><p>Now it is finally time to startup all containers for the first time!</p><pre><code class=language-sh>cd $HOME/docker/compose-files/influxdb
