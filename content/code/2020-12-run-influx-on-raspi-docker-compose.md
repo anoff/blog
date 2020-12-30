@@ -1,6 +1,6 @@
 ---
 title: Running influxdb on Raspberry Pi using Docker compose
-date: 2020-12-31
+date: 2020-12-30
 tags: [raspberry-pi, iot, docker]
 author: anoff
 resizeImages: true
@@ -9,13 +9,12 @@ featuredImage: /assets/raspi-influx/title.png
 ---
 
 This blog post will explain how you can setup influxdb (and the telegraf plugin) on your Raspberry Pi using docker-compose.
-We will use config-as-code wherever possible to create reproducible setups.
+We will use the config-as-code to create a reproducible setup.
 This is extremely helpful for hobby projects that you come back to every now-and-then because you can lookup exactly what you are running 😉
 
 <!--more-->
 
-A quick overview of what needs to be done to get influxdb running on a Raspberry Pi using docker-compose to orchestrate it.
-
+The individual steps we need to take:
 <!-- TOC depthFrom:2 -->
 
 - [Overview](#overview)
@@ -29,6 +28,7 @@ A quick overview of what needs to be done to get influxdb running on a Raspberry
 - [Start influxdb via docker-compose](#start-influxdb-via-docker-compose)
 - [Access your influxdb instance via shell](#access-your-influxdb-instance-via-shell)
   - [Access the chronograf web UI](#access-the-chronograf-web-ui)
+- [Summary](#summary)
 
 <!-- /TOC -->
 
@@ -40,35 +40,7 @@ A quick overview of the service architecture that will be built with this setup.
 * Chronograf as Admin UI, only accessible from within your Raspberry Pi
 * Telegraf to ingest system metrics
 
-.Service Setup
-[plantuml, service-setup, svg]
-....
-@startuml service-setup
-skinparam monochrome true
-skinparam defaulttextalignment center
-
-frame "Home Network" as net {
-  interface "influx<i>:8086" as influx
-  frame "Raspberry Pi" as pi {
-    interface "chronograf UI<i>:8888" as chronograf
-    component Docker as docker1 {
-      artifact "influxdb:latest" as influxdb
-      artifact "telegraf:latest" as telegraf
-      artifact "chronograf:latest" as chrono
-    }
-  }
-  frame "Computer" as pc {
-    artifact "Shell session" as shell
-    artifact "Browser" as browser
-  }
-  influxdb -- influx
-  chrono -- chronograf
-  telegraf --(0 influxdb
-  chrono --(0 influxdb
-  shell --(0 pi
-}
-@enduml
-....
+![Docker Service Architecture](/assets/raspi-influx/service-setup.svg)
 
 ## Prerequisites
 
@@ -84,7 +56,7 @@ To persist data and configuration of your influxdb instance you need to create a
 
 I suggest creating this structure directly in your home directory.
 This way you will not have to worry about permissions too much.
-To keep things a bit cleaner I suggest nesting all your docker mounts into a common folder.
+To keep things clean, put all your docker mounts into a common folder.
 
 ```text
 $HOME/docker/
@@ -99,18 +71,18 @@ $HOME/docker/
         └── docker-compose.yml # specification of docker containers to run
 ```
 
-To create the directories run these commands
+Create the directories with these commands
 
 ```sh
 # do this on your raspi
 mkdir -p $HOME/docker/influxdb/data
 mkdir -p $HOME/docker/influxdb/init
-mkdir -p $HOME/docker/influxdb/compose-files/influxdb
+mkdir -p $HOME/docker/compose-files/influxdb
 ```
 
 ### Create influxdb.conf and telegraf.conf
 
-To create a default config in the newly created working directory run the following command
+To create a default config for **influxdb** in the newly created working directory run the following command
 
 ```sh
 cd $HOME/docker/influxdb
@@ -121,7 +93,7 @@ sed -i 's/^  auth-enabled = false$/  auth-enabled = true/g' influxdb.conf
 # do any other changes you want, or replace with your own config entirely
 ```
 
-Next create the config file for telegraf and do some modifications.
+Next create the config file for **telegraf** and do some modifications.
 Please note `<telegrafUSERpassword>` and create your own password here.
 
 ```sh
@@ -130,6 +102,7 @@ docker run --rm telegraf telegraf config > telegraf.conf
 # now modify it to tell it how to authenticate against influxdb
 sed -i 's/^  # urls = \["http:\/\/127\.0\.0\.1:8086"\]$/  urls = \["http:\/\/influxdb:8086"\]/g' telegraf.conf
 sed -i 's/^  # database = "telegraf"$/  database = "telegraf"/' telegraf.conf
+sed -i 's/^  # username = "telegraf"$/  username = "telegraf"/' telegraf.conf
 sed -i 's/^  # password = "metricsmetricsmetricsmetrics"$/  password = "<telegrafUSERpassword>"/' telegraf.conf
 # as we run inside docker, the telegraf hostname is different from our Raspberry hostname, let's change it
 sed -i 's/^  hostname = ""$/  hostname = "'${HOSTNAME}'"/' telegraf.conf
@@ -158,9 +131,11 @@ This creates a database with 31 days retention - modify password and retention t
 
 ```sql
 CREATE DATABASE telegraf WITH DURATION 31d
-CREATE USER telegraf WITH PASSWORD '<telegrafUSERpassword>' # same password that you used in telegraf.conf
+CREATE USER telegraf WITH PASSWORD '<telegrafUSERpassword>'
 GRANT WRITE ON telegraf to telegraf
 ```
+
+⚠️ Make sure to use the same password as in the `telegraf.conf`.
 
 ### Create docker-compose specification
 
@@ -232,6 +207,10 @@ cd $HOME/docker/compose-files/influxdb
 docker-compose up -d # -d will start the containers in "detached" mode so they continue running after you close the shell
 ```
 
+To check if everything is running fine you can run `docker ps` and see the following output
+
+![docker output](/assets/raspi-influx/docker-ps.png)
+
 ## Access your influxdb instance via shell
 
 With your docker container running you can use the following command to create an interactive `influx` shell
@@ -244,17 +223,16 @@ Authenticate with the admin user (remember the `.env` file) in order to look at 
 Then you can use the `SHOW USERS` and `SHOW DATABASES` commands.
 With my username and pi hostname it looks like this:
 
-![Screenshot of Influx Shell](./assets/raspi-influx/influx-shell.png)
+![Screenshot of Influx Shell](/assets/raspi-influx/influx-shell.png)
 
 If anything up until this point did not correctly and you do not have the `telegaf` user and database I suggest cleaning up everything and restarting.
 
 ```sh
 # 🚨 ONLY DO THIS if you have issues, this will delete your setup
-sudo rm -rf $HOME/docker/influxdb/data
-mkdir -p $HOME/docker/influxdb/data
 cd $HOME/docker/compose-files/influxdb
-docker-compose rm --stop --force
+docker-compose rm --stop --force # stop and delete all containers
 docker system prune --force
+sudo rm -rf $HOME/docker/influxdb/data/* # remove all files created by influx so far
 ```
 
 ### Access the chronograf web UI
@@ -265,12 +243,32 @@ To be able to access the dashboard from outside the raspi you can do temporary p
 
 ```sh
 # run this on your computer
-ssh pi@soto -L 8888:localhost:8888 -N
+ssh pi@mypi -L 8888:localhost:8888 -N
 # now you can enjoy the chronograf UI on localhost:8888 on your computer as well
 # once you are done kill the SSH process to stop the port forwarding
 ```
 
+Try navigating to the **Explore** tab on the left and paste the following query to look at your CPU statistics that were reported by the telegraf container.
 
+```sql
+SELECT mean("usage_system") AS "mean_usage_system", mean("usage_user") AS "mean_usage_user", mean("usage_iowait") AS "mean_usage_iowait", mean("usage_idle") AS "mean_usage_idle" FROM "telegraf"."autogen"."cpu" WHERE time > :dashboardTime: AND time < :upperDashboardTime: AND "cpu"='cpu-total' GROUP BY time(:interval:) FILL(null)
+```
+
+![Chronograf showing linechart of CPU usage](/assets/raspi-influx/chronograf.png)
+
+## Summary
+
+Looking back at the original architecture diagram, these are the main services we created.
+
+![Docker Service Architecture](/assets/raspi-influx/service-setup.svg)
+
+1. influx endpoint is reachable from within your home network
+  - secured via basic auth
+1. telegraf is collecting system metrics
+  - reporting them to influx over the authenticated HTTP channel
+1. chronograf UI is running on your Raspberry Pi
+  - you learned how to port-forward the chronograf port to your computer and view the dashboard
+1. docker containers will autostart if you reboot your Raspberry Pi
 
 If any of this is outdated or does not work for you please leave a comment or reach out via [Twitter](https://twitter.com/anoff_io).
 Appreciate the feedback 👋

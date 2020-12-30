@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="563px" preserveAspectRatio="none" style="width:674px;height:563px;" version="1.1" viewBox="0 0 674 563" width="674px" zoomAndPan="magnify"><defs><filter height="300%" id="fqoog6rpnf018" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[c59a16d3fcadadefd9f8a8868b25a4e7]
+cluster net--><rect fill="#FFFFFF" filter="url(#fqoog6rpnf018)" height="544.5" style="stroke:#000000;stroke-width:1.5;" width="655" x="7" y="7"/><path d="M134,7 L134,16.2969 L124,26.2969 L7,26.2969 " fill="none" style="stroke:#000000;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="117" x="10" y="20.9951">Home Network</text><!--MD5=[b6b7207982b68db46f560888ead706d9]
+cluster pi--><rect fill="#FFFFFF" filter="url(#fqoog6rpnf018)" height="281.5" style="stroke:#000000;stroke-width:1.5;" width="591" x="39" y="172"/><path d="M151,172 L151,181.2969 L141,191.2969 L39,191.2969 " fill="none" style="stroke:#000000;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="102" x="42" y="185.9951">Raspberry Pi</text><!--MD5=[a615c3b5958dda842e4e3d4ad00358ef]
+cluster docker1--><rect fill="#FFFFFF" filter="url(#fqoog6rpnf018)" height="198.5" style="stroke:#000000;stroke-width:1.5;" width="359" x="79" y="223"/><rect fill="#FFFFFF" height="10" style="stroke:#000000;stroke-width:1.5;" width="15" x="418" y="228"/><rect fill="#FFFFFF" height="2" style="stroke:#000000;stroke-width:1.5;" width="4" x="416" y="230"/><rect fill="#FFFFFF" height="2" style="stroke:#000000;stroke-width:1.5;" width="4" x="416" y="234"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="55" x="231" y="248.9951">Docker</text><!--MD5=[b7b14e8444e3c5d78ccf181a2614e889]
+cluster pc--><rect fill="#FFFFFF" filter="url(#fqoog6rpnf018)" height="90" style="stroke:#000000;stroke-width:1.5;" width="277" x="31" y="50"/><path d="M120,50 L120,59.2969 L110,69.2969 L31,69.2969 " fill="none" style="stroke:#000000;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="79" x="34" y="63.9951">Computer</text><!--MD5=[b8fb08849632f9ff0fdc2d033176a093]
+entity influx--><ellipse cx="253" cy="506.5" fill="#F8F8F8" filter="url(#fqoog6rpnf018)" rx="8" ry="8" style="stroke:#383838;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="39" x="213" y="536.4951">influx</text><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="41" x="252" y="536.4951">:8086</text><!--MD5=[7bb8a25f7ed82c65209cb1b4ca4802f8]
+entity chronograf--><ellipse cx="530" cy="386" fill="#F8F8F8" filter="url(#fqoog6rpnf018)" rx="8" ry="8" style="stroke:#383838;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="96" x="461.5" y="415.9951">chronograf UI</text><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="41" x="557.5" y="415.9951">:8888</text><!--MD5=[9a33e24e770c11e9284baa47a10e97c2]
+entity influxdb--><rect fill="#F8F8F8" filter="url(#fqoog6rpnf018)" height="39.2969" style="stroke:#000000;stroke-width:1.5;" width="135" x="185.5" y="366.5"/><polygon fill="#F8F8F8" points="303.5,371.5,303.5,385.5,315.5,385.5,315.5,377.5,309.5,371.5,303.5,371.5" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="309.5" x2="309.5" y1="371.5" y2="377.5"/><line style="stroke:#000000;stroke-width:1.5;" x1="315.5" x2="309.5" y1="377.5" y2="377.5"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="105" x="195.5" y="392.4951">influxdb:latest</text><!--MD5=[0d5d088432864f0c134be152b48b80eb]
+entity telegraf--><rect fill="#F8F8F8" filter="url(#fqoog6rpnf018)" height="39.2969" style="stroke:#000000;stroke-width:1.5;" width="135" x="95.5" y="258"/><polygon fill="#F8F8F8" points="213.5,263,213.5,277,225.5,277,225.5,269,219.5,263,213.5,263" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="219.5" x2="219.5" y1="263" y2="269"/><line style="stroke:#000000;stroke-width:1.5;" x1="225.5" x2="219.5" y1="269" y2="269"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="105" x="105.5" y="283.9951">telegraf:latest</text><!--MD5=[4d5d9756357d3030c6fc4e48c2d0aead]
+entity chrono--><rect fill="#F8F8F8" filter="url(#fqoog6rpnf018)" height="39.2969" style="stroke:#000000;stroke-width:1.5;" width="156" x="266" y="258"/><polygon fill="#F8F8F8" points="405,263,405,277,417,277,417,269,411,263,405,263" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="411" x2="411" y1="263" y2="269"/><line style="stroke:#000000;stroke-width:1.5;" x1="417" x2="411" y1="269" y2="269"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="126" x="276" y="283.9951">chronograf:latest</text><!--MD5=[90bd7bfaf115c178cab719a530508b90]
+entity shell--><rect fill="#F8F8F8" filter="url(#fqoog6rpnf018)" height="39.2969" style="stroke:#000000;stroke-width:1.5;" width="121" x="170.5" y="85"/><polygon fill="#F8F8F8" points="274.5,90,274.5,104,286.5,104,286.5,96,280.5,90,274.5,90" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="280.5" x2="280.5" y1="90" y2="96"/><line style="stroke:#000000;stroke-width:1.5;" x1="286.5" x2="280.5" y1="96" y2="96"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="91" x="180.5" y="110.9951">Shell session</text><!--MD5=[23555a4f9c8a267cdfd801ad53ceaf15]
+entity browser--><rect fill="#F8F8F8" filter="url(#fqoog6rpnf018)" height="39.2969" style="stroke:#000000;stroke-width:1.5;" width="88" x="47" y="85"/><polygon fill="#F8F8F8" points="118,90,118,104,130,104,130,96,124,90,118,90" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="124" x2="124" y1="90" y2="96"/><line style="stroke:#000000;stroke-width:1.5;" x1="130" x2="124" y1="96" y2="96"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="58" x="57" y="110.9951">Browser</text><!--MD5=[4b88c29917c67c9aaffaa46e9c229d5c]
+link influxdb to influx--><path d="M253,405.516 C253,431.683 253,478.397 253,497.2614 " fill="none" id="influxdb-influx" style="stroke:#383838;stroke-width:1.0;"/><!--MD5=[e5846bf875aaae5397f00accbd8f8de3]
+link chrono to chronograf--><path d="M376.399,297.051 C419.905,321.962 494.752,364.818 520.768,379.714 " fill="none" id="chrono-chronograf" style="stroke:#383838;stroke-width:1.0;"/><!--MD5=[bfebe985d7bbd941776f7e638e9e0db4]
+link telegraf to influxdb--><path d="M178.677,297.051 C193.941,315.113 217.177,342.609 233.598,362.041 " fill="none" id="telegraf-to-influxdb" style="stroke:#383838;stroke-width:1.0;"/><ellipse cx="237.201" cy="366.304" fill="#FFFFFF" rx="6" ry="6" style="stroke:#383838;stroke-width:1.5;"/><path d="M238.0375,356.339 A10,10 0 0 0 227.236 365.4675" fill="#FFFFFF" style="stroke:#383838;stroke-width:1.5;"/><!--MD5=[7bce6e32e044d0f84b1fce7e02a3edf4]
+link chrono to influxdb--><path d="M328.149,297.051 C312.716,315.113 289.221,342.609 272.617,362.041 " fill="none" id="chrono-to-influxdb" style="stroke:#383838;stroke-width:1.0;"/><ellipse cx="268.975" cy="366.304" fill="#FFFFFF" rx="6" ry="6" style="stroke:#383838;stroke-width:1.5;"/><path d="M278.9444,365.5222 A10,10 0 0 0 268.1932 356.3346" fill="#FFFFFF" style="stroke:#383838;stroke-width:1.5;"/><!--MD5=[4c52d1fd21f84ea6435feb8081d75690]
+link shell to pi--><path d="M202.912,124.043 C188.32,132.768 169.847,142.453 152,148 C136.416,152.844 91.374,145.36 79,156 C73.8302,160.4454 69.4481,165.6212 65.7382,171.2804 C65.6222,171.4573 65.507,171.6346 65.3923,171.8124 " fill="none" id="shell-to-pi" style="stroke:#383838;stroke-width:1.0;"/><ellipse cx="65.3923" cy="171.8124" fill="#FFFFFF" rx="6" ry="6" style="stroke:#383838;stroke-width:1.5;"/><path d="M75.1669,169.701 A10,10 0 0 0 63.281 162.0378" fill="#FFFFFF" style="stroke:#383838;stroke-width:1.5;"/><!--MD5=[b868fa80306493f573845a473a243fe2]
+@startuml
+skinparam monochrome true
+skinparam defaulttextalignment center
+
+frame "Home Network" as net {
+  interface "influx<i>:8086" as influx
+  frame "Raspberry Pi" as pi {
+    interface "chronograf UI<i>:8888" as chronograf
+    component Docker as docker1 {
+      artifact "influxdb:latest" as influxdb
+      artifact "telegraf:latest" as telegraf
+      artifact "chronograf:latest" as chrono
+    }
+  }
+  frame "Computer" as pc {
+    artifact "Shell session" as shell
+    artifact "Browser" as browser
+  }
+  influxdb - - influx
+  chrono - - chronograf
+  telegraf - -(0 influxdb
+  chrono - -(0 influxdb
+  shell - -(0 pi
+}
+@enduml
+
+PlantUML version 1.2020.27beta1(Unknown compile time)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: en
+Country: US
+--></g></svg>
