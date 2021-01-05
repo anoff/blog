@@ -80,6 +80,8 @@ ssh-copy-id -i id_pi.pub pi@raspberrypi
 # you need to enter the password for the pi user which by default is 'raspberry' (we'll fix this later)
 ```
 
+> 💡 Your home network might require that you add `.local` to local hostnames i.e. `raspberrypi.local`
+
 ### Configuring your host to automatically use the Keyfile
 
 You can configure your host computer to automatically use the newly created keyfile when connecting to your Raspberry.
@@ -127,7 +129,7 @@ passwd # < interactive (make sure to pick a strong password and store it somewhe
 exit
 ssh -i id_pi -p 2221 pi@raspberrypi
 # update packages
-sudo apt update && apt upgrade
+sudo apt update && sudo apt upgrade
 # change hostname
 export NEW_HOSTNAME=mypi # set this to whatever you want to name your new raspberry pi
 sudo sed -i "s|raspberrypi|$NEW_HOSTNAME|g" /etc/hosts
