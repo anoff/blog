@@ -32,9 +32,9 @@ As with the InfluxDB setup, we first need to create some local folders to mount 
 ```text
 $HOME/docker/
 ├── grafana/
-│   ├── data/ # grafanadb working directory
+│   ├── data/ # grafana working directory
 │   ├── provisioning/ # placeholder for provisioning scripts that grafana will load on boot
-│   └── grafana.ini # config for telegraf instance
+│   └── grafana.ini # config for grafana instance
 └── compose-files/
     └── grafana
         ├── .env # file containing user secrets
