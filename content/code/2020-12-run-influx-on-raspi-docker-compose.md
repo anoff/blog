@@ -61,7 +61,7 @@ To keep things clean, put all your docker mounts into a common folder.
 ```text
 $HOME/docker/
 ├── influxdb/
-│   ├── data/ # grafanadb working directory
+│   ├── data/ # influxdb working directory (where your actual data is stored)
 │   ├── init/ # some init scripts to bootstrap the instance
 │   ├── influxdb.conf # config for influxdb instance
 │   └── telegraf.conf # config for telegraf instance
