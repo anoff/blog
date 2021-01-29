@@ -1,0 +1,115 @@
+<!doctype html><html class=no-js lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=author content="Andreas Offenhaeuser"><meta name=description content="Andreas' personal blog"><meta name=keywords content=blog,personal,software,architecture,node,markdown,plantuml,developer><meta name=generator content="Hugo 0.55.6"><title>Collect IoT data from Arduino in InfluxDB &vert; Andreas&#39; Blog</title><meta name=description content="Collect IoT data from Arduino in InfluxDB - Andreas' personal blog"><meta itemprop=name content="Collect IoT data from Arduino in InfluxDB"><meta itemprop=description content="Collect IoT data from Arduino in InfluxDB - Andreas' personal blog"><meta property=og:title content="Collect IoT data from Arduino in InfluxDB"><meta property=og:description content="Collect IoT data from Arduino in InfluxDB - Andreas' personal blog"><meta property=og:image content=https://blog.anoff.io/assets/influxdb-arduino/title.png><meta property=og:url content=https://blog.anoff.io/2021-01-send-iot-data-from-arduino-to-influxdb/><meta property=og:site_name content="Andreas' Blog"><meta property=og:type content=article><link href=/2021-01-send-iot-data-from-arduino-to-influxdb/ rel=alternate type=application/rss+xml title="Andreas' Blog"><link href=/2021-01-send-iot-data-from-arduino-to-influxdb/ rel=feed type=application/rss+xml title="Andreas' Blog"><link rel=stylesheet href=https://blog.anoff.io/theme.css><link rel=stylesheet href=https://blog.anoff.io/adoc.css><link rel=stylesheet href=https://blog.anoff.io/overwrites.css><link rel=stylesheet href=//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css></head><body class=bilberry-hugo-theme><nav class=permanentTopNav><div class=container><ul class=topnav><li><a href=//anoff.io/ target=_self>About me</a></li><li><a href=/ target=_self>Blog</a></li><li><a href=//anoff.io/project/ target=_self>Projects</a></li><li><a href=/tags target=_self>by Tags</a></li><li><a href=//radar.anoff.io target=_blank>Tech skills</a></li><li><a href=//anoff.github.io/legal/ target=_blank>Legal</a></li></ul></div></nav><header><div class=container><div class=logo><a id=siteBaseUrl href=/ class=logo><img src=/avatar.png alt>
+<span class=overlay><i class="fa fa-child"></i></span></a></div><div class=titles><h3 class=title><a href=/>Andreas&#39; Blog</a></h3><span class=subtitle>Adventures of a software engineer/architect</span></div><div class="toggler permanentTopNav"><i class="fa fa-bars" aria-hidden=true></i></div></div></header><div class="main container"><div class="article-wrapper u-cf single"><a class=bubble href=https://blog.anoff.io/2021-01-send-iot-data-from-arduino-to-influxdb/><i class="fas fa-fw fa-code"></i></a><article class="default article"><div class=featured-image><a href=https://blog.anoff.io/2021-01-send-iot-data-from-arduino-to-influxdb/><img src=/assets/influxdb-arduino/title.png alt></a></div><div class=content><h1 class=article-title><a href=https://blog.anoff.io/2021-01-send-iot-data-from-arduino-to-influxdb/>Collect IoT data from Arduino in InfluxDB</a></h1><div class=meta><span class="date moment">2021-01-29</span>
+<span class=readingTime>5 min read</span>
+<span class=author><a href=https://blog.anoff.io/author/anoff/>anoff</a></span></div><p>Did you add some fancy sensors to your Arduino board?
+If you have internet connectivity via ESP8266 or similar chips you can easily collect and visualize your sensor readings using InfluxDB.
+This blog post will cover how to send data from Arduino to InfluxDB Cloud (v2) but also to your self-hosted InfluxDB instance (v1).</p><ul><li><a href=#preparing-influxdb>Preparing InfluxDB</a><ul><li><a href=#influxdb-cloud>InfluxDB Cloud</a></li><li><a href=#self-hosted-influxdb-instance>Self-hosted InfluxDB Instance</a></li></ul></li><li><a href=#arduino-code>Arduino Code</a></li><li><a href=#check-out-your-data>Check out your data</a></li></ul><h2 id=preparing-influxdb>Preparing InfluxDB</h2><p>You can either create an account with <a href=https://www.influxdata.com/products/influxdb-cloud/>InfluxDB Cloud</a> offering or host your own InfluxDB instance.
+The free tier of the cloud service should be enough for basic home appliances with a few sensors and 1-2 readings per minute.</p><p>The biggest limitations of the free tier is that all data has a maximum retention of <strong>30 days</strong>.
+That means if you are interested in aggregating data over several months the free tier will not work for you.
+You could either pay for their cloud service or run <a href=/2020-12-run-influx-on-raspi-docker-compose>InfluxDB on a Raspberry Pi</a> or any other home server.</p><h3 id=influxdb-cloud>InfluxDB Cloud</h3><p>To get an InfluxDB Cloud account you do not need a credit card, just sign up and you are set.
+Basic setup would be to create a new <strong>Bucket</strong> for your data</p><p><img src=/assets/influxdb-arduino/create-bucket.png alt="Screenshot of InfluxDB Cloud Portal"></p><p>Now you only need to create an access token for this bucket and write it down to use in your Arduino code.</p><p><img src=/assets/influxdb-arduino/create-token.png alt="Screenshot of InfluxDB Cloud Portal"></p><p>After creating a new token just click its name and you should see the details including the token value:</p><p><img src=/assets/influxdb-arduino/token.png alt="Screenshot of InfluxDB Cloud Portal"></p><h3 id=self-hosted-influxdb-instance>Self-hosted InfluxDB Instance</h3><blockquote><p>These instructions are for InfluxDB v1 (tested on v1.8)</p></blockquote><p>Assuming you have your InfluxDB already <a href=/2020-12-run-influx-on-raspi-docker-compose>set up</a> connect to it via the InfluxDB shell and create a new database and user for your data.</p><p>You can connect to your database using <code>influx -host &lt;hostname&gt; -p &lt;port&gt;</code></p><pre><code class=language-sh>auth
+# enter username and password of InfluxDB admin
+CREATE DATABASE mydata WITH DURATION 31d # adapt retention policy to keep data for longer time
+CREATE USER arduino WITH PASSWORD 'supersecret'
+GRANT WRITE ON mydata to arduino
+</code></pre><h2 id=arduino-code>Arduino Code</h2><p>The code shown here sends data a InfluxDB Cloud bucket as well as a self-hosted database.
+Depending on your choice you only need to reuse parts of the code shown here.
+In both cases we will use <a href=https://github.com/tobiasschuerg/InfluxDB-Client-for-Arduino>InfluxDB Arduino Client</a> library.</p><p>This code uses the Arduino Deepsleep pattern on an ESP8266, the <code>ESP.deepSleep()</code> call sends the microcontroller into deep sleep where it consumes less power.
+In addition to the code you need a <code>secrets.h</code> file that contains your WiFi credentials and access to the InfluxDB instance as <code>#define</code>s.</p><pre><code class=language-c++>// content of secrets.h
+#define WIFI_SSID &quot;&quot; // local WiFi name
+#define WIFI_KEY &quot;&quot; // local WiFi password
+
+// InfluxDB v2 server url, e.g. https://eu-central-1-1.aws.cloud2.influxdata.com (Use: InfluxDB UI -&gt; Load Data -&gt; Client Libraries)
+#define INFLUXDB_CLOUD_URL &quot;&quot;
+// InfluxDB v2 server or cloud API authentication token (Use: InfluxDB UI -&gt; Data -&gt; Tokens -&gt; &lt;select token&gt;)
+#define INFLUXDB_CLOUD_TOKEN &quot;&quot;
+// InfluxDB v2 organization id (Use: InfluxDB UI -&gt; User -&gt; About -&gt; Common Ids )
+#define INFLUXDB_CLOUD_ORG &quot;123&quot;
+// InfluxDB v2 bucket name (Use: InfluxDB UI -&gt;  Data -&gt; Buckets)
+#define INFLUXDB_CLOUD_BUCKET &quot;mydata&quot;
+
+// local setup
+#define INFLUXDB_URL &quot;http://someip:8086&quot;
+#define INFLUXDB_DATABASE &quot;mydata&quot;
+#define INFLUXDB_USER &quot;arduino&quot;
+#define INFLUXDB_PASSWORD &quot;supersecret&quot;
+</code></pre><p>The actual code in your <code>influx.ino</code> file should look like this.
+See comments within the code for how to use the InfluxDB client library in such a scenario.</p><pre><code class=language-cpp>#if defined(ESP32)
+  #include &lt;WiFiMulti.h&gt;
+  WiFiMulti wifiMulti;
+  #define DEVICE &quot;ESP32&quot;
+#elif defined(ESP8266)
+  #include &lt;ESP8266WiFiMulti.h&gt;
+  ESP8266WiFiMulti wifiMulti;
+  #define DEVICE &quot;ESP8266&quot;
+#endif
+#include &lt;InfluxDbClient.h&gt; // load the client library
+#include &lt;InfluxDbCloud.h&gt; // only for InfluxDB Cloud: load SSL certificate and additional method call
+#include &quot;secrets.h&quot; // load connection credentials
+
+#define SLEEP_S 30 // how many seconds to sleep between readings
+#define DEVICE_ID &quot;myroom&quot;
+
+// InfluxDB client for InfluxDB Cloud API
+InfluxDBClient client_cloud(INFLUXDB_CLOUD_URL, INFLUXDB_CLOUD_ORG, INFLUXDB_CLOUD_BUCKET, INFLUXDB_CLOUD_TOKEN, InfluxDbCloud2CACert);
+// InfluxDB client instance for self-hosted v1 database
+InfluxDBClient client_v1;
+
+// because we use the deepsleep pattern we put all our logic in the setup() routine and then send the microcontroller back to sleep
+//  if your microcontroller is always up you might want to put the commands in your loop() routine instead
+void setup() {
+  Serial.begin(115200);
+  Serial.println(&quot;Starting setup&quot;);
+  delay(100);
+  wifiConnect(WIFI_SSID, WIFI_KEY);
+  // BEGIN: read sensor values (add your real code here)
+  float sensor_value1 = 1.23;
+  float sensor_value2 = 0;
+  // END: read sensor values
+
+  Point pointDevice(&quot;mymeasurement&quot;); // create a new measurement point (the same point can be used for Cloud and v1 InfluxDB)
+  // add tags to the datapoints so you can filter them
+  pointDevice.addTag(&quot;device&quot;, DEVICE_ID);
+  pointDevice.addTag(&quot;SSID&quot;, WiFi.SSID());
+  // Add data fields (values)
+  pointDevice.addField(&quot;sensor1&quot;, sensor_value1);
+  pointDevice.addField(&quot;sensor2&quot;, sensor_value2);
+  pointDevice.addField(&quot;uptime&quot;, millis()); // in addition send the uptime of the Arduino
+  
+  Serial.print(&quot;written to InfluxDB Cloud: &quot;);
+  Serial.println(client_cloud.writePoint(pointDevice)); // returns true if success, false otherwise
+
+  client_v1.setConnectionParamsV1(INFLUXDB_URL, INFLUXDB_DATABASE, INFLUXDB_USER, INFLUXDB_PASSWORD);
+  Serial.print(&quot;written to local InfluxDB instance: &quot;);
+  Serial.println(client_v1.writePoint(pointDevice)); // returns true if success, false otherwise
+
+  // this sends the microcontroller to deepsleep until the next reading needs to be taken
+  //  due to WiFi connect and sensor reading your measurement interval will always be 5~10 seconds longer than the SLEEP_S duration
+  ESP.deepSleep(SLEEP_S * 1000000 - millis()*1000); // offset by the duration the program run (converted from ms to µs)
+}
+
+void loop() {
+}
+
+// try to connect to given SSID and key, loop until successful
+void wifiConnect(const char* ssid, const char* key) {
+  WiFi.begin(ssid, key);
+  Serial.print(&quot;Waiting for WiFi connection..&quot;);
+  while (WiFi.status() != WL_CONNECTED) {
+    Serial.print(&quot;.&quot;);
+    delay(500);
+  }
+  Serial.println(&quot;.&quot;);
+  Serial.print(&quot;Successfully connected to &quot;);
+  Serial.println(WiFi.SSID());
+}
+</code></pre><h2 id=check-out-your-data>Check out your data</h2><p>After your microcontroller sent data for a while, it is time to visualize it.
+With InfluxDB Cloud you get data discovery and dashboard features directly on the Web UI included.
+Here is an example of my ESP8266 chip collecting some temperature readings for a week:</p><p><img src=/assets/influxdb-arduino/influxdb-dashboard.png alt="Screenshot of InfluxDB Cloud Portal"></p><p>If you use a self-hosted InfluxDB instance you can either use Chronograf or generic dashboarding solution like Grafana.
+For installing Grafana using docker check out my <a href=/2020-12-howto-grafana-on-raspi>previous blog post</a>.</p><p><img src=/assets/influxdb-arduino/grafana-dashboard.png alt="Screenshot of Grafana dashboard"></p><p>If any of this is outdated or does not work for you please leave a comment or reach out via <a href=https://twitter.com/anoff_io>Twitter</a>.
+Appreciate the feedback 👋</p></div><div class=footer><div class=tags><i class="fa fa-tags"></i><div class=links><a href=https://blog.anoff.io/tags/iot/>iot</a>
+<a href=https://blog.anoff.io/tags/arduino/>arduino</a>
+<a href=https://blog.anoff.io/tags/databases/>databases</a></div></div></div></article></div><div id=comments-container><div id=disqus_thread></div><script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return;}
+var d=document,s=d.createElement('script');s.async=true;s.src='//'+"anoff-io"+'.disqus.com/embed.js';s.setAttribute('data-timestamp',+new Date());(d.head||d.body).appendChild(s);})();</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div></div><footer><div class=container><div class=right><div class=external-profiles><strong>Social media</strong></div></div></div></footer><div class=credits><div class=container><div class=copyright><a href=//anoff.io target=_blank>&copy;
+2021
+by Andreas Offenhaeuser</a></div><div class=author><a href=//github.com/Lednerb/bilberry-hugo-theme target=_blank>Bilberry Hugo Theme</a></div></div></div><script type=application/javascript>var doNotTrack=false;if(!doNotTrack){window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;ga('create','UA-93890295-4','auto');ga('send','pageview');}</script><script async src=https://www.google-analytics.com/analytics.js></script><script type=text/javascript src=https://blog.anoff.io/theme.js></script><script src=https://blog.anoff.io/fix-adoc.js type=application/javascript></script><script src=//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js type=application/javascript></script><script src=https://blog.anoff.io/init-cookieconsent.js type=application/javascript></script></body></html>
