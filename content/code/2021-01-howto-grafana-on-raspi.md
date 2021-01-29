@@ -1,7 +1,7 @@
 ---
 title: Setting up Grafana on Raspberry Pi with Docker (compose)
 date: 2021-01-05
-tags: [raspberry-pi, iot, docker]
+tags: [raspberry-pi, iot, docker, databases]
 author: anoff
 resizeImages: true
 draft: false
@@ -23,7 +23,7 @@ The InfluxDB+Grafana stack is heavily used in DevOps scenarios but also extremel
 
 <!-- /TOC -->
 
-This post assumes that you already have a Raspberry Pi with docker-compose installed; if you do not you may want to read up on this blog post.
+This post assumes that you already have a Raspberry Pi with docker-compose installed; if you do not you may want to read up on this [blog post](/2020-12-install-docker-raspi).
 
 ## Prepare the folder structure
 

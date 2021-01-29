@@ -1,7 +1,7 @@
 ---
 title: Running influxdb on Raspberry Pi using Docker compose
 date: 2020-12-30
-tags: [raspberry-pi, iot, docker]
+tags: [raspberry-pi, iot, docker, databases]
 author: anoff
 resizeImages: true
 draft: false
