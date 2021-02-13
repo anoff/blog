@@ -45,7 +45,7 @@ A quick overview of the service architecture that will be built with this setup.
 ## Prerequisites
 
 You will need to have a Raspberry Pi with Docker and docker-compose installed.
-See my previous blog post if you do not know how to do that [How to setup Raspberry Pi as home server with Docker support](/2020-12-install-docker-raspi-3).
+See my previous blog post if you do not know how to do that [How to setup Raspberry Pi as home server with Docker support](/2020-12-install-docker-raspi).
 Your pi also needs to have an active internet connection and you need access it's terminal, either via SSH or direct keyboard.
 
 ## Preparing the influxdb working directory
