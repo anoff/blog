@@ -23,6 +23,8 @@ mkdir -p $HOME/docker/influxdb/init
 mkdir -p $HOME/docker/compose-files/influxdb
 </code></pre><h3 id=create-influxdb-conf-and-telegraf-conf>Create influxdb.conf and telegraf.conf</h3><p>To create a default config for <strong>influxdb</strong> in the newly created working directory run the following command</p><pre><code class=language-sh>cd $HOME/docker/influxdb
 docker run --rm influxdb influxd config &gt; influxdb.conf
+# 💡 for influx v2 you need to use `print-config` instead of `config` -&gt; docker run --rm influxdb influxd print-config &gt; influxdb.conf
+#     kudos to the reader that tipped me of about this difference
 # next do some modifications to the default config
 # enable HTTP auth
 sed -i 's/^  auth-enabled = false$/  auth-enabled = true/g' influxdb.conf
