@@ -87,6 +87,8 @@ To create a default config for **influxdb** in the newly created working directo
 ```sh
 cd $HOME/docker/influxdb
 docker run --rm influxdb influxd config > influxdb.conf
+# 💡 for influx v2 you need to use `print-config` instead of `config` -> docker run --rm influxdb influxd print-config > influxdb.conf
+#     kudos to the reader that tipped me of about this difference
 # next do some modifications to the default config
 # enable HTTP auth
 sed -i 's/^  auth-enabled = false$/  auth-enabled = true/g' influxdb.conf
