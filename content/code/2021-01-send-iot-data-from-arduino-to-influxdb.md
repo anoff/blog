@@ -178,7 +178,7 @@ Here is an example of my ESP8266 chip collecting some temperature readings for a
 ![Screenshot of InfluxDB Cloud Portal](/assets/influxdb-arduino/influxdb-dashboard.png)
 
 If you use a self-hosted InfluxDB instance you can either use Chronograf or generic dashboarding solution like Grafana.
-For installing Grafana using docker check out my [previous blog post](/2020-12-howto-grafana-on-raspi).
+For installing Grafana using docker check out my [previous blog post](/2021-01-howto-grafana-on-raspi).
 
 ![Screenshot of Grafana dashboard](/assets/influxdb-arduino/grafana-dashboard.png)
 
