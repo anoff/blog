@@ -115,8 +115,6 @@ echo Done
 
 # GitLab integration
 
-> This feature is currently only available with on-prem installations of GitLab, enabling it on gitlab.com is [an open issue](https://gitlab.com/gitlab-com/infrastructure/issues/2163). See the GitHub integration for a workaround.
-
 Using PlantUML within GitLab is super fun. All you have to do is [set up](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/administration/integration/plantuml.md) a render server to use and you can just commit Markdown files with inlined PlantUML diagrams and they will render for everyone visiting the GitLab web UI.
 
 What's great is that this does not only works in Markdown files committed into a git repository but in all other fields within GitLab that render markdown - virtually everything. You can have small diagrams helping illustrate things in issues as well.
@@ -126,6 +124,8 @@ What's great is that this does not only works in Markdown files committed into a
 ![Rendered PlantUML diagram in a GitLab issue](/assets/plantuml/puml-issue-rendered.png)
 
 # GitHub integration
+
+> Update 2022: Even though this is not integrating PlantUML in GitHub you may want to checkout the new [integration of mermaid.js into GitHub's Markdown renderer](https://github.blog/2022-02-14-include-diagrams-markdown-files-mermaid/)
 
 There is no native PlantUML integration for GitHub and gitlab.com available. To maintain the advantages listed above it is obviously not a valid workaround to just render the files locally and commit them into git.
 
