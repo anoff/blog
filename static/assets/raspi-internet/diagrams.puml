@@ -1,0 +1,48 @@
+@startuml network-setup
+skinparam monochrome true
+skinparam defaulttextalignment center
+
+component "Router1" as router1 {
+  frame "(W)LAN exposed" as exposed {
+    component "Raspberry Pi\nReverse Proxy" as pirp
+    component "IoT sensor" as sensor
+    component "Raspberry Pi\nServices" as pi
+  }
+}
+note bottom of router1
+  1x public IP
+end note
+interface "HTTP:80" as http
+interface "HTTPS:443" as https
+router1 -up- http
+router1 -up- https
+
+component "Router2" as router2 {
+  frame "(W)LAN home" as home {
+    node familydevices [
+      family devices
+      ====
+      smartphones
+      computers
+      smart home stuff
+    ]
+    component "pihole"
+  }
+  frame "(W)LAN guests" as guests {
+    node guestdevices [
+      guest devices
+      ====
+      smartphones
+      computers
+    ]
+  }
+}
+note bottom of router2
+  - creating separate network(s)
+  - propagating <b>pihole</b> as
+    local DNS to all smart devices
+end note
+
+
+router2 .left. router1: LAN uplink
+@enduml
