@@ -1,0 +1,301 @@
+---
+title: Migrating to vuetify 2.1
+date: 2019-10-06
+tags: [web, development]
+author: anoff
+resizeImages: true
+draft: false
+featuredImage: /assets/vuetify-2/title.png
+---
+
+```mermaid
+sequenceDiagram
+    participant Alice
+    participant Bob
+    Alice->>John: Hello John, how are you?
+    loop Healthcheck
+        John->>John: Fight against hypochondria
+    end
+    Note right of John: Rational thoughts <br/>prevail!
+    John-->>Alice: Great!
+    John->>Bob: How about you?
+    Bob-->>John: Jolly good!
+```
+
+I just migrated the [code](https://github.com/anoff/devradar/tree/master/editor) for the [devradar editor](//editor.devradar.io) to the latest major version of vuetify.
+There is an officiel [migration guide](https://vuetifyjs.com/en/getting-started/releases-and-migrations) that helped me solve 70% of the issues but here is a quick overview of the biggest issues I encountered and what actually changed.
+
+**📌 NOTE**\
+This post has been updated on 2019-11-01 with a chapter on the new grid system `v-flex ➡️ v-col`
+
+**🔥 CAUTION**\
+🚨 This was written for a migration from `vuetify 1.5.14` to `vuetify 2.1.1`
+  Also all code samples are typescript, but should also work for Javascript projects
+
+## Bootstrapping
+
+Looking at the new [Quick start section](https://vuetifyjs.com/en/getting-started/quick-start#quick-start) of vuetify 2.x you will notice that the way vuetify is added to Vue.js has changed.
+Previously vuetify was just included via `Vue.use()` now it also needs to be instantiated.
+
+**main.ts (vuetify 1.5)**
+
+```typescript
+import Vue from 'vue'
+import App from './App.vue'
+import '~vuetify/src/stylus/main' ①
+import Vuetify from 'vuetify' ①
+
+Vue.use(Vuetify, { ①
+  theme: appConfig.theme
+})
+
+/* eslint-disable no-new */
+new Vue({
+  el: '#app',
+  components: { App },
+  render: h => h(App),
+  template: '<App/>'
+})
+```
+1. These modifications should be removed when migrating
+
+The new setup would look like this
+
+**main.ts (vuetify 2)**
+
+```typescript
+import Vue from 'vue'
+import Vuetify from 'vuetify/lib' ①
+import App from './App.vue'
+import 'vuetify/dist/vuetify.min.css' ②
+
+Vue.use(Vuetify) ③
+
+const vuetifyOpts = { ④
+  theme: appConfig.theme
+}
+
+/* eslint-disable no-new */
+new Vue({
+  el: '#app',
+  router,
+  store,
+  components: { App },
+  render: h => h(App),
+  template: '<App/>',
+  vuetify: new Vuetify(vuetifyOpts) ④
+})
+```
+1. Load vuetify
+2. include the `css` instead of stylus sheet
+3. Register vuetify with Vue.js
+4. Configure and instantiate vuetify in the new vue instance
+
+## Loading styles
+
+This was already implicitly shown in the previous section but might be worth another mention.
+
+Whereas previously the vuetify styles were provided via a `styl(us)` file they are now precompiled `css`.
+
+```typescript
+// vuetify 1.5
+import 'vuetify/src/stylus/main.styl'
+
+// vuetify 2.x
+import 'vuetify/dist/vuetify.min.css'
+```
+
+Also note that the npm module ***sass*** is required and ***node-sass*** no longer works.
+You may need to swap by running
+
+```bash
+npm uninstall node-sass
+npm install --save-dev sass
+```
+
+## Adding vuetify types to typescript config
+
+If you get a compile error from typescript stating that `Argument of type '{..}' is not assignable to parameter of type 'ComponentOptions<..>'` or `Object literal may only specify known properties, and 'vuetify' does not exist in type` you need to register the vuetify types with typescript.
+This was something I had not done before and may only be necessary with the change to vuetify 2.
+
+![Vuetify error message](vuetify-ts-error.png)
+
+**tsconfig.json**
+
+```javascript
+{
+  "compilerOptions": {
+    "types": [
+      "webpack-env",
+      "node",
+      "vuetify" ①
+    ]
+  }
+}
+```
+1. add vuetify to the types property
+
+## Theme options
+
+If you are using a custom theme you might need to adapt to the new object structure that supports ***light and dark mode*** for your app.
+It is mostly moving the color specification of the theme into another nested layer.
+
+**vuetify 2 theme options structure**
+
+```plantuml
+!includeurl https://gist.githubusercontent.com/anoff/d8f48105ac4d3c7b14ca8c34d6d54938/raw/7381f13a14e048bbd3cb4ecc70369e913908151a/anoff.plantuml
+class theme {
+  dark: boolean
+  themes: Object
+}
+
+class themes {
+  light: ColorSpec
+  dark: ColorSpec
+}
+
+class ColorSpec {
+  primary:\t colorcode as string
+  secondary:\t colorcode as string
+  accent:\t colorcode as string
+  error:\t colorcode as string
+  warning:\t colorcode as string
+  info:\t\t colorcode as string
+  success:\t colorcode as string
+}
+
+theme -- themes
+themes -- ColorSpec
+```
+
+## Add MDI font
+
+Vuetify now uses the material design icons for default icons like the hamburger navigation menu.
+Install it as a dev dependency if you have not done so yet.
+Alternatively you could configure Vuetify to use another icon font, see the official getting started docs for infos on that.
+
+```bash
+npm install --save-dev @mdi/font
+```
+
+Then add it to your `main.ts`
+
+```typescript
+import '@mdi/font/css/materialdesignicons.css'
+```
+
+## Component changes
+
+With the above changes your app should build correctly, however there will still be a lot of errors in the browser as many components have breaking changes.
+Below are the main changes I had to fix in my [devradar](https://devradar.io) [editor application](https://editor.devradar.io).
+
+### Application Toolbar
+
+There is a new component `v-app-bar` that should be used for application wide navigation toolbars.
+
+```typescript
+// vuetify 1.5
+<v-toolbar
+    app dense scroll-off-screen
+    color="accent"
+    >
+
+// vuetify 2
+<v-app-bar
+  scroll-off-screen
+  dense
+  color="accent"
+  >
+```
+
+### List view
+
+All components in the list category have been renamed from `list-tile-xyz` to `list-item-xyz`.
+Best just run a replace all operation and see if it broke anything 😉
+
+## Grid System
+
+The grid system also got a major overhaul with Vuetify 2.x.
+There are two significant changes
+
+1. the elements of a grid layout now have different tags
+2. responsive viewport breakpoints and visibility properties have also changed (the old `xs8 lg4` syntax)
+
+Let’s start with the actual layout of a grid in Vuetify 2.x
+
+```typescript
+// vuetify 1.5
+<v-container>
+  <v-layout row>
+    <v-flex>
+      <span>some text</span>
+    </v-flex>
+  </v-layout>
+</v-container>
+
+// vuetify 2.0
+<v-container>
+  <v-row>
+    <v-col>
+      <span>some text</span>
+    </v-col>
+  </v-row>
+</v-container>
+```
+
+As you can see the `<v-container>` remains the same but the inner tags have been renamed to better reflect what they actually represent - rows and columns.
+Therefore `<v-layout row> ➡️ <v-row>` and `<v-flex> ➡️ <v-col>`.
+Remember if you change these to also rename the closing tags.
+
+Another thing you need to refactor in your grids is the responsive breakpoints on the `<v-col>` (or previously v-flex) tags.
+
+```html
+// vuetify 1.5
+<v-flex xs12 lg6>
+  <span>Some text that is shown in full width on small displays and half screen on larger displays</span>
+</v-flex>
+<v-flex hidden-md-and-down lg6>
+  <span>A second text is only shown on large displays</span>
+</v-flex>
+
+// vuetify 2.0
+<v-col cols="12" lg="6">
+  <span>Some text that is shown in full width on small displays and half screen on larger displays</span>
+</v-col>
+<v-col cols="6" class="d-none d-lg-flex">
+  <span>A second text is only shown on large displays</span>
+</v-col>
+```
+
+Notice here that:
+
+1. There is no `xs` property any more, instead the `cols` properties is used to define the horizontal dimension of a column that can be [further detailed with breakpoint properties](https://vuetifyjs.com/en/components/grids#examples) `sm`, `md`, `lg`, `xl`
+2. These column size props have to be assigned a value `lg=6` where in Vuetify 1.5 they were shorthanded to `lg6`
+3. The [visibility properties](https://vuetifyjs.com/en/styles/display) have been changed from `hidden-<breakpoint>-<condition>` to a combination of classes that affect the elements `display` style
+
+The new ***Visibility properties*** can do exactly the same as previously but there logic changed.
+Let me explain how to think of them with Vuetify 2.x.
+
+Instead of one property you now assign multiple classes.
+You assign it the class that represents the display value you want the element to have on extra small (xs) screens.
+So let’s say you have information you only want to show on larger screens, you now add `class="d-none"` which gives the element the `display: none;` style value.
+Going from largest viewport (xs) to biggest (xl) you pick the breakpoints you want this display value to change and just assign the respective property e.g. `class="d-lg-inline"` to switch to an inline display for large screens (and above).
+
+Some examples:
+
+```html
+
+// vuetify 2.0
+<v-col class="d-none d-md-flex"> .. </v-col> // invisible on xs, sm and becomes a flex display element for md, lg, xl screens
+
+<v-col class="d-flex d-lg-none"> .. </v-col> // starts off as a flex element on xs screens and becomes invisible for larger screens (lg, xl)
+
+<v-col class="d-none d-md-flex d-xl-none"> .. </v-col> // invisible for xs, sm screens, visible as flex element for medium and large screens, again invisible on extra-large screens
+```
+
+## Done
+
+These changes made my application compile and render the home app component without issues.
+Various components changed and you may need to consult the migration docs for specific cases -- or just look at the new API docs directly as they are way more detailed.
+
+If you stumbled upon this post, I hope it helped you. If it did not I would love to hear what you are missing in the comments or via [Twitter DM](https://twitter.com/anoff_io) 👋

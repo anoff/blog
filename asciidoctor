@@ -1,2 +1,0 @@
-#!/bin/bash
-/usr/bin/asciidoctor -r asciidoctor-html5s -b html5s -r asciidoctor-diagram "$@"

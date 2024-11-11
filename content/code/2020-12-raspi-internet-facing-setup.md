@@ -1,0 +1,79 @@
+---
+title: How to expose applications via Raspberry Pi to the internet
+date: 2021-01-01
+tags: [raspberry-pi, docker]
+author: anoff
+resizeImages: true
+draft: true
+featuredImage: /assets/raspi-internet/title.png
+---
+:outdir: _site
+:imagesdir: /assets/raspi-internet/
+:imagesoutdir: _site/assets/raspi-internet/
+:traefik-url: https://traefik.io/
+
+**Network Setup**
+
+```plantuml
+@startuml network-setup
+skinparam monochrome true
+skinparam defaulttextalignment center
+
+
+interface "service-a.mydomain.com <i>:80,443" as SSLa
+interface "service-b.io <i>:80,443" as SSLb
+interface "Traefik dashboard <i>:80,443" as SSL_traefik
+
+frame "Home network" as home {
+  node "influx db" as influx
+  node "grafana" as grafana
+  node "IoT sensor" as sensor
+}
+component "Virtual Machine" as VM1 {
+  component Docker as docker1 {
+    artifact "service A" as servicea
+    artifact "service B" as serviceb
+    artifact "traefik:latest" as traefik
+  }
+  traefik -- servicea: internal port\n<i>:3000
+  traefik -- serviceb: <i>:3030
+}
+note left of VM1
+  1x public IP
+  service-a.mydomain.com
+  service-b.io
+end note
+
+interface "service-a.mydomain.com <i>:80,443" as SSLa
+interface "service-b.io <i>:80,443" as SSLb
+interface "Traefik dashboard <i>:80,443" as SSL_traefik
+
+SSLa -down- traefik
+SSLb -down- traefik
+SSL_traefik -down- traefik
+@enduml
+```
+
+**Container Setup on Raspberry**
+
+```plantuml
+@startuml
+skinparam monochrome true
+|Local (git)|
+start
+:modify LaTeX file;
+:commit changes;
+:run <i>Makefile;
+:commit updated PDF;
+:push changes;
+|Build pipeline|
+:generate static web page
+treating CV (PDF) as an artifact;
+:upload static web page;
+|Web Server|
+:provide web page;
+|Viewer|
+:enjoy my CV;
+stop
+@enduml
+```

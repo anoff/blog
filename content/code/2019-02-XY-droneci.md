@@ -1,0 +1,16 @@
+---
+title: Drone.io for CI/CD
+date: 2019-02-01
+tags: [CI/CD]
+author: anoff
+resizeImages: true
+draft: true
+---
+
+compared to travis/gitlab
+
+* oauth github login
+* local CLI via brew
+* setup .rc files for credentials
+* `drone exec` to test locally
+* set up github pages via personal gh access token

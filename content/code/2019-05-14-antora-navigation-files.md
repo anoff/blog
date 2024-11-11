@@ -1,0 +1,192 @@
+---
+title: Composing navigation files in Antora using the include macro
+date: 2019-05-14
+tags: [docs, architecture]
+author: anoff
+draft: false
+featuredImage: /assets/antora-arc42/title-3.png
+---
+:outdir: _site
+:imagesoutdir: _site/assets/antora-arc42
+:imagesdir: /assets/
+
+This third post in the series of Antora posts quickly addresses a feature I only recently discovered.
+It will show you some techniques you can use to compose the navigation menu in a multi-repository, multi-module setup.
+This is especially interesting if you have content spread across repositories that you want to present hierarchically in the navigation tree.
+
+&lt;!--more-->
+
+## Using multiple navigation files
+
+Let us start with the basics: ***How to combine navigation files?***
+
+The [Antora docs](https://docs.antora.org/antora/2.0/navigation/register-navigation-files/) explain how you can use multiple navigation files for one component by using the `nav` key in the component descriptor.
+However this limits you to the operation of ***concatenation***.
+
+**Concatenating navigation files via component descriptor**
+
+![Concatenated navigation content](antora-arc42/nav-concat.png)
+
+To achieve such concatenation just define your component as
+
+**antora.yml**
+
+```yaml
+name: bp
+title: Bird Person
+version: HEAD
+nav: 
+- modules/ROOT/nav1.adoc
+- modules/wedding/nav2.adoc
+- modules/friends/nav3.adoc
+```
+
+## Composing navigation files by include
+
+In case a plain concatenation does not do it and you want to compose your navigation structure across three different navigation files you can use the `include:` macro.
+This can come in handy if you split content into multiple modules and want to include the content of the modules in varying order in the navigation menu.
+
+**Inlining navigation content**
+
+![Inlined navigation content](antora-arc42/nav-inline.png)
+
+In this scenario the component descriptor would reference a single navigation file
+
+**antora.yml**
+
+```yaml
+name: bp
+title: Bird Person
+version: HEAD
+nav: 
+- modules/ROOT/nav1.adoc
+```
+
+But the navigation file in turn references content from additional supplemental navigation files.
+
+**modules/ROOT/nav1.adoc**
+
+```asciidoc
+.Bird Person
+* xref:welcome.adoc[Welcome to Birdperson's life]
+include::wedding:partial$nav2.adoc[
+* xref:contact.adoc[Contact me]
+```
+
+**modules/wedding/nav2.adoc**
+
+```asciidoc
+* xref:wedding:invitation.adoc[Wedding Invitation]
+** xref:wedding:attendees.adoc[Attendees]
+```
+
+**modules/friends/nav3.adoc**
+
+```asciidoc
+* Friends of Birdperson
+** xref:friends:tammy.adoc[<3 Tammy]
+** xref:friends:morty.adoc[Morty]
+** xref:friends:rick.adoc[Rick]
+```
+
+**File structure for included nav files**
+
+![Screenshot of the file structure](antora-arc42/filetree-wedding.png)
+
+Given the above navigation files and directory structure you end up with the following navigation tree.
+Notice how `nav2.adoc` is embedded in the content defined in `nav1.adoc`.
+
+**Bird Person**
+
+* Welcome to Birdperson’s life
+* Wedding Invitation
+  * Attendees
+* Contact me
+* Friends of Birdperson
+  * &lt;3 Tammy
+  * Morty
+  * Rick
+
+**❗ IMPORTANT**\
+For navigation files to be used by `include:` in Antora you need to place them inside a folder that is indexed by Antora. The suggested solution is storing it as a partial so it does not clutter the actual page space.
+
+## Nesting navigation listings across files
+
+There is another interesting scenario of including remote content.
+Given our simple example this might seem far-fetched but consider the option of defining a high level list structure in `nav1.adoc` and filling certain branches of this navigation tree with included files.
+In this scenario we want to include the list of Birdperson’s friends but ***continue the list indentation*** from `nav1.adoc`.
+
+**Nesting navigation content**
+
+![Nested navigation content](antora-arc42/nav-nest.png)
+
+By extending Birdpersons relationships also to enemies we want the following nav tree to be rendered:
+
+**Bird Person**
+
+* Welcome to Birdperson’s life
+* Wedding Invitation
+  * Attendees
+* Relationships
+  * Enemies
+    * Galactic Federation
+  * Friends
+    * &lt;3 Tammy
+    * Morty
+    * Rick
+* Contact me
+
+For the sake of simplicity we will not add any pages for the _Enemies / Galactic Federation_ entries.
+The changed files for this scenario are `nav1` and `nav3`.
+
+**modules/ROOT/nav1.adoc**
+
+```asciidoc
+.Bird Person
+* xref:welcome.adoc[Welcome to Birdperson's life]
+* Relationships
+** Enemies
+*** Galactic Federation
+** Friends
++
+--
+--
++
+* xref:contact.adoc[Contact me]
+```
+
+**modules/friends/nav3.adoc**
+
+```asciidoc
+** xref:friends:tammy.adoc[<3 Tammy]
+** xref:friends:morty.adoc[Morty]
+** xref:friends:rick.adoc[Rick]
+```
+
+Notice how `nav3.adoc` in this case only hosts the sub-elements and not the _Friends_ caption itself.
+Using the same directory structure as previously the final rendered result in Antora looks like the nested list we expected to get.
+
+**Nested navigation tree in Antora**
+
+![Nested navigation tree](antora-arc42/navtree-wedding.png)
+
+As expected the content of `nav2.adoc` is included on the same list level as `nav1.adoc`.
+The list of friends from `nav3.adoc` however continues as a nested indentation within `ROOT/nav1.adoc`.
+The picture below shows the included sections highlighted according to their respective navigation files.
+
+**Nested navigation tree in Antora (highlighted)**
+
+![Nested navigation tree (highlighted)](antora-arc42/navtree-wedding-colored.png)
+
+## Closing words
+
+Dan Allen posted a fantastic answer to my [initial question](https://gitlab.com/antora/antora/issues/423#note_166845701) regarding this issue.
+I encourage you to read it if you have questions about what happens exactly.
+
+Another neat trick is to ***reuse component definitions*** if you are forced to spread documentation across different repositories that you actually want to show up in a common navigation tree.
+This might be the case for multi-repository software projects where you want to create one generic software documentation and aggregate by content (e.g. all interfaces in one place).
+To achieve this just use the same `antora.yml` file (same `name:` and `version:`) in multiple repositories.
+
+You can view the example directories in [github.com/anoff/blog](https://github.com/anoff/blog/tree/master/static/assets/antora-arc42/) and run the `playbook-nest.yml`.
+
+If you have any questions or know additional tricks let me know via [Twitter](https://twitter.com/anoff_io) or leave a comment 👋

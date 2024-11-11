@@ -1,7 +1,7 @@
 title = "Andreas' Blog"
 # Add an trailing slash to ensure that all fonts render correctly.
 baseURL = "https://blog.anoff.io/"
-theme = "bilberry-hugo-theme"
+theme = "bilberry-hugo-theme/v4"
 
 enableRobotsTXT = true
 
@@ -9,7 +9,8 @@ enableRobotsTXT = true
 DefaultContentLanguage = "en"
 
 # Enable / Disable Google Analytics statistics for your site
-googleAnalytics = "UA-93890295-4"
+# TODO: replace with Google Analytics 4 (GA4) key
+# googleAnalytics = "UA-93890295-4"
 
 # Enable / Disable comments on the articles via Disqus.
 disqusShortname = "anoff-io"
@@ -60,7 +61,7 @@ disqusShortname = "anoff-io"
     subtitle = "Adventures of a software engineer/architect"
 
     # if you want to use gravatar for the header image
-    gravatarEMail = "offenhaeuser@gmail.com"
+    gravatarEMail = "offenan@proton.me"
 
     # set an path to the image file you want to use | overwrites gravatar
     customImage = "/avatar.png"
@@ -125,6 +126,13 @@ disqusShortname = "anoff-io"
     creditsText = "Bilberry Hugo Theme"
     creditsUrl = "//github.com/Lednerb/bilberry-hugo-theme"
 
+  # Customize Theme
+  baseColor = "#444"
+  pageBackgroundColor = "#fff"
+  specialColor = "#cc0033"
+  highlightColor = "#cc0033"
+  textColor = "#111"
+  
 # Rewrite URLs to keep previous Jekyll links alive
 #   https://gohugo.io/content-management/urls/
 [permalinks]
@@ -141,9 +149,3 @@ disqusShortname = "anoff-io"
 [outputs]
   home = [ "HTML", "JSON", "RSS" ]
   page = [ "HTML" ]
-
-[security]
-
-  [security.exec]
-    allow = ['^(dart-)?sass(-embedded)?$', '^go$', '^git$', '^npx$', '^postcss$', '^tailwindcss$', '^asciidoctor$']
-    osEnv = ['(?i)^((HTTPS?|NO)_PROXY|PATH(EXT)?|APPDATA|TE?MP|TERM|GO\w+|(XDG_CONFIG_)?HOME|USERPROFILE|SSH_AUTH_SOCK|DISPLAY|LANG|SYSTEMDRIVE)$']

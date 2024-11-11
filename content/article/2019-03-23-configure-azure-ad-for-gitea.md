@@ -1,0 +1,85 @@
+---
+title: Configure Azure Active Directory as Authentication Provider for Gitea
+date: 2019-03-23
+tags: [gitea, azure]
+author: anoff
+resizeImages: true
+featuredImage: /assets/gitea-aad/title.png
+---
+[Gitea](https://gitea.io/en-us/) is an open source git hosting platform, written in Go forked from the Gogs project and seems to be highly inspired by GitHub.
+If you want to host your own git platform and want to use ***Azure Active Directory*** as an authentication provider - this post might help you.
+
+<!--more-->
+
+Used abbreviations:
+
+* AP: Authentication Provider
+* AD: Active Directory
+* AAD: Azure Active Directory
+
+## Authentication Providers
+
+Instead of managing credentials in your application you can use external authentication providers (AP) to deal with user authentication.
+The most common scenario nowadays is the [OAUTH](https://en.wikipedia.org/wiki/OAuth) protocol.
+Using an AP not only makes your life as a service developer/admin easier but also the user because he can reuse his identity from other services.
+
+**Gitea authentication sources (v.9f33aa6)**
+
+![Gitea Screenshot](/assets/gitea-aad/auth-sources.png)
+
+**Gitea OAUTH providers (v.9f33aa6)**
+
+![Gitea Screenshot](/assets/gitea-aad/auth-sources.png)
+
+Gitea supports several authentication types and when it comes to OAUTH also several providers. The one we will use for including ***Azure Active Directory*** is the [OpenID Connect](https://openid.net/connect/) provider that actually exposes a common standard for authentication providers to use, so applications like Gitea do not have to implement individual OAUTH providers.
+
+We will be using the [OAuth 2.0 auth code grant](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-auth-code-flow).
+
+## Creating an Azure AD application
+
+**📌 NOTE**\
+This guide uses the _App registrations Preview_, if you use the classic app registrations you can just create a `native` application.
+
+The first step is to create an application on Azure, head over to [AAD - App Registrations](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredAppsPreview) in the portal and register a new application:
+
+* ***name***: irrelevant for the setup, will be presented to the user when asking for his permissions
+* ***type***: web
+* ***redirect URI***: `<host>/user/oauth2/<Authentication Name>/callback` as a callback URL where `<Authentication Name>` is a value you will specify in the next chapter e.g. _AAD_, _Azure Auth_
+
+For Azure to implement the correct authorization flow (`code`) we need to change our ***application type*** to `native`, this can be done via the _Manage -> Authentication_ blade in the Azure Portal. Set The default application type to `Yes`. In case the UI changes make sure to look out for _Device code flow_ and make sure it is configured to use this method.
+
+**Change registered app from web to native type (App registrations Preview)**
+
+![Azure Portal Screenshot](/assets/gitea-aad/app-native.png)
+
+Scroll up on the same page and make sure you have a Redirect URI of type `Web` set correctly.
+
+Finally we need to create a ***Client secret*** by going to the _Manage -> Certificates & secrets_ panel and add a new client secret.
+
+**🔥 CAUTION**\
+Make sure to copy the secret as it is created - you will not be able to access it later.
+
+**Create client secret (App registrations Preview)**
+
+![Azure Portal Screenshot](/assets/gitea-aad/app-secret.png)
+
+For the configuration in Gitea you need the following values from your Azure App registration:
+
+1. ***Client Secret***
+2. ***Client ID***: go to the application _Overview_ and copy the Application (client) ID string
+3. ***OpenID URL***: `https://login.microsoftonline.com/<tenant>/v2.0/.well-known/openid-configuration` where you can find your tenant also in the _Overview_ tab as Directory (tenant) ID
+
+## Add Authentication Source in Gitea
+
+On the Gitea administration page select _Authentication Sources_ and create a new one:
+
+* ***Authentication Type***: OAuth2
+* ***Authentication Name***: the same name you used for defining the callback URL in the previous step (e.g. _AAD_, _Azure AD_)
+* ***OAuth2 Provider***: OpenID Connect
+* ***Client ID****, **Client Secret*** and ***OpenID Connect URL*** as previously specified
+
+**Configured Gitea Azure AD Authentication Source (v.9f33aa6)**
+
+![Gitea Auth Screenshot](/assets/gitea-aad/gitea-auth.png)
+
+If you are having issues following this guide or find information being outdated feel free to leave a comment or reach out via [Twitter](https://twitter.com/anoff_io) 👋
