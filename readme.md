@@ -4,6 +4,12 @@
 
 Some thoughts and lessons I write down so that I can look them up later - and maybe help others along the way.
 
+# TODO:
+- fix google analytics
+- review all converted adoc -> md
+- rework all plantuml to mermaidjs
+- fix release pipeline
+
 ## Fixes to theme
 
 ```scss
