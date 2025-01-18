@@ -6,9 +6,6 @@ author: anoff
 draft: false
 featuredImage: /assets/continuous-cv/logo.png
 ---
-:outdir: _site
-:imagesdir: /assets/continuous-cv/
-:imagesoutdir: _site/assets/continuous-cv/
 
 Versioning your CV is important. 
 One traditional approach is to date it whenever you send it out.
@@ -63,33 +60,13 @@ Finally rendered you will see something like this
 
 **git SHA as CV version**
 
-![git SHA in PDF](git-version.png)
+![git SHA in PDF](/assets/continuous-cv/git-version.png)
 
 The complete workflow to update the CV:
 
 **Manual CV generation**
 
-```plantuml
-@startuml
-skinparam monochrome true
-|Local (git)|
-start
-:modify LaTeX file;
-:commit changes;
-:run <i>Makefile;
-:commit updated PDF;
-:push changes;
-|Build pipeline|
-:generate static web page
-treating CV (PDF) as an artifact;
-:upload static web page;
-|Web Server|
-:provide web page;
-|Viewer|
-:enjoy my CV;
-stop
-@enduml
-```
+![Manual CV Generation](/assets/continuous-cv/manual-generation.svg)
 
 ## The Issues
 
@@ -114,27 +91,7 @@ My ideal workflow for the web hosted CV is the following:
 
 **Continuous Vitae generation**
 
-```plantuml
-@startuml
-skinparam monochrome true
-|Local (git)|
-start
-:modify LaTeX file;
-:commit changes;
-:push changes;
-|Build pipeline|
-:inject git version;
-:generate PDF;
-:generate static web page
-treating CV (PDF) as an artifact;
-:upload static web page;
-|Web Server|
-:provide web page;
-|Viewer|
-:enjoy my CV;
-stop
-@enduml
-```
+![Automated CV Generation](/assets/continuous-cv/automated-generation.svg)
 
 ## The Solution
 
@@ -222,7 +179,7 @@ drone exec --include fetch-version --include build-cv
 
 **Drone CLI output for local execution**
 
-![CLI output](drone-exec.png)
+![CLI output](/assets/continuous-cv/drone-exec.png)
 
 ## Summary
 
