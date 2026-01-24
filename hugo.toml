@@ -1,7 +1,7 @@
 title = "Andreas' Blog"
 # Add an trailing slash to ensure that all fonts render correctly.
 baseURL = "https://blog.anoff.io/"
-theme = "bilberry-hugo-theme"
+theme = "bilberry-hugo-theme/v4"
 
 enableRobotsTXT = true
 
@@ -9,7 +9,8 @@ enableRobotsTXT = true
 DefaultContentLanguage = "en"
 
 # Enable / Disable Google Analytics statistics for your site
-googleAnalytics = "UA-93890295-4"
+# TODO: replace with Google Analytics 4 (GA4) key
+# googleAnalytics = "UA-93890295-4"
 
 # Enable / Disable comments on the articles via Disqus.
 disqusShortname = "anoff-io"
@@ -27,7 +28,7 @@ disqusShortname = "anoff-io"
   # Files are imported in the order they appear here, after
   # theme.css and theme.js, respectively.
   css_modules = ["adoc.css", "overwrites.css", "//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css"]
-  js_modules = ["fix-adoc.js", "//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js", "init-cookieconsent.js"]
+  js_modules = ["fix-adoc.js", "//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js", "init-cookieconsent.js", "https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js", "init-mermaid.js"]
 
   # Description and meta data for the search engines
   author = "Andreas Offenhaeuser"
@@ -60,7 +61,7 @@ disqusShortname = "anoff-io"
     subtitle = "Adventures of a software engineer/architect"
 
     # if you want to use gravatar for the header image
-    gravatarEMail = "offenhaeuser@gmail.com"
+    gravatarEMail = "offenan@proton.me"
 
     # set an path to the image file you want to use | overwrites gravatar
     customImage = "/avatar.png"
@@ -125,12 +126,22 @@ disqusShortname = "anoff-io"
     creditsText = "Bilberry Hugo Theme"
     creditsUrl = "//github.com/Lednerb/bilberry-hugo-theme"
 
+  # Customize Theme
+  baseColor = "#444"
+  pageBackgroundColor = "#fff"
+  specialColor = "#cc0033"
+  highlightColor = "#cc0033"
+  textColor = "#111"
+  
+[markup.goldmark.renderer]
+  unsafe = true
+
 # Rewrite URLs to keep previous Jekyll links alive
 #   https://gohugo.io/content-management/urls/
 [permalinks]
-  code = "/:filename"
-  article = "/:filename"
-  book = "/:filename"
+  code = "/:contentbasename"
+  article = "/:contentbasename"
+  book = "/:contentbasename"
 
 # don't change anything below
 [taxonomies]
@@ -141,4 +152,3 @@ disqusShortname = "anoff-io"
 [outputs]
   home = [ "HTML", "JSON", "RSS" ]
   page = [ "HTML" ]
-

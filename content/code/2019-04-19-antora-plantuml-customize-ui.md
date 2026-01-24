@@ -1,0 +1,172 @@
+---
+title: Advanced customization for Antora - PlantUML support & custom UI
+date: 2019-04-19
+tags: [docs, architecture]
+author: anoff
+draft: false
+featuredImage: /assets/antora-puml/title.png
+---
+
+
+This post will cover some slightly advanced steps for building a multi-repository Asciidoc documentation using [Antora](//antora.org/).
+My previous post [blog.anoff.io/2019-02-15-antora-first-steps](//blog.anoff.io/2019-02-15-antora-first-steps/) covered basics of Antora and how to migrate existing AsciiDoc files.
+In this post I will go through the steps of including content from another repository, building a custom UI and adding plantUML support to the (automated, dockerized) build.
+
+## plantUML support
+
+One of the most important things for me when it comes to software docs is the ability to show relationships and interactions using diagrams.
+As you might know from my [previous posts](/2018-07-31-diagrams-with-plantuml/) I am a huge plantUML fan.
+So plantUML support is important both for rendering the Antora website and the local development.
+
+## Local preview
+
+For local previews I use the [AsciiDoc extension](https://marketplace.visualstudio.com/items?itemName=joaompinto.asciidoctor-vscode) by João Pinto.
+
+**PlantUML preview in VS code**
+
+![VS Code Preview of PlantUML in .aodc](/assets/antora-puml/vscode-asciidoc.png)
+
+To get the plugin working you need to set the `plantuml-server-url` Asciidoctor attribute on your page as described on the [asciidoctor-plantuml package](https://github.com/eshepelyuk/asciidoctor-plantuml.js#configuration) that is used for rendering in VSC.
+Sadly this needs to be set for every single adoc file - if you want to preview it.
+
+```asciidoc
+:plantuml-server-url: http://www.plantuml.com/plantuml
+```
+
+## Antora plantUML rendering
+
+To enable plantUML in Antora you need to register the [asciidoctor-plantuml package](https://github.com/eshepelyuk/asciidoctor-plantuml.js#configuration) and configure the same attribute as for local preview.
+However in the case of Antora you an specify it one in the `playbook.yml`.
+
+**📌 NOTE**\
+If you have a different server defined in the page itself, this will overrule the global config.
+
+**playbook.yml**
+
+```yaml
+asciidoc:
+  attributes:
+    :plantuml-server-url: http://www.plantuml.com/plantuml
+  extensions:
+  - asciidoctor-plantuml
+```
+
+## Multiple repositories for a single documentation
+
+Another feature I promised to address during my [previous post](/2019-02-15-antora-first-steps/) was splitting up content into multiple Antora modules/components.
+For my [arc42 dummy project](https://github.com/anoff/antora-arc42) I used both.
+
+**Table of Contents for ARC42 project**
+
+![ARC42 table of contents](/assets/antora-puml/arc-toc.png)
+
+Given the above table of contents the chapters _Cross-cutting concepts_ and _Architecture decisions_ where put into a separate module within the main component.
+The modules _concepts_ and _adr_ (architecture design record) are moved into [separate modules](https://github.com/anoff/antora-arc42/tree/master/docs/modules) because I prefer to have each concept/adr in a separate `.adoc` file.
+For this example a simple subfolder within the `ROOT/pages` directory might suffice but in a real world scenario having a different module might come in handy to handle these important topics more efficiently.
+Both concepts and ADRs are aggregated into a single `index.adoc` file in each module and are included in the main build.
+
+A separate Antora component is used in this example for the _Media Manager_ subsystem that makes up one of the level 1 building blocks.
+Imagine this subsystem being developed in a separate repository.
+In this case you want to keep the respective documentation within the _MediaManager_ repository.
+This is done in the [antora-arc42-mediaman](https://github.com/anoff/antora-arc42-mediaman) repository where all the subsystems source code and documentation shall be kept.
+
+In the example build the Level 2 definition of the _Media Manager_ block diagram view is included from the remote repository of the subsystem.
+You can see this include on [line 178 of the building_block_view.adoc](https://github.com/anoff/antora-arc42/blame/master/docs/modules/ROOT/pages/05_building_block_view.adoc#L178).
+
+So overall the ARC42 build uses four modules spread across two components to build its entire documentation.
+Some modules provide [Antora partials](https://docs.antora.org/antora/2.0/asciidoc/include-partial/) whereas others provide entire pages that get referenced in the main ROOT module.
+
+**Multi component, multi module Antora setup**
+
+```mermaid
+component "antora-arc42" {
+  [ROOT]
+  [adr]
+  [concepts]
+}
+component "antora-arc42-mediaman" {
+  [ROOT] as media_root
+}
+
+[Antora build] as antora
+
+antora ..> [ROOT]
+[ROOT] ..> [adr]
+[ROOT] ..> [concepts]
+[ROOT] ..> media_root
+```
+
+## Customizing the Antora UI
+
+For minor modifications of the UI you can use the _supplemental_files_ attribute in the playbook.
+Supplemental files allow you to exchange parts of the ***built*** UI bundle.
+Given the current state of the default UI that you can find at [gitlab.com/antora/antora-ui-default](https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/master/raw/build/ui-bundle.zip?job=bundle-stable) this is best used to modify the content of header, footer etc.
+
+### Applying minor changes via supplement_files
+
+On [this commit](https://github.com/anoff/antora-arc42/tree/34fb829cd4924d6fcc937e9cb72bdaeac73b8cf1/supplemental-ui) of the antora-arc42 you can see _supplementa_files_ being defined and used.
+To modify content from the UI bundle simply check it into the repository of your antora playbook and reference it
+
+**Specifying supplemental_files for the Antora UI bundle**
+
+```yaml
+ui:
+  bundle:
+    url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/master/raw/build/ui-bundle.zip?job=bundle-stable
+    snapshot: true
+supplemental_files: ./supplemental-ui
+```
+
+In the repository I applied a custom footer template to the bundle.
+
+**supplemental-ui/partials/footer-content.hbs**
+
+```html
+<footer class="footer">
+  <p>Original arc42 template licensed under <a href="https://raw.githubusercontent.com/arc42/arc42-template/master/LICENSE.txt">MIT</a> and modified for antora fit by <a href="https://anoff.io">Andreas Offenhaeuser</a>, the page is created using the Antora Default UI licensed under <a href="https://gitlab.com/antora/antora-ui-default/blob/master/LICENSE">MPL-2.0</a></p>
+</footer>
+```
+
+As all style attributes are bundled into a single `site.css` file it is quite hard to modify the UI style via this method.
+Dan - the author of Antora - explained it like this in an [issue discussion](https://gitlab.com/antora/antora/issues/149) I had in the Antora repository.
+
+**Dan Allen on customizing the UI**
+
+![Dan Allen on customizing the UI](/assets/antora-puml/ui-style.png)
+
+### Creating a custom UI bundle
+
+Not being able to modify the generated sites style via the _supplemental_files_ method I set out to create a custom UI bundle for my ARC42 documentation.
+The main changes I implemented with this bundle are:
+
+1. custom color theme via [src/css/](https://github.com/anoff/antora-arc42-ui/commit/a678116e661bc1d1e06bf72559ff21a886a260dd)
+2. customized header and footer files
+3. add a [custom CSS/JS](https://github.com/anoff/antora-arc42-ui/commit/11fc95f7946046e203d6cf093715a3c37c35b6ce) to provide help text that can be toggled via the `toggle help` text in the navigation bar
+4. remove the component navigation dropdown as shown in the image below
+
+**Antora component navigator**
+
+![component navigation dropdown](/assets/antora-puml/navdrop.gif)
+
+The component navigation has been removed because in the case of the ARC42 documentation the MediaManager component is not a documentation in itself but merely a way of creating a _multi-repository architecture documentation_.
+Therefore only a single entrypoint into the documentation is required.
+If your project has both - Antora components that merely serve as partial/page providers and components that serve as standalone documentation you may want to create a custom navigation option as well.
+
+## Summary
+
+The Antora ARC42 build now consists of three repositories
+
+1. the playbook and main ARC42 dos at https://github.com/anoff/antora-arc42
+2. an Antora component to provide lower level documentation of the [antora-arc42-mediaman](https://github.com/anoff/antora-arc42-mediaman) to be included in the build
+3. a custom UI bundle https://github.com/anoff/antora-arc42-ui
+
+These repositories should act as a good reference to create more advanced builds with Antora while not cluttering the individual repositories with too many features/changes.
+As with most of my recent projects all automation is done via [Drone CI](https://cloud.drone.io/anoff/antora-arc42), see the respective `.drone.yml` repositories in the main repository and the UI bundle for reference.
+
+**Screenshot of the final gitarc.xyz ARC42 Antora build**
+
+![Screenshot of the gitarc.xyz page](/assets/antora-puml/screenshot.png)
+
+You can view the final result at [gitarc.xyz](http://gitarc.xyz/system/0.9.0/03_system_scope_and_context.html?help) with `?help` showing all the original ARC42 help texts for each chapter.
+
+If you have any questions or know of better/alternative ways let me know via Twitter, leave a comment or submit changes to this post directly via PR 👋

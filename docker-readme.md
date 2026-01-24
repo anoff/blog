@@ -1,17 +1,20 @@
-# A hugo image with asciidoctor compatibility
+# Docker Build
 
-For my blog I built a docker image that allows building a hugo site with asciidoctor content. There are a few [hacks](https://blog.anoff.io/2019-02-17-hugo-render-asciidoc/) I needed that are also baked into this image.
-
-Make sure git submodules are initialized `git submodule update --init`
-
-To write/live preview the content start hugo in dev mode and open [localhost:1313](http://localhost:1313)
+Start a shell in a container with all dependencies installed:
 
 ```sh
-$ docker run --rm -v $PWD:/app -p 1313:1313 anoff/hugo-asciidoctor hugo server -D --bind 0.0.0.0
+docker run --rm -it -v $PWD:/src -p 1313:1313 --entrypoint=sh $(docker build -q .)
 ```
 
-To build your site:
+Inside the container:
 
 ```sh
-$ docker run --rm -v $PWD:/app anoff/hugo-asciidoctor hugo --gc --minify -d _site
+hugo server -D --bind 0.0.0.0
+```
+
+Or just build via Docker:
+
+```sh
+docker build -t my-blog .
+docker run --rm -v $PWD/public:/src/public my-blog
 ```
