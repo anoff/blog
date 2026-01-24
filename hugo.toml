@@ -133,12 +133,15 @@ disqusShortname = "anoff-io"
   highlightColor = "#cc0033"
   textColor = "#111"
   
+[markup.goldmark.renderer]
+  unsafe = true
+
 # Rewrite URLs to keep previous Jekyll links alive
 #   https://gohugo.io/content-management/urls/
 [permalinks]
-  code = "/:filename"
-  article = "/:filename"
-  book = "/:filename"
+  code = "/:contentbasename"
+  article = "/:contentbasename"
+  book = "/:contentbasename"
 
 # don't change anything below
 [taxonomies]

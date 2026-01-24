@@ -10,22 +10,18 @@ Some thoughts and lessons I write down so that I can look them up later - and ma
 - rework all plantuml to mermaidjs
 - fix release pipeline
 
-## Fixes to theme
+## Customizations
 
-```scss
-// themes/bilberry-hugo-theme/assets/sass/_variables.scss
-// main colors
-$page-background-color: #f1f1f1;
-$base-color: #444;
-$special-color: #cc0033;
-$highlight-color: #cc0033;
-$text-color: #111;
-```
+Theme overrides are located in the `assets/` directory.
 
 ## Local preview
 
 ```sh
-$ docker run --rm -v $PWD:/app -p 1313:1313 anoff/hugo-asciidoctor hugo server -D --bind 0.0.0.0
+$ ./dev.sh
+```
+or
+```sh
+$ hugo server -D
 ```
 
 ## Planned development
@@ -47,3 +43,4 @@ I am using the [bilberry-hugo-theme](https://github.com/Lednerb/bilberry-hugo-th
 - 2018-01: started out on [medium](https://medium.com/@anoff_io)
 - 2018-07: Migrated to selfhosted solution using Jekyll
 - 2019-02: Ported to Hugo, last commit in Jekyll style: [aa1376c2d116](https://github.com/anoff/blog/tree/aa1376c2d116d8075ce6ae76a75b1920c35eb6e5) hosted for eternity(?) on [anoff-aa1376c.surge.sh](//anoff-aa1376c.surge.sh/)
+- 2026-01: Migrated to Hugo with markdown only

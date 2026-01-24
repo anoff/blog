@@ -6,6 +6,7 @@ author: anoff
 resizeImages: true
 featuredImage: /assets/antora-arc42/antora-arc42.png
 ---
+
 After 2 years of working with the arc42 template in markdown, I spent the last few weeks learning about an asciidoc based site generator named [Antora](//antora.org/). The main reason for the interest in AsciiDoc was the fact that the limited feature set in markdown often impairs you while writing down complex things. But I had one problem; most of our documentation is scattered across multiple repositories as we try to keep the docs as close to the code as possible. That is why this series will cover how to get a multi repository (software) architecture template up and running using [Antora](//antora.org/).
 
 **This is a screenshot of the final result**

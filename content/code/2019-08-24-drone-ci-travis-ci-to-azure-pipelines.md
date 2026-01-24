@@ -54,17 +54,12 @@ The YAML syntax also allows multi-stage builds.
 
 **Azure Pipelines hierarchy**
 
-```plantuml
-!includeurl https://gist.githubusercontent.com/anoff/d8f48105ac4d3c7b14ca8c34d6d54938/raw/7381f13a14e048bbd3cb4ecc70369e913908151a/anoff.plantuml
-node Pipeline
-node Stage
-node Job
-node Step
-
-Pipeline .> Stage: 0+
-Pipeline .> Job: 1+
-Stage .> Job: 1+
-Job .> Step: 1+
+```mermaid
+graph TD
+  Pipeline --> Stage1[Stage 0+]
+  Pipeline --> Job1[Job 1+]
+  Stage --> Job2[Job 1+]
+  Job2 --> Step[Step 1+]
 ```
 
 The YAML hierarchy has (starting on the lowest level):
