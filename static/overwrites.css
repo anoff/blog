@@ -22,3 +22,22 @@ figure.listing-block {
 	background-color: #fff;
 	box-shadow: none;
 }
+
+/* Restored from custom _variables.scss */
+.article .string .content {
+    padding: 0;
+}
+
+p a {
+    color: #cc0033 !important;
+}
+p a:hover {
+    color: inherit !important;
+}
+
+.article .content .doc-section li a {
+    color: #cc0033 !important;
+}
+.article .content .doc-section li a:hover {
+    color: inherit !important;
+}
