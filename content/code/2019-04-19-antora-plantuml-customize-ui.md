@@ -6,9 +6,7 @@ author: anoff
 draft: false
 featuredImage: /assets/antora-puml/title.png
 ---
-:outdir: _site
-:imagesdir: /assets/antora-puml
-:imagesoutdir: _site/assets/antora-puml
+
 
 This post will cover some slightly advanced steps for building a multi-repository Asciidoc documentation using [Antora](//antora.org/).
 My previous post [blog.anoff.io/2019-02-15-antora-first-steps](//blog.anoff.io/2019-02-15-antora-first-steps/) covered basics of Antora and how to migrate existing AsciiDoc files.
@@ -80,27 +78,22 @@ Some modules provide [Antora partials](https://docs.antora.org/antora/2.0/asciid
 
 **Multi component, multi module Antora setup**
 
-```plantuml
-@startuml antora-component-setup
-!includeurl https://gist.githubusercontent.com/anoff/d8f48105ac4d3c7b14ca8c34d6d54938/raw/anoff.plantuml
+```mermaid
 component "antora-arc42" {
-  artifact ROOT
-  artifact adr
-  artifact concepts
-  ROOT -[hidden]down- adr
-  concepts -[hidden]up- adr
+  [ROOT]
+  [adr]
+  [concepts]
 }
 component "antora-arc42-mediaman" {
-  artifact ROOT as media_root
+  [ROOT] as media_root
 }
-control "Antora build" as antora
 
-antora ..> ROOT
-ROOT ..> adr
-ROOT ..> concepts
-ROOT ..> media_root
-footer FOOTER
-@enduml
+[Antora build] as antora
+
+antora ..> [ROOT]
+[ROOT] ..> [adr]
+[ROOT] ..> [concepts]
+[ROOT] ..> media_root
 ```
 
 ## Customizing the Antora UI

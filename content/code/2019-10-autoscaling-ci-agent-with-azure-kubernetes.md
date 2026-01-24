@@ -7,10 +7,7 @@ author: anoff
 draft: false
 featuredImage: /assets/scaling-agents-aks/title.png
 ---
-:imagesdir: /assets/scaling-agents-aks/
-:imagesoutdir: _site/assets/scaling-agents-aks/
-:source-highlighter: coderay
-:sectlinks:
+
 
 Ever wanted to create a build agent factory where you do not have to care about how many build agents you need at a given point?
 With this post I want to share my experience setting up a dedicated CI runner infrastructure with the Azure + Pipelines ecosystem.
@@ -46,7 +43,7 @@ It also supports the requirements 1-4 by running arbitrary bash scripts within a
 
 Given the list of requirements the solution can be described with the following picture.
 
-![A new job triggers the creation of a new CI agent](blackbox.png)
+![A new job triggers the creation of a new CI agent](/assets/scaling-agents-aks/blackbox.png)
 
 With Azure Pipelines as the CI system in place the open variables are knowing how many agents to host, manage their lifecycle and how to host them.
 
@@ -121,58 +118,59 @@ Thus if a new build agent is needed, one new VM will be needed.
 
 **Components involved in the Cluster Autoscaler**
 
-```plantuml
-@startuml
-!includeurl https://gist.githubusercontent.com/anoff/d8f48105ac4d3c7b14ca8c34d6d54938/raw/19261678934da0ab38a728f7edc1995ac22780ea/anoff.plantuml
-component "Cluster Autoscaler" as scaler
-frame "AKS" as aks {
-  node "pod" as p1
-  node "pod" as p2
-}
-frame "Virtual Machine\nScale set" as vmss {
-  node "VM" as vm1
-  node "VM" as vm2
-}
-p1 .. vm1
-p2 .. vm2
-aks -down- vmss
-
-scaler -> aks: check if all pods can be deployed
-scaler -> vmss: add/remove VMs into the set
-@enduml
+```mermaid
+graph TD
+  scaler[Cluster Autoscaler]
+  
+  subgraph aks[AKS]
+    p1(pod)
+    p2(pod)
+  end
+  
+  subgraph vmss[Virtual Machine Scale set]
+    vm1(VM)
+    vm2(VM)
+  end
+  
+  p1 -.- vm1
+  p2 -.- vm2
+  aks -.-> vmss
+  
+  scaler -->|check if all pods can be deployed| aks
+  scaler -->|add/remove VMs into the set| vmss
 ```
 
 **How the cluster autoscaler works**
 
-```plantuml
-@startuml
-!includeurl https://gist.githubusercontent.com/anoff/d8f48105ac4d3c7b14ca8c34d6d54938/raw/19261678934da0ab38a728f7edc1995ac22780ea/anoff.plantuml
-|Cluster Autoscaler|
-start
-:check if pods in Kubernetes
-need additional resources
-to be deployed;
-if (resources\nneeded) then (yes)
-  :trigger scale up of VMSS;
-  |Virtual Machine\nScale Set|
-  :start a new virtual machine;
-  :register VM in the scale set;
-  |AKS|
-  :register the new VM as
-  node in the Kubernetes cluster;
-endif
-|Cluster Autoscaler|
-:check if nodes in Kubernetes
-are not running any pods;
-if (idling pods) then (yes)
-  :trigger scale down;
-  |AKS|
-  :remove the node from
-  the cluster;
-  |Virtual Machine\nScale Set|
-  :stop and delete the VM;
-endif
-@enduml
+```mermaid
+flowchart TD
+    subgraph CA[Cluster Autoscaler]
+        start((Start)) --> check{check if pods in Kubernetes\nneed additional resources\nto be deployed}
+        check -- yes --> scaleUp[trigger scale up of VMSS]
+    end
+    
+    subgraph VMSS[Virtual Machine Scale Set]
+        scaleUp --> startVM[start a new virtual machine]
+        startVM --> regVM[register VM in the scale set]
+    end
+    
+    subgraph AKS
+        regVM --> regNode[register the new VM as\nnode in the Kubernetes cluster]
+    end
+    
+    subgraph CA2[Cluster Autoscaler]
+         regNode --> checkDown{check if nodes in Kubernetes\nare not running any pods}
+         checkDown -- idling pods --> scaleDown[trigger scale down]
+    end
+    
+    subgraph AKS2[AKS]
+        scaleDown --> removeNode[remove the node from\nthe cluster]
+    end
+    
+    subgraph VMSS2[Virtual Machine Scale Set]
+        removeNode --> stopVM[stop and delete the VM]
+    end
+
 ```
 
 Another reason I chose the AKS solution is the fact that I am a bit familiar with Kubernetes and Helm charts as ways of describing the system in code.
@@ -252,23 +250,16 @@ Instead all agents share an identical, ephemeral, short lifecycle:
 
 **Pipeline agent lifecycle**
 
-```plantuml
-@startuml
-!includeurl https://gist.githubusercontent.com/anoff/d8f48105ac4d3c7b14ca8c34d6d54938/raw/19261678934da0ab38a728f7edc1995ac22780ea/anoff.plantuml
-start
-:➕ kubernetes schedules a new
-agent pod as BatchJob;
-:🚀 agent container started
-in kubernets cluster;
-:✍️ agent registers with
-Azure Pipelines agent pool;
-:🤗 agent fetches next
-task in queue;
-:🏋️‍ agent executes a single task;
-:☠️ agent shuts down;
-:🧹 kubernetes removes the pod;
-stop
-@enduml
+```mermaid
+flowchart TD
+    start((Start)) --> schedule[➕ kubernetes schedules a new\nagent pod as BatchJob]
+    schedule --> started[🚀 agent container started\nin kubernets cluster]
+    started --> register[✍️ agent registers with\nAzure Pipelines agent pool]
+    register --> fetch[🤗 agent fetches next\ntask in queue]
+    fetch --> execute[🏋️‍ agent executes a single task]
+    execute --> shut[☠️ agent shuts down]
+    shut --> remove[🧹 kubernetes removes the pod]
+    remove --> stop((Stop))
 ```
 
 To trigger the creation of new pipeline agents via the kubernets ***BatchJob*** API I wrote a small python script that identifies the number of `active jobs` and compares it with the number of agent pods running in AKS.
@@ -277,33 +268,33 @@ The script itself is running inside Kubernetes in a ***CronJob*** that gets exec
 
 **Kubernetes setup**
 
-```plantuml
-@startuml
-!includeurl https://gist.githubusercontent.com/anoff/d8f48105ac4d3c7b14ca8c34d6d54938/raw/19261678934da0ab38a728f7edc1995ac22780ea/anoff.plantuml
-frame "AKS" as aks {
-  node "CronJob" as cron {
-    component "scaler.py" as scaler
-  }
-  node "BatchJob" as b1 {
-    component "docker:agent" as a1
-  }
-  node "BatchJob" as b2 {
-    component "docker:agent" as a2
-  }
-}
-frame "Azure Pipelines" as pipeline {
-  card "Project X" as project {
-    artifact "build1"
-    artifact "build2"
-  }
-}
-
-scaler --> project: check number of active builds
-scaler --> b2: create new BatchJob for agent
-
-b1 .. build1
-b2 .. build2
-@enduml
+```mermaid
+graph TD
+  
+  subgraph AKS
+    subgraph CronJob
+        scaler[scaler.py]
+    end
+    subgraph BatchJob1[BatchJob]
+        a1[docker:agent]
+    end
+    subgraph BatchJob2[BatchJob]
+        a2[docker:agent]
+    end
+  end
+  
+  subgraph Pipeline[Azure Pipelines]
+    subgraph Project[Project X]
+        build1
+        build2
+    end
+  end
+  
+  scaler -->|check number of active builds| Project
+  scaler --> |create new BatchJob for agent| BatchJob2
+  
+  BatchJob1 -.- build1
+  BatchJob2 -.- build2
 ```
 
 ## Putting it all together
@@ -321,7 +312,7 @@ The solution I cam up with is pictured below
 
 **Overview of the solution**
 
-![Overview of the solution](solution.png)
+![Overview of the solution](/assets/scaling-agents-aks/solution.png)
 
 In a follow up blog post I will provide some implementation details.
 If you are interested in any specific parts please leave a comment or contact me via [Twitter](https://twitter.com/anoff_io) 👋

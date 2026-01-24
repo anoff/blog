@@ -7,10 +7,7 @@ resizeImages: true
 draft: false
 featuredImage: /assets/azure-pipelines/title.png
 ---
-:imagesdir: /assets/azure-pipelines/
-:imagesoutdir: _site/assets/azure-pipelines/
-:source-highlighter: coderay
-:sectlinks:
+
 
 Beginning of the year I switched my blogs build chain from Travis CI to [drone CI](https://drone.io/).
 Due to some tasks with Azure DevOps at work I wanted to test how good it fits my private projects.
@@ -84,7 +81,7 @@ If one step in a job fails the job will stop executing but other jobs will conti
 
 Multiple ***Jobs*** within a pipeline are a ***Fan-Out*** scenario as they get executed in parallel.
 
-![Fan-Out scneario](fan-out.png)
+![Fan-Out scneario](/assets/azure-pipelines/fan-out.png)
 
 **Example for a simple stage-less pipeline**
 
@@ -105,17 +102,8 @@ jobs:
 
 **Pipeline execution without stage**
 
-```plantuml
-!includeurl https://gist.githubusercontent.com/anoff/d8f48105ac4d3c7b14ca8c34d6d54938/raw/7381f13a14e048bbd3cb4ecc70369e913908151a/anoff.plantuml
-node Pipeline
-node Job1
-node Step1.1
-node Step1.2
-node Job2
-node Step2.1
-node Step2.2
-node Step2.3
-
+```mermaid
+graph TD
 Pipeline --> Job1
 Pipeline --> Job2
 Job1 --> Step1.1
@@ -129,60 +117,58 @@ Step2.2 --> Step2.3
 By specifying ***Stages*** you can execute fan-out and fan-in multiple times within your pipeline.
 Each ***Stage*** represents a fan-in operation where all defined jobs need to finish before the next stage is triggered which can fan-out again.
 
-![Fan-Out Fan-In with stages](fan-out-fan-in.png)
+![Fan-Out Fan-In with stages](/assets/azure-pipelines/fan-out-fan-in.png)
 
 Looking back at the hierarchies existing the YAML file the actual execution pattern can be described with the state machine below.
 Only one stage is executing at a time; if possible all jobs within this stage are executed in parallel.
 
 **Pipeline with two stages**
 
-```plantuml
-@startuml
-!includeurl https://gist.githubusercontent.com/anoff/d8f48105ac4d3c7b14ca8c34d6d54938/raw/7381f13a14e048bbd3cb4ecc70369e913908151a/anoff.plantuml
-[*] --> Stage1
-Stage1 --> Stage2
-Stage2 --> [*]
+```mermaid
+stateDiagram-v2
+  [*] --> Stage1
+  Stage1 --> Stage2
+  Stage2 --> [*]
 
-state Stage1 {
-  [*] --> Job1.1
-  [*] --> Job1.2
-  state Job1.1 {
-    [*] --> Step1.1.1
-    Step1.1.1 --> Step1.1.2
-  }
-  state Job1.2 {
-    [*] --> Step1.2.1
-    Step1.2.1 --> Step1.2.2
-    Step1.2.2 --> Step1.2.3
-    Step1.2.3 --> Step1.2.4
+  state Stage1 {
+    [*] --> Job1.1
+    [*] --> Job1.2
+    state Job1.1 {
+      [*] --> Step1.1.1
+      Step1.1.1 --> Step1.1.2
+    }
+    state Job1.2 {
+      [*] --> Step1.2.1
+      Step1.2.1 --> Step1.2.2
+      Step1.2.2 --> Step1.2.3
+      Step1.2.3 --> Step1.2.4
+    }
+
+    Step1.1.2 --> [*]
+    Step1.2.4 --> [*]
   }
 
-  Step1.1.2 --> [*]
-  Step1.2.4 --> [*]
-}
+  state Stage2 {
+    [*] --> Job2.1
+    [*] --> Job2.2
+    [*] --> Job2.3
 
-state Stage2 {
-  [*] --> Job2.1
-  [*] --> Job2.2
-  [*] --> Job2.3
-
-  state Job2.1 {
-    [*] --> Step2.1.1
-    Step2.1.1 --> Step2.1.2
+    state Job2.1 {
+      [*] --> Step2.1.1
+      Step2.1.1 --> Step2.1.2
+    }
+    state Job2.2 {
+      [*] --> Step2.2.1
+    }
+    state Job2.3 {
+      [*] --> Step2.3.1
+      Step2.3.1 --> Step2.3.2
+      Step2.3.2 --> Step2.3.3
+    }
+    Step2.1.2 --> [*]
+    Step2.2.1 --> [*]
+    Step2.3.3 --> [*]
   }
-  state Job2.2 {
-    [*] --> Step2.2.1
-  }
-  state Job2.3 {
-    [*] --> Step2.3.1
-    Step2.3.1 --> Step2.3.2
-    Step2.3.2 --> Step2.3.3
-  }
-  Step2.1.2 --> [*]
-  Step2.2.1 --> [*]
-  Step2.3.3 --> [*]
-}
-@enduml
 ```
 
 ## Migrating from drone to Azure Pipelines 🚐
@@ -192,7 +178,7 @@ As you can see in the image below, this is a very simple pipeline with just a fe
 
 **CI steps in the existing drone pipeline**
 
-![Step overview](drone-steps.png)
+![Step overview](/assets/azure-pipelines/drone-steps.png)
 
 The drone pipeline was already relying on a [custom docker image](https://hub.docker.com/r/anoff/hugo-asciidoctor) as described [in this previous blog post about rendering asciidoc in hugo](https://blog.anoff.io/2019-02-17-hugo-render-asciidoc/).
 That made the migration quite easy as there is not a lot of customization to the build agent necessary.
@@ -316,7 +302,7 @@ The necessary steps for this migration were:
 
 **CI steps in the new Azure Pipeline**
 
-![Step overview](pipelines-step.png)
+![Step overview](/assets/azure-pipelines/pipelines-step.png)
 
 ## Migrating from Travis CI
 
@@ -403,7 +389,7 @@ So I do not understand why the default is just a month.
 
 **Configure pipeline retention in the project settings**
 
-![Configure pipeline retention](configure-retention.png)
+![Configure pipeline retention](/assets/azure-pipelines/configure-retention.png)
 
 The worst thing is that _Keeping a run_ not only means keeping the logs but actually after those 30 days Pipelines does not even know there ever was a run.
 The image below was taken today, where the last commit - and pipeline execution - was more than 30 days old.
@@ -413,7 +399,7 @@ I wish they just deleted the logs but kept the meta-data like date, run result a
 
 **All past pipeline executions are completely gone**
 
-![Azure Pipelines showing no executions after 30 days](no-executions.png)
+![Azure Pipelines showing no executions after 30 days](/assets/azure-pipelines/no-executions.png)
 
 ### YAML spec seems over-complicated
 
@@ -428,18 +414,18 @@ Multiple projects are grouped into an organization.
 
 **Azure DevOps project overview**
 
-![Screenshot of dev.azure.com](org.png)
+![Screenshot of dev.azure.com](/assets/azure-pipelines/org.png)
 
 **Azure Pipelines overview for a given project**
 
-![Screenshot of dev.azure.com](project.png)
+![Screenshot of dev.azure.com](/assets/azure-pipelines/project.png)
 
 This was new at first because most CI services out there just create one project/pipeline per repository.
 Even after several weeks I do not really get familiar with this additional _layer_ that the project represents.
 
 **drone.io repositories overview**
 
-![Screenshot of cloud.drone.io](drone-repos.png)
+![Screenshot of cloud.drone.io](/assets/azure-pipelines/drone-repos.png)
 
 ## Summary
 

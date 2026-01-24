@@ -6,8 +6,7 @@ draft: false
 author: anoff
 featuredImage: /assets/asciidoc-plantuml/title.png
 ---
-:imagesdir: /assets/asciidoc-plantuml/
-:imagesoutdir: _site/assets/asciidoc-plantuml/
+
 
 This post is for everyone that likes to write AsciiDoc in VS Code but also wants to inline PlantUML diagrams within their docs.
 In a previous post about [diagrams with PlantUML](/2018-07-31-diagrams-with-plantuml/) I gave an intro into PlantUML and how to preview images in VS Code.
@@ -75,11 +74,11 @@ In case you are running a local PlantUML server you may choose _Allow insecure l
 
 **opening asciidoc preview security settings**
 
-![command palette screenshot](cmd1.png)
+![command palette screenshot](/assets/asciidoc-plantuml/cmd1.png)
 
 **allow insecure content**
 
-![command palette screenshot](cmd2.png)
+![command palette screenshot](/assets/asciidoc-plantuml/cmd2.png)
 
 ## Live Preview AsciiDoc with embedded PlantUML
 
@@ -98,11 +97,11 @@ mcd --> rick: szechuan sauce
 
 With the attribute set correctly the above code block renders as an image
 
-![working preview](preview-ok.png)
+![working preview](/assets/asciidoc-plantuml/preview-ok.png)
 
     ..without the attribute set or issues with the security settings you just see a code block
 
-![broken preview](preview-nok.png)
+![broken preview](/assets/asciidoc-plantuml/preview-nok.png)
 
 Hope this post helped you.
 If you have any questions or know of better/alternative ways let me know via [Twitter](https://twitter.com/anoff_io) or leave a comment 👋

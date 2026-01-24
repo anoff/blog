@@ -6,7 +6,7 @@ draft: false
 author: anoff
 featuredImage: /assets/git-rebase/title.png
 ---
-:imagesdir: /assets/
+
 
 Being a developer most times means working with git.
 There are many different ways to use git and every project, every developer has their preferences.
@@ -20,13 +20,13 @@ In the message below the reference to the GitHub issue &#35;53 would be removed 
 
 **Rewording a commitizen message with GitHub issue &#35;id**
 
-![Screenshot](git-rebase/reword-hash.png)
+![Screenshot](/assets/git-rebase/reword-hash.png)
 
 This could be fixed by prepending some text to make sure the line does not start with a hash.
 
 **Additional text to make sure the line does not start with &#35;**
 
-![Screenshot](git-rebase/reword-hash-leading.png)
+![Screenshot](/assets/git-rebase/reword-hash-leading.png)
 
 However the Commitizen style I use creates commit messages that include the issue ID on a new line and I did not want to break this pattern during rebases.
 But luckily you can configure the escape character that git uses in the rebase UI.
@@ -57,7 +57,7 @@ This also means that my original commit message with a `&#35;` leading in line 3
 
 **Rewording a commit message after setting `core.commentChar`**
 
-![Screenshot](git-rebase/reword-semicolon.png)
+![Screenshot](/assets/git-rebase/reword-semicolon.png)
 
 You can pick any character you want to escape comments in the rebase UI, just make sure it fits your workflow and does not conflict with any rules you have for git messages.
 

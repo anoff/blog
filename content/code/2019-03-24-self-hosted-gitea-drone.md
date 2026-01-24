@@ -7,12 +7,7 @@ resizeImages: true
 draft: false
 featuredImage: /assets/gitea-drone/title.png
 ---
-:outdir: _site
-:imagesdir: /assets/gitea-drone/
-:imagesoutdir: _site/assets/gitea-drone/
-:gitea-url: https://gitea.io/
-:drone-url: https://drone.io/
-:traefik-url: https://traefik.io/
+
 
 This post will walk you through setting up a self hosted git based continuous integration environment on a two machine setup - assuming you already have two virtual machines at your disposal.
 Using [***Gitea****]({gitea-url}) for git hosting and contribution management and [****Drone****]({drone-url}) for docker-based build jobs, this will guide you through creating **docker-compose*** files as well as configuring the individual services and getting ***SSL certificates*** via [***traefik***]({traefik-url}).
@@ -36,7 +31,7 @@ I used the following Azure services for this setup:
 
 **Required infrastructure setup**
 
-![Infrastructure setup](vm-setup.svg)
+![Infrastructure setup](/assets/gitea-drone/vm-setup.svg)
 
 The post will keep referring to _the gitea vm_ or _the drone machine_, it might be useful to add DNS records to easily identify which machine you are looking at.
 
@@ -166,7 +161,7 @@ If you do not wish to use a reverse proxy then simply do not follow the traefik 
 
 **Reverse proxy in docker using traefik**
 
-![Proxy setup](rp-setup.svg)
+![Proxy setup](/assets/gitea-drone/rp-setup.svg)
 
 ## Setting up Gitea
 
@@ -323,7 +318,7 @@ This is the setup we just rolled out on the Gitea VM.
 
 **Gitea docker setup**
 
-![Docker images for Gitea VM](vm-gitea.svg)
+![Docker images for Gitea VM](/assets/gitea-drone/vm-gitea.svg)
 
 ### Customize Gitea
 
@@ -446,7 +441,7 @@ The final setup for Drone looks like this
 
 **Drone docker setup**
 
-![Docker images for Drone VM](vm-drone.svg)
+![Docker images for Drone VM](/assets/gitea-drone/vm-drone.svg)
 
 ## Summary
 

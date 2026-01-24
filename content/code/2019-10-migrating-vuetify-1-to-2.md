@@ -142,30 +142,30 @@ It is mostly moving the color specification of the theme into another nested lay
 
 **vuetify 2 theme options structure**
 
-```plantuml
-!includeurl https://gist.githubusercontent.com/anoff/d8f48105ac4d3c7b14ca8c34d6d54938/raw/7381f13a14e048bbd3cb4ecc70369e913908151a/anoff.plantuml
-class theme {
-  dark: boolean
-  themes: Object
-}
+```mermaid
+classDiagram
+  class theme {
+    dark: boolean
+    themes: Object
+  }
 
-class themes {
-  light: ColorSpec
-  dark: ColorSpec
-}
+  class themes {
+    light: ColorSpec
+    dark: ColorSpec
+  }
 
-class ColorSpec {
-  primary:\t colorcode as string
-  secondary:\t colorcode as string
-  accent:\t colorcode as string
-  error:\t colorcode as string
-  warning:\t colorcode as string
-  info:\t\t colorcode as string
-  success:\t colorcode as string
-}
+  class ColorSpec {
+    primary: colorcode as string
+    secondary: colorcode as string
+    accent: colorcode as string
+    error: colorcode as string
+    warning: colorcode as string
+    info: colorcode as string
+    success: colorcode as string
+  }
 
-theme -- themes
-themes -- ColorSpec
+  theme -- themes
+  themes -- ColorSpec
 ```
 
 ## Add MDI font

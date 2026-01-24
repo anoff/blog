@@ -6,9 +6,7 @@ author: anoff
 draft: false
 featuredImage: /assets/antora-arc42/title-3.png
 ---
-:outdir: _site
-:imagesoutdir: _site/assets/antora-arc42
-:imagesdir: /assets/
+
 
 This third post in the series of Antora posts quickly addresses a feature I only recently discovered.
 It will show you some techniques you can use to compose the navigation menu in a multi-repository, multi-module setup.
@@ -25,7 +23,7 @@ However this limits you to the operation of ***concatenation***.
 
 **Concatenating navigation files via component descriptor**
 
-![Concatenated navigation content](antora-arc42/nav-concat.png)
+![Concatenated navigation content](/assets/antora-arc42/nav-concat.png)
 
 To achieve such concatenation just define your component as
 
@@ -48,7 +46,7 @@ This can come in handy if you split content into multiple modules and want to in
 
 **Inlining navigation content**
 
-![Inlined navigation content](antora-arc42/nav-inline.png)
+![Inlined navigation content](/assets/antora-arc42/nav-inline.png)
 
 In this scenario the component descriptor would reference a single navigation file
 
@@ -91,7 +89,7 @@ include::wedding:partial$nav2.adoc[
 
 **File structure for included nav files**
 
-![Screenshot of the file structure](antora-arc42/filetree-wedding.png)
+![Screenshot of the file structure](/assets/antora-arc42/filetree-wedding.png)
 
 Given the above navigation files and directory structure you end up with the following navigation tree.
 Notice how `nav2.adoc` is embedded in the content defined in `nav1.adoc`.
@@ -118,7 +116,7 @@ In this scenario we want to include the list of Birdperson’s friends but ***co
 
 **Nesting navigation content**
 
-![Nested navigation content](antora-arc42/nav-nest.png)
+![Nested navigation content](/assets/antora-arc42/nav-nest.png)
 
 By extending Birdpersons relationships also to enemies we want the following nav tree to be rendered:
 
@@ -168,7 +166,7 @@ Using the same directory structure as previously the final rendered result in An
 
 **Nested navigation tree in Antora**
 
-![Nested navigation tree](antora-arc42/navtree-wedding.png)
+![Nested navigation tree](/assets/antora-arc42/navtree-wedding.png)
 
 As expected the content of `nav2.adoc` is included on the same list level as `nav1.adoc`.
 The list of friends from `nav3.adoc` however continues as a nested indentation within `ROOT/nav1.adoc`.
@@ -176,7 +174,7 @@ The picture below shows the included sections highlighted according to their res
 
 **Nested navigation tree in Antora (highlighted)**
 
-![Nested navigation tree (highlighted)](antora-arc42/navtree-wedding-colored.png)
+![Nested navigation tree (highlighted)](/assets/antora-arc42/navtree-wedding-colored.png)
 
 ## Closing words
 

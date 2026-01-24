@@ -207,7 +207,15 @@ export default new Router({
 
 For the following development the web application will consume from two different endpoints. The `webpack-dev-server` sends the web app sources (HTML, CSS, Javascript) and the node server will supply the `socket-io` endpoint. This is typically not something you want to do in production but since we want both the node server and Vue frontend to be hot reloaded we need two systems - webpack and nodemon.
 
-![development setup](https://www.plantuml.com/plantuml/png/NP0z3i8m34PtdyBgn58KYGKn8JX9sXWef77b12A4k3ik3RzBfBpdptQoZibAElSU0Zl2AbCpsFQ4ZYuOIIua5Tg8hUyef58pyVanue5ZUle95Ty8PmKLG1SIoSwsX8Ua8pxN72E07bWxpg5-vSUg5oeZeNJ3kfwDiHKEB0aNnfWVDKQBMvgbWNZgmc35zdW3n76nZRvhBtmERikU1Q_aFMULLhJFn1glHOhUc_w7VDVJZsTn9D_XEwmfEFtH1m00)
+```mermaid
+graph TD
+  devserver[webpack-dev-server :8080]
+  server[node server :3000]
+  browser[Web Browser]
+
+  devserver -- HTML/JS/CSS --> browser
+  server -- WebSocket --> browser
+```
 
 ### frontend: vue-socket.io
 

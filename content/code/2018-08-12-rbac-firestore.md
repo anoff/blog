@@ -92,7 +92,27 @@ We will setup RBAC for a simple content site with _posts_ that can be commented 
 
 On the root level of Firestore we add three different collections. One holds the content, one for user details and one that implements the roles per user. The reason to separate role assignments from the user document is to easily allow users to modify their own details without giving them the possibility to grant themselves new roles.
 
-![Class diagram of the database structure](/assets/rbac-firestore/dist/document-classes.svg)
+```mermaid
+classDiagram
+  class Content {
+    +title: string
+    +body: string
+    +author: uid
+  }
+  class User {
+    +uid: string
+    +email: string
+    +displayName: string
+  }
+  class Role {
+    +admin: boolean
+    +writer: boolean
+    +editor: boolean
+  }
+  Content "1" *-- "n" Comment : contains
+  User "1" -- "1" Role : has
+  User "1" -- "n" Content : writes
+```
 
 ## Required security rules for RBAC
 

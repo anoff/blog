@@ -7,73 +7,60 @@ resizeImages: true
 draft: true
 featuredImage: /assets/raspi-internet/title.png
 ---
-:outdir: _site
-:imagesdir: /assets/raspi-internet/
-:imagesoutdir: _site/assets/raspi-internet/
-:traefik-url: https://traefik.io/
+
 
 **Network Setup**
 
-```plantuml
-@startuml network-setup
-skinparam monochrome true
-skinparam defaulttextalignment center
+```mermaid
+graph TD
+  SSLa("service-a.mydomain.com :80,443")
+  SSLb("service-b.io :80,443")
+  SSL_traefik("Traefik dashboard :80,443")
+  
+  subgraph home["Home network"]
+    influx
+    grafana
+    sensor
+  end
+  
+  subgraph VM1["Virtual Machine"]
+    subgraph docker1["Docker"]
+       servicea
+       serviceb
+       traefik
+    end
+    traefik -- "internal port :3000" --- servicea
+    traefik -- ":3030" --- serviceb
+  end
 
-
-interface "service-a.mydomain.com <i>:80,443" as SSLa
-interface "service-b.io <i>:80,443" as SSLb
-interface "Traefik dashboard <i>:80,443" as SSL_traefik
-
-frame "Home network" as home {
-  node "influx db" as influx
-  node "grafana" as grafana
-  node "IoT sensor" as sensor
-}
-component "Virtual Machine" as VM1 {
-  component Docker as docker1 {
-    artifact "service A" as servicea
-    artifact "service B" as serviceb
-    artifact "traefik:latest" as traefik
-  }
-  traefik -- servicea: internal port\n<i>:3000
-  traefik -- serviceb: <i>:3030
-}
-note left of VM1
-  1x public IP
-  service-a.mydomain.com
-  service-b.io
-end note
-
-interface "service-a.mydomain.com <i>:80,443" as SSLa
-interface "service-b.io <i>:80,443" as SSLb
-interface "Traefik dashboard <i>:80,443" as SSL_traefik
-
-SSLa -down- traefik
-SSLb -down- traefik
-SSL_traefik -down- traefik
-@enduml
+  SSLa --- traefik
+  SSLb --- traefik
+  SSL_traefik --- traefik
 ```
 
 **Container Setup on Raspberry**
 
-```plantuml
-@startuml
-skinparam monochrome true
-|Local (git)|
-start
-:modify LaTeX file;
-:commit changes;
-:run <i>Makefile;
-:commit updated PDF;
-:push changes;
-|Build pipeline|
-:generate static web page
-treating CV (PDF) as an artifact;
-:upload static web page;
-|Web Server|
-:provide web page;
-|Viewer|
-:enjoy my CV;
-stop
-@enduml
+```mermaid
+flowchart TD
+    subgraph Local["Local (git)"]
+        start((Start)) --> mod[modify LaTeX file]
+        mod --> commit[commit changes]
+        commit --> run[run Makefile]
+        run --> commitPDF[commit updated PDF]
+        commitPDF --> push[push changes]
+    end
+    
+    subgraph Build[Build pipeline]
+        push --> gen["generate static web page\ntreating CV-PDF as an artifact"]
+        gen --> up[upload static web page]
+    end
+    
+    subgraph Web[Web Server]
+        up --> prov[provide web page]
+    end
+    
+    subgraph Viewer[Viewer]
+        prov --> enjoy[enjoy my CV]
+        enjoy --> stop((Stop))
+    end
 ```
