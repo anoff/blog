@@ -24,6 +24,7 @@ In this blog post I will explain how you can create private npm packages for you
  John-&gt;&gt;Bob: How about you?
  Bob--&gt;&gt;John: Jolly good!
 &lt;/div&gt;
+
 &lt;p&gt;I just migrated the &lt;a href="https://github.com/anoff/devradar/tree/master/editor"&gt;code&lt;/a&gt; for the &lt;a href="//editor.devradar.io"&gt;devradar editor&lt;/a&gt; to the latest major version of vuetify.
 There is an officiel &lt;a href="https://vuetifyjs.com/en/getting-started/releases-and-migrations"&gt;migration guide&lt;/a&gt; that helped me solve 70% of the issues but here is a quick overview of the biggest issues I encountered and what actually changed.&lt;/p&gt;</description></item><item><title>Reference GitHub #issues during git rebase</title><link>https://blog.anoff.io/2019-07-20-git-config-rebase-github-issue/</link><pubDate>Sat, 20 Jul 2019 00:00:00 +0000</pubDate><guid>https://blog.anoff.io/2019-07-20-git-config-rebase-github-issue/</guid><description>&lt;p&gt;Being a developer most times means working with git.
 There are many different ways to use git and every project, every developer has their preferences.
