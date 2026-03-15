@@ -1,0 +1,18 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: '3'
+
+tasks:
+  default:
+    desc: List available commands
+    cmds:
+      - task --list
+  dev:
+    desc: Start development build
+    cmds:
+      - hugo server -D
+  build:
+    desc: Build the site
+    cmds:
+      - hugo --gc --minify -d _site
+  
