@@ -1,7 +1,7 @@
 ---
 title: Backup your NAS (Synology) to external harddrive
 date: 2024-11-03
-tags: [development]
+tags: [development, data management]
 author: anoff
 resizeImages: true
 draft: false
