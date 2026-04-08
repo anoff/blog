@@ -28,7 +28,6 @@ Here is my fast, structured approach to sifting through the footage and building
     - **Red** for Trash (Out of focus, shaky, or just bad—you won't use these).
     - Leave everything else unmarked (This becomes your B-Roll/fallback footage).
 
-![Screenshot how to create A-Roll](/assets/davinci/a-roll.png)
 
 ### Step 2: Creating Subclips from Long Takes
 Sometimes you have a massive 5-minute drone clip where only 10 seconds are usable A-Roll, and another 10 seconds are good B-Roll.
@@ -42,8 +41,10 @@ Instead of trying to keep track of a massive file, break it down:
 ### Step 3: Create Smart Bins
 Creating Smart Bins automatically organizes your color-coded clips so you don't have to hunt for them.
 1. In the Media Pool, scroll down to **Smart Bins**, right-click, and select **Add Smart Bin**.
-2. Name the first one "A-Roll". Set the rule: `MediaPool Properties` -> `Clip Color` -> `=` -> `Blue`.
-3. Create another Smart Bin named "B-Roll". Set the rule: `MediaPool Properties` -> `Clip Color` -> `!=` -> `Red` **AND** `Clip Color` -> `!=` -> `Blue`.
+2. Name the first one _A-Roll_. Set the rule: `Metadata Shot & Scene` -> `Clip Color` -> `contains` -> `Blue`.
+3. Create another Smart Bin named _B-Roll_. Set the rule: `Metadata Shot & Scene` -> `Clip Color` -> `does not contain` -> `Red` `Blue`
+
+![Screenshot how to create A-Roll](/assets/davinci/a-roll.png)
 
 ### Step 4: The Assembly and the 1-2-3 Cut
 Now, drag all the clips from your "A-Roll" Smart Bin straight onto your empty timeline.
