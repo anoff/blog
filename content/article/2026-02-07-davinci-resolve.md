@@ -28,6 +28,8 @@ Here is my fast, structured approach to sifting through the footage and building
     - **Red** for Trash (Out of focus, shaky, or just bad—you won't use these).
     - Leave everything else unmarked (This becomes your B-Roll/fallback footage).
 
+![Screenshot how to create A-Roll](/assets/davinci/a-roll.png)
+
 ### Step 2: Creating Subclips from Long Takes
 Sometimes you have a massive 5-minute drone clip where only 10 seconds are usable A-Roll, and another 10 seconds are good B-Roll.
 Instead of trying to keep track of a massive file, break it down:
