@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Ai on Andreas' Blog</title><link>https://blog.anoff.io/tags/ai/</link><description>Recent content in Ai on Andreas' Blog</description><generator>Hugo</generator><language>en</language><lastBuildDate>Thu, 09 Apr 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.anoff.io/tags/ai/index.xml" rel="self" type="application/rss+xml"/><item><title>AI my Stock Portfolio</title><link>https://blog.anoff.io/2026-04-ai-my-stock-portfolio/</link><pubDate>Thu, 09 Apr 2026 00:00:00 +0000</pubDate><guid>https://blog.anoff.io/2026-04-ai-my-stock-portfolio/</guid><description>&lt;p&gt;My stock portfolio is spread across multiple brokers in different countries — Japanese stocks with one broker, European positions with another, investment funds in a third account.
+Each has its own dashboard, export format, and way of presenting performance.
+Relying on these dashboards as my single source of truth felt uncomfortable.
+What if a broker changes its interface or suspends my account?
+How do I compare positions across currencies, time horizons, and purchase dates?&lt;/p&gt;
+&lt;p&gt;I wanted &lt;strong&gt;local, inspectable, portable data ownership&lt;/strong&gt; — files on my own disk that don&amp;rsquo;t disappear if a broker changes policy.
+Not just the raw transaction records, but the &lt;strong&gt;analysis process itself&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;This post tells the story of how I built a suite of tools to solve that problem.
+But the real journey wasn&amp;rsquo;t about writing Python scripts — it was about discovering &lt;strong&gt;how to think about stock performance&lt;/strong&gt; in the first place.
+This was also a trial run in using AI end-to-end: &lt;strong&gt;Gemini&lt;/strong&gt; for strategic thinking and high-level concepts, &lt;strong&gt;Claude&lt;/strong&gt; and &lt;strong&gt;VS Code Copilot&lt;/strong&gt; for implementation and debugging.&lt;/p&gt;</description></item></channel></rss>
